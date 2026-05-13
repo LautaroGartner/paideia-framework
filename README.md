@@ -1,0 +1,372 @@
+# Paideia Framework
+
+Inspectable AI-native application runtime framework.
+
+Describe the system. Generate the software. Keep it understandable.
+
+Status: `v1.0.0-experimental`
+
+Paideia is an experimental AI-native application runtime framework that generates inspectable software foundations from simple TypeScript declarations.
+
+It is not another frontend framework. Paideia starts from a resource declaration and generates a small application foundation around it: UI, validation, local persistence, permissions, actions, AI capabilities, SQL schema, runtime events, and a system manifest that explains what was generated.
+
+> Describe the system. Generate the software. Keep it understandable.
+
+> Standardized by default. Customizable without breaking.
+
+## Screenshots
+
+| Generated runtime | Interactive CLI |
+| --- | --- |
+| ![Generated runtime](screenshots/runtime.png) | ![Interactive CLI](screenshots/cli.png) |
+
+| Inspect panel | Manifest contract |
+| --- | --- |
+| ![Inspect panel](screenshots/inspect-panel.png) | ![Manifest contract](screenshots/manifest.png) |
+
+| Accessibility report |
+| --- |
+| ![Accessibility report](screenshots/a11y.png) |
+
+## What This Is / Is Not
+
+Paideia is:
+
+- a working proof of an inspectable AI-native application runtime framework
+- a demo of generated software with a trust model
+- a small framework architecture for resource-driven systems
+- an experiment in making generated systems understandable to humans and AI tools
+
+Paideia is not yet:
+
+- a finished production framework
+- a real authentication system
+- a production database layer
+- a production backend route framework
+- a hosted platform
+- a real AI provider integration
+- a package ecosystem
+
+The current demo proves the direction: describe a system once and get a generated, inspectable, secure-by-default foundation.
+
+## Current Limitations
+
+Paideia is experimental and not production-ready.
+
+Current runtime limitations include:
+
+- browser-local persistence only
+- no real authentication or session runtime
+- no production database adapters yet
+- simulated AI runtime behavior
+- manifested API routes, but no production backend route runtime yet
+- no deployment adapters yet
+
+## Demo Story
+
+The included demo is a lead intake system.
+
+It shows how one resource declaration can produce a working generated runtime:
+
+1. Create a lead.
+2. Trigger validation when required fields are missing or invalid.
+3. Mark the lead as contacted with a declared update action.
+4. Try to summarize the lead as the public user.
+5. Watch the AI action get blocked by permissions.
+6. Inspect the browser log, CLI event stream, manifest, schema, and runtime API to understand why.
+
+The point is not that Paideia has a form. The point is that the generated system can explain itself.
+
+## What Paideia Generates
+
+From a resource declaration, Paideia generates:
+
+- `dist/index.html`: a browser runtime for creating, validating, storing, and acting on records
+- `dist/schema.sql`: a SQL schema for the resource
+- `dist/system.json`: a manifest describing the generated system contract
+
+The generated runtime currently targets the browser and uses `localStorage` for persistence. Runtime dependencies are intentionally zero.
+
+## Resource Model
+
+Resources describe the shape and behavior of the system:
+
+```ts
+const leadResource = resource(
+  "Lead",
+  {
+    name: string("Name").required().min(2),
+    email: email("Email").required(),
+    status: select(["new", "contacted", "closed"], "Status").required(),
+    notes: string("Notes"),
+  },
+  {
+    storage: "local",
+    permissions: {
+      create: "public",
+      update: "public",
+      delete: "admin",
+      ai: "authenticated",
+    },
+    actions: [
+      ai.summarizeRecord({
+        name: "summarize",
+        label: "Summarize",
+      }),
+    ],
+  }
+);
+```
+
+A resource can declare:
+
+- fields and validation rules
+- local storage behavior
+- permission requirements
+- update actions
+- explicit AI actions
+- runtime target
+
+## Manifest Contract
+
+`dist/system.json` is the contract of the generated system. It includes:
+
+- framework name, version, and mode
+- resource fields, actions, and permissions
+- runtime target, persistence, composition, events, and developer tooling
+- capabilities for storage, runtime, records, actions, and AI
+- API route contracts
+- AI guarantees and declared actions
+- trust guarantees
+
+This manifest is designed for humans, AI tools, editors, and future automation.
+
+## Runtime Events
+
+The browser runtime emits named events:
+
+```txt
+record.created
+record.deleted
+records.cleared
+validation.failed
+action.executed
+ai.executed
+permission.denied
+```
+
+In development, these events are visible in the generated framework log and are bridged to the CLI through the dev server:
+
+```txt
+[12:44:10 PM] Browser record.created
+```
+
+Production builds omit the browser-to-CLI bridge.
+
+## Permissions
+
+Paideia permissions are explicit and manifested:
+
+```txt
+public
+authenticated
+admin
+```
+
+The generated browser runtime enforces declared permissions for creation, update actions, deletion, and AI actions. The manifest records those requirements so the generated system can be inspected instead of guessed.
+
+## Capabilities
+
+Capabilities describe what the generated system can do:
+
+- `storage.local`
+- `runtime.browser`
+- `record.read`
+- `record.create`
+- `record.update`
+- `record.delete`
+- `ai.summarizeRecord`
+
+Capabilities are derived from the resource and actions, then written to `system.json`.
+
+## AI Philosophy
+
+Paideia is AI-native, not AI-chaotic.
+
+AI behavior must be:
+
+- explicitly declared
+- visible in the generated UI only when declared
+- represented in the manifest
+- auditable through logs and runtime events in development
+- blocked by permissions when required
+
+AI must not silently mutate state.
+
+## Development Runtime
+
+Start the live development runtime:
+
+```bash
+npm run dev
+```
+
+Default port:
+
+```txt
+4317
+```
+
+Custom port:
+
+```bash
+PAIDEIA_PORT=4000 npm run dev
+```
+
+The dev runtime provides:
+
+- file watching
+- rebuilds
+- local HTTP serving
+- browser-to-CLI event bridge
+- interactive CLI commands
+- runtime inspector API
+- accessibility report
+
+Interactive commands:
+
+```txt
+help
+open
+runtime
+manifest
+schema
+events
+a11y
+clear
+exit
+```
+
+## Walkthrough
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+Or choose a custom port:
+
+```bash
+PAIDEIA_PORT=4000 npm run dev
+```
+
+Then:
+
+1. Open `http://localhost:4317` or the custom port you chose.
+2. Create a Lead and watch the CLI receive `Browser record.created`.
+3. Try the restricted AI summary action as the public user and watch `permission.denied`.
+4. Open the generated inspect panel in the page.
+5. Visit `http://localhost:4317/__paideia/runtime` to inspect the runtime API.
+6. Run `manifest` in the CLI to print `dist/system.json`.
+7. Run `schema` in the CLI to print `dist/schema.sql`.
+8. Run `a11y` in the CLI to check accessibility.
+9. Run `npm run build`.
+10. Verify production output strips dev tooling:
+
+```bash
+grep -n "inspect-panel\\|framework-log\\|__paideia\\|runtime inspector" dist/index.html
+```
+
+Production should return no matches.
+
+## Runtime Inspector API
+
+The dev server exposes generated system state over HTTP:
+
+```txt
+GET /__paideia/runtime
+GET /__paideia/manifest
+GET /__paideia/schema
+GET /__paideia/events
+GET /__paideia/accessibility
+```
+
+These endpoints are development tooling. They are not part of production output.
+
+## Accessibility
+
+The CLI accessibility report checks generated HTML for:
+
+- labels
+- required field indicators
+- `aria-invalid` support
+- field-level errors
+- validation summary
+- table headers
+- readable buttons
+- identifiable generated sections
+
+Run it in development:
+
+```txt
+a11y
+```
+
+## Environment-Aware Generation
+
+Development builds include:
+
+- inspect panel
+- framework log
+- runtime diagnostics
+- browser-to-CLI event bridge
+- runtime inspector API through the dev server
+
+Production builds strip:
+
+- inspect panel
+- framework log
+- browser-to-CLI bridge code
+- dev-server inspector endpoints
+- runtime diagnostics UI
+
+This is a core Paideia principle: generated systems should adapt to their environment without changing the resource declaration.
+
+## Dependency Policy
+
+Current dependency shape:
+
+```txt
+runtime dependencies: 0
+dev dependencies:
+- typescript
+- @types/node
+```
+
+This is intentional. Paideia favors simple infrastructure, small trusted surfaces, and inspectable generated output.
+
+## Core Principles
+
+- Simple infrastructure
+- Visible runtime
+- AI-native but not AI-chaotic
+- Secure and privacy-first
+- Inspectable generated systems
+- Minimal dependencies
+- Standardized but customizable
+
+## Roadmap
+
+Future work should extend the same trust model instead of burying it:
+
+- v1.1: real storage adapters, from local to memory, SQLite, and Postgres
+- v1.2: real auth and session boundaries
+- v1.3: working dev API routes from the manifested API contract
+- v1.4: AI provider adapters with audit logs
+- v1.5: customizable component and layout composition
+- v2: deeper runtime, compiler, and language direction
+
+## License
+
+MIT

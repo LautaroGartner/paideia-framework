@@ -1,0 +1,213 @@
+{
+  "framework": {
+    "name": "Paideia Framework",
+    "version": "1.0.0-experimental",
+    "mode": "production"
+  },
+  "resource": {
+    "name": "Lead",
+    "slug": "lead",
+    "permissions": {
+      "create": "public",
+      "update": "public",
+      "delete": "admin",
+      "ai": "authenticated"
+    },
+    "fields": [
+      {
+        "name": "name",
+        "label": "Name",
+        "type": "string",
+        "required": true,
+        "minLength": 2,
+        "maxLength": null,
+        "options": null
+      },
+      {
+        "name": "email",
+        "label": "Email",
+        "type": "email",
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "options": null
+      },
+      {
+        "name": "status",
+        "label": "Status",
+        "type": "select",
+        "required": true,
+        "minLength": null,
+        "maxLength": null,
+        "options": [
+          "new",
+          "contacted",
+          "closed"
+        ]
+      },
+      {
+        "name": "notes",
+        "label": "Notes",
+        "type": "string",
+        "required": false,
+        "minLength": null,
+        "maxLength": null,
+        "options": null
+      }
+    ],
+    "actions": [
+      {
+        "name": "markContacted",
+        "label": "Mark contacted",
+        "type": "update",
+        "set": {
+          "status": "contacted"
+        },
+        "log": "Lead was marked as contacted."
+      },
+      {
+        "name": "summarize",
+        "label": "Summarize",
+        "type": "ai",
+        "capability": "summarizeRecord",
+        "log": "AI summary generated for one Lead record."
+      },
+      {
+        "name": "close",
+        "label": "Close",
+        "type": "update",
+        "set": {
+          "status": "closed"
+        },
+        "log": "Lead was closed."
+      }
+    ]
+  },
+  "runtime": {
+    "target": "browser",
+    "persistence": {
+      "adapter": "local",
+      "strategy": "localStorage",
+      "scope": "browser-local",
+      "namespacedByResource": true
+    },
+    "composition": {
+      "layout": "stack",
+      "generatedSections": [
+        "form",
+        "table"
+      ]
+    },
+    "generatedInterface": {
+      "form": true,
+      "table": true,
+      "validation": true
+    },
+    "events": [
+      "record.created",
+      "record.deleted",
+      "records.cleared",
+      "validation.failed",
+      "action.executed",
+      "ai.executed",
+      "permission.denied"
+    ],
+    "developerTools": {
+      "inspectPanel": false,
+      "frameworkLog": false
+    }
+  },
+  "capabilities": [
+    {
+      "name": "storage.local",
+      "source": "runtime",
+      "adapter": "local"
+    },
+    {
+      "name": "runtime.browser",
+      "source": "runtime"
+    },
+    {
+      "name": "record.read",
+      "source": "runtime"
+    },
+    {
+      "name": "record.create",
+      "source": "runtime"
+    },
+    {
+      "name": "record.delete",
+      "source": "runtime"
+    },
+    {
+      "name": "record.update",
+      "source": "action",
+      "actions": [
+        "markContacted",
+        "close"
+      ]
+    },
+    {
+      "name": "ai.summarizeRecord",
+      "source": "ai",
+      "actions": [
+        "summarize"
+      ]
+    }
+  ],
+  "api": {
+    "enabled": false,
+    "resource": "lead",
+    "routes": [
+      {
+        "method": "GET",
+        "path": "/api/leads",
+        "capability": "record.read"
+      },
+      {
+        "method": "POST",
+        "path": "/api/leads",
+        "capability": "record.create"
+      },
+      {
+        "method": "PATCH",
+        "path": "/api/leads/:id",
+        "capability": "record.update"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/leads/:id",
+        "capability": "record.delete"
+      }
+    ]
+  },
+  "ai": {
+    "enabled": true,
+    "capabilities": [
+      "summarizeRecord"
+    ],
+    "declaredActions": [
+      {
+        "name": "summarize",
+        "label": "Summarize",
+        "capability": "summarizeRecord"
+      }
+    ],
+    "guarantees": {
+      "requiresExplicitDeclaration": true,
+      "doesNotRunByDefault": true,
+      "generatedUiOnlyWhenDeclared": true,
+      "silentMutation": false
+    }
+  },
+  "trust": {
+    "generatedArtifactsInspectable": true,
+    "aiBehaviorManifested": true,
+    "devToolingEnvironmentAware": true,
+    "persistenceIsVisible": true,
+    "permissionsManifested": true,
+    "permissionsEnforced": true,
+    "runtimeTargetManifested": true,
+    "apiContractManifested": true
+  }
+}
