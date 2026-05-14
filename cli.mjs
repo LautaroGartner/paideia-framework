@@ -15,10 +15,14 @@ function printHelp() {
   console.log("Paideia CLI");
   console.log("");
   console.log("Usage:");
+  console.log("  paideia dev");
+  console.log("  paideia build");
   console.log("  paideia start");
   console.log("  paideia doctor");
   console.log("");
   console.log("Commands:");
+  console.log("  dev      Start the live development runtime");
+  console.log("  build    Build production artifacts");
   console.log("  start    Start the production runtime");
   console.log("  doctor   Run runtime diagnostics");
   console.log("");
@@ -28,6 +32,8 @@ function printHelp() {
 }
 
 const commands = {
+  dev: ["node", [path.join(CLI_DIR, "scripts", "dev.mjs")]],
+  build: ["node", [path.join(CLI_DIR, "scripts", "build.mjs")]],
   start: ["node", [path.join(CLI_DIR, "scripts", "start.mjs")]],
   doctor: ["node", [path.join(CLI_DIR, "scripts", "doctor.mjs")]],
 };

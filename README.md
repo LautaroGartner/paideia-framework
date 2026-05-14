@@ -4,7 +4,7 @@ Inspectable AI-native application runtime framework.
 
 Describe the system. Generate the software. Keep it understandable.
 
-Status: `v1.1.1`
+Status: `v1.2.0-alpha.1`
 
 Paideia is an AI-native application runtime focused on inspectability, operational clarity, and secure defaults.
 
@@ -102,7 +102,7 @@ The split is intentional. Development uses a Paideia-specific port for the live 
 Both runtimes use the same override:
 
 ```bash
-PAIDEIA_PORT=4000 npm run dev
+PAIDEIA_PORT=4000 paideia dev
 PAIDEIA_PORT=4000 paideia start
 ```
 
@@ -111,7 +111,7 @@ PAIDEIA_PORT=4000 paideia start
 Build production artifacts:
 
 ```bash
-npm run build
+paideia build
 ```
 
 Start the production runtime with the CLI:
@@ -176,7 +176,7 @@ Example response:
 {
   "status": "ok",
   "framework": "paideia",
-  "version": "1.1.1",
+  "version": "1.2.0-alpha.1",
   "runtime": "production",
   "dist": "ready"
 }
@@ -243,6 +243,8 @@ Current structure:
 The minimal CLI wrapper currently supports:
 
 ```bash
+paideia dev
+paideia build
 paideia start
 paideia doctor
 paideia --version
@@ -259,14 +261,7 @@ The package also declares:
 }
 ```
 
-That prepares the command surface for:
-
-```bash
-paideia dev
-paideia build
-```
-
-Those lifecycle commands are planned for v1.2. Until then, development and build commands continue to run through npm scripts.
+The npm scripts delegate to the same CLI commands, so repository checkouts and installed usage follow one lifecycle path.
 
 ## Resource Model
 
@@ -389,7 +384,7 @@ AI must not silently mutate state.
 Start the live development runtime:
 
 ```bash
-npm run dev
+paideia dev
 ```
 
 Default port:
@@ -401,7 +396,7 @@ Default port:
 Custom port:
 
 ```bash
-PAIDEIA_PORT=4000 npm run dev
+PAIDEIA_PORT=4000 paideia dev
 ```
 
 The dev runtime provides:
@@ -433,13 +428,13 @@ exit
 Run the development server:
 
 ```bash
-npm run dev
+paideia dev
 ```
 
 Or choose a custom port:
 
 ```bash
-PAIDEIA_PORT=4000 npm run dev
+PAIDEIA_PORT=4000 paideia dev
 ```
 
 Then:
@@ -452,7 +447,7 @@ Then:
 6. Run `manifest` in the CLI to print `dist/system.json`.
 7. Run `schema` in the CLI to print `dist/schema.sql`.
 8. Run `a11y` in the CLI to check accessibility.
-9. Run `npm run build`.
+9. Run `paideia build`.
 10. Verify production output strips dev tooling:
 
 ```bash
@@ -555,7 +550,8 @@ Future work should extend the same trust model instead of burying it:
 
 - v1.1: production runtime, diagnostics, structured logs, health, and CLI surface
 - v1.1.1: runtime and CLI hardening patch
-- v1.2: toolchain unification with `paideia dev`, `paideia build`, and package distribution polish
+- v1.2.0-alpha.1: full CLI lifecycle with `paideia dev`, `paideia build`, `paideia doctor`, and `paideia start`
+- v1.2: dev runtime extraction, runtime mode hardening, CLI runtime commands, and package distribution polish
 - v1.3: real storage adapters, from local to memory, SQLite, and Postgres
 - v1.4: real auth and session boundaries
 - v1.5: working API routes from the manifested API contract
