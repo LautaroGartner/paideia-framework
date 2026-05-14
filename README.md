@@ -4,11 +4,11 @@ Inspectable AI-native application runtime framework.
 
 Describe the system. Generate the software. Keep it understandable.
 
-Status: `v1.0.0-experimental`
+Status: `v1.1.0`
 
-Paideia is an experimental AI-native application runtime framework that generates inspectable software foundations from simple TypeScript declarations.
+Paideia is an AI-native application runtime focused on inspectability, operational clarity, and secure defaults.
 
-It is not another frontend framework. Paideia starts from a resource declaration and generates a small application foundation around it: UI, validation, local persistence, permissions, actions, AI capabilities, SQL schema, runtime events, and a system manifest that explains what was generated.
+It is not another frontend framework. Paideia starts from a resource declaration and generates a small application foundation around it: UI, validation, local persistence, permissions, actions, AI capabilities, SQL schema, runtime events, and a system manifest that explains what was generated. It then runs those artifacts through a small production runtime with health checks, diagnostics, logs, lifecycle behavior, and secure defaults.
 
 > Describe the system. Generate the software. Keep it understandable.
 
@@ -32,14 +32,13 @@ It is not another frontend framework. Paideia starts from a resource declaration
 
 Paideia is:
 
-- a working proof of an inspectable AI-native application runtime framework
+- a small operational runtime for generated applications
 - a demo of generated software with a trust model
 - a small framework architecture for resource-driven systems
 - an experiment in making generated systems understandable to humans and AI tools
 
 Paideia is not yet:
 
-- a finished production framework
 - a real authentication system
 - a production database layer
 - a production backend route framework
@@ -51,7 +50,7 @@ The current demo proves the direction: describe a system once and get a generate
 
 ## Current Limitations
 
-Paideia is experimental and not production-ready.
+Paideia is still early and intentionally small. The v1.1 production runtime is usable for previewing generated artifacts, but many application-platform features are not implemented yet.
 
 Current runtime limitations include:
 
@@ -86,6 +85,158 @@ From a resource declaration, Paideia generates:
 - `dist/system.json`: a manifest describing the generated system contract
 
 The generated runtime currently targets the browser and uses `localStorage` for persistence. Runtime dependencies are intentionally zero.
+
+## Production Runtime
+
+Build production artifacts:
+
+```bash
+npm run build
+```
+
+Start the production runtime:
+
+```bash
+node cli.mjs start
+```
+
+Or through npm:
+
+```bash
+npm run start
+```
+
+Default production port:
+
+```txt
+3000
+```
+
+Custom port:
+
+```bash
+PAIDEIA_PORT=4000 node cli.mjs start
+```
+
+The production runtime serves generated files from `dist/` and deliberately excludes development tooling such as the inspector API and browser-to-CLI bridge.
+
+It provides:
+
+- deterministic artifact serving from `dist/`
+- lifecycle logs for boot, ready, shutdown, and fatal errors
+- graceful shutdown on `SIGINT` and `SIGTERM`
+- `GET` and `HEAD` only
+- path containment for generated artifacts
+- explicit MIME types
+- generic 404 responses
+- security headers:
+  - `X-Content-Type-Options: nosniff`
+  - `X-Frame-Options: DENY`
+  - `Referrer-Policy: no-referrer`
+
+### Health Endpoint
+
+The production runtime exposes one intentional operational endpoint:
+
+```txt
+GET /__paideia/health
+```
+
+Example response:
+
+```json
+{
+  "status": "ok",
+  "framework": "paideia",
+  "version": "1.1.0",
+  "runtime": "production",
+  "dist": "ready"
+}
+```
+
+This endpoint exposes only safe operational metadata. It does not expose filesystem paths, environment variables, stack traces, schema contents, generated app internals, or runtime adapters.
+
+Other internal runtime routes, such as `/__paideia/runtime`, remain hidden in production.
+
+## Diagnostics
+
+Run runtime diagnostics:
+
+```bash
+node cli.mjs doctor
+```
+
+Or:
+
+```bash
+npm run doctor
+```
+
+`doctor` validates:
+
+- `dist/` exists
+- `dist/index.html` exists
+- `dist/system.json` exists and is valid JSON
+- `dist/schema.sql` exists, is non-empty, and includes `CREATE TABLE`
+- `.paideia/logs/runtime.log` is readable when present
+- `.paideia/logs/crash.log` is readable when present
+
+This is the first public shape of:
+
+```bash
+paideia doctor
+```
+
+## Runtime State
+
+Paideia writes local runtime state under:
+
+```txt
+.paideia/
+```
+
+Current structure:
+
+```txt
+.paideia/
+  logs/
+    runtime.log
+    crash.log
+```
+
+`runtime.log` is append-only operational history. It records lifecycle events, rejected methods, 404 requests, startup validation failures, and mirrored crash entries.
+
+`crash.log` is append-only fatal incident history. It records uncaught exceptions and unhandled rejections.
+
+`.paideia/` is local runtime state and should not be committed.
+
+## CLI
+
+The minimal CLI wrapper currently supports:
+
+```bash
+node cli.mjs start
+node cli.mjs doctor
+node cli.mjs --version
+node cli.mjs --help
+```
+
+The package also declares:
+
+```json
+{
+  "bin": {
+    "paideia": "./cli.mjs"
+  }
+}
+```
+
+That prepares the command surface for:
+
+```bash
+paideia start
+paideia doctor
+```
 
 ## Resource Model
 
@@ -346,6 +497,18 @@ dev dependencies:
 
 This is intentional. Paideia favors simple infrastructure, small trusted surfaces, and inspectable generated output.
 
+## Runtime Philosophy
+
+Paideia's runtime should stay:
+
+- small
+- inspectable
+- operationally explicit
+- secure by default
+- boring in production
+
+The runtime favors native Node modules, explicit files, structured logs, and stable contracts over middleware stacks or hidden magic.
+
 ## Core Principles
 
 - Simple infrastructure
@@ -360,11 +523,12 @@ This is intentional. Paideia favors simple infrastructure, small trusted surface
 
 Future work should extend the same trust model instead of burying it:
 
-- v1.1: real storage adapters, from local to memory, SQLite, and Postgres
-- v1.2: real auth and session boundaries
-- v1.3: working dev API routes from the manifested API contract
-- v1.4: AI provider adapters with audit logs
-- v1.5: customizable component and layout composition
+- v1.1: production runtime, diagnostics, structured logs, health, and CLI surface
+- v1.2: runtime contract hardening and package distribution
+- v1.3: real storage adapters, from local to memory, SQLite, and Postgres
+- v1.4: real auth and session boundaries
+- v1.5: working API routes from the manifested API contract
+- v1.6: AI provider adapters with audit logs
 - v2: deeper runtime, compiler, and language direction
 
 ## License

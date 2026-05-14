@@ -1,5 +1,7 @@
 node_modules/
 build/
+dist/
+.paideia/
 
 .DS_Store
 *.log

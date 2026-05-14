@@ -1,10 +1,16 @@
 {
   "name": "paideia-framework",
-  "version": "1.0.0-experimental",
+  "version": "1.1.0",
   "type": "module",
+  "bin": {
+    "paideia": "./cli.mjs"
+  },
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "build": "tsc && NODE_ENV=production node build/index.js"
+    "build": "tsc && NODE_ENV=production node build/index.js",
+    "start": "node scripts/start.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "paideia": "node cli.mjs"
   },
   "devDependencies": {
     "@types/node": "^25.7.0",
