@@ -16,17 +16,19 @@ It is not another frontend framework. Paideia starts from a resource declaration
 
 ## Screenshots
 
-| Generated runtime | Interactive CLI |
+| Generated runtime | Development CLI |
 | --- | --- |
-| ![Generated runtime](screenshots/runtime.png) | ![Interactive CLI](screenshots/cli.png) |
+| ![Generated runtime](screenshots/runtime.png) | ![Development CLI](screenshots/cli.png) |
 
-| Inspect panel | Manifest contract |
+| Development inspect panel | Manifest contract |
 | --- | --- |
-| ![Inspect panel](screenshots/inspect-panel.png) | ![Manifest contract](screenshots/manifest.png) |
+| ![Development inspect panel](screenshots/inspect-panel.png) | ![Manifest contract](screenshots/manifest.png) |
 
 | Accessibility report |
 | --- |
 | ![Accessibility report](screenshots/a11y.png) |
+
+The CLI and inspect-panel screenshots show development tooling. In production, Paideia exposes only the generated app and the safe `/__paideia/health` endpoint.
 
 ## What This Is / Is Not
 
@@ -72,7 +74,7 @@ It shows how one resource declaration can produce a working generated runtime:
 3. Mark the lead as contacted with a declared update action.
 4. Try to summarize the lead as the public user.
 5. Watch the AI action get blocked by permissions.
-6. Inspect the browser log, CLI event stream, manifest, schema, and runtime API to understand why.
+6. Inspect the browser log, development CLI event stream, manifest, schema, and runtime API to understand why.
 
 The point is not that Paideia has a form. The point is that the generated system can explain itself.
 
