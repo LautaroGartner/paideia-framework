@@ -88,6 +88,24 @@ From a resource declaration, Paideia generates:
 
 The generated runtime currently targets the browser and uses `localStorage` for persistence. Runtime dependencies are intentionally zero.
 
+## Ports
+
+Paideia uses separate default ports for development and production:
+
+```txt
+development: 4317
+production: 3000
+```
+
+The split is intentional. Development uses a Paideia-specific port for the live dev runtime, inspector routes, browser-to-CLI event bridge, and interactive tooling. Production uses the conventional app server port and only exposes generated artifacts plus the safe health endpoint.
+
+Both runtimes use the same override:
+
+```bash
+PAIDEIA_PORT=4000 npm run dev
+PAIDEIA_PORT=4000 paideia start
+```
+
 ## Production Runtime
 
 Build production artifacts:
