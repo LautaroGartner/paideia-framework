@@ -33,10 +33,28 @@ function printHelp() {
 }
 
 const commands = {
-  dev: ["node", [resolveScript("scripts/dev.mjs")]],
-  build: ["node", [resolveScript("scripts/build.mjs")]],
-  start: ["node", [resolveScript("scripts/start.mjs")]],
-  doctor: ["node", [resolveScript("scripts/doctor.mjs")]],
+  dev: {
+    bin: "node",
+    args: [resolveScript("scripts/dev.mjs")],
+    env: {
+      PAIDEIA_MODE: "development",
+    },
+  },
+  build: {
+    bin: "node",
+    args: [resolveScript("scripts/build.mjs")],
+  },
+  start: {
+    bin: "node",
+    args: [resolveScript("scripts/start.mjs")],
+    env: {
+      PAIDEIA_MODE: "production",
+    },
+  },
+  doctor: {
+    bin: "node",
+    args: [resolveScript("scripts/doctor.mjs")],
+  },
 };
 
 if (!command || command === "--help" || command === "-h") {
@@ -56,11 +74,14 @@ if (!commands[command]) {
   process.exit(1);
 }
 
-const [bin, args] = commands[command];
+const selected = commands[command];
 
-const child = spawn(bin, args, {
+const child = spawn(selected.bin, selected.args, {
   stdio: "inherit",
-  env: process.env,
+  env: {
+    ...process.env,
+    ...(selected.env ?? {}),
+  },
 });
 
 child.on("exit", (code) => {
