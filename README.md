@@ -96,7 +96,13 @@ Build production artifacts:
 npm run build
 ```
 
-Start the production runtime:
+Start the production runtime with the CLI:
+
+```bash
+paideia start
+```
+
+Or from a repository checkout:
 
 ```bash
 node cli.mjs start
@@ -117,7 +123,7 @@ Default production port:
 Custom port:
 
 ```bash
-PAIDEIA_PORT=4000 node cli.mjs start
+PAIDEIA_PORT=4000 paideia start
 ```
 
 The production runtime serves generated files from `dist/` and deliberately excludes development tooling such as the inspector API and browser-to-CLI bridge.
@@ -128,9 +134,11 @@ It provides:
 - lifecycle logs for boot, ready, shutdown, and fatal errors
 - graceful shutdown on `SIGINT` and `SIGTERM`
 - `GET` and `HEAD` only
-- path containment for generated artifacts
+- hardened path containment for generated artifacts
+- malformed URL handling
 - explicit MIME types
 - generic 404 responses
+- method restrictions before health handling
 - security headers:
   - `X-Content-Type-Options: nosniff`
   - `X-Frame-Options: DENY`
@@ -165,6 +173,12 @@ Other internal runtime routes, such as `/__paideia/runtime`, remain hidden in pr
 Run runtime diagnostics:
 
 ```bash
+paideia doctor
+```
+
+Or from a repository checkout:
+
+```bash
 node cli.mjs doctor
 ```
 
@@ -182,12 +196,6 @@ npm run doctor
 - `dist/schema.sql` exists, is non-empty, and includes `CREATE TABLE`
 - `.paideia/logs/runtime.log` is readable when present
 - `.paideia/logs/crash.log` is readable when present
-
-This is the first public shape of:
-
-```bash
-paideia doctor
-```
 
 ## Runtime State
 
@@ -217,10 +225,10 @@ Current structure:
 The minimal CLI wrapper currently supports:
 
 ```bash
-node cli.mjs start
-node cli.mjs doctor
-node cli.mjs --version
-node cli.mjs --help
+paideia start
+paideia doctor
+paideia --version
+paideia --help
 ```
 
 The package also declares:
@@ -236,9 +244,11 @@ The package also declares:
 That prepares the command surface for:
 
 ```bash
-paideia start
-paideia doctor
+paideia dev
+paideia build
 ```
+
+Those lifecycle commands are planned for v1.2. Until then, development and build commands continue to run through npm scripts.
 
 ## Resource Model
 
@@ -526,7 +536,8 @@ The runtime favors native Node modules, explicit files, structured logs, and sta
 Future work should extend the same trust model instead of burying it:
 
 - v1.1: production runtime, diagnostics, structured logs, health, and CLI surface
-- v1.2: runtime contract hardening and package distribution
+- v1.1.1: runtime and CLI hardening patch
+- v1.2: toolchain unification with `paideia dev`, `paideia build`, and package distribution polish
 - v1.3: real storage adapters, from local to memory, SQLite, and Postgres
 - v1.4: real auth and session boundaries
 - v1.5: working API routes from the manifested API contract
