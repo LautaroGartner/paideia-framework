@@ -11,20 +11,21 @@ const config = createRuntimeConfig();
 const command = process.argv[2];
 const CLI_DIR = path.dirname(fileURLToPath(import.meta.url));
 
+function resolveScript(scriptPath) {
+  return path.join(CLI_DIR, scriptPath);
+}
+
 function printHelp() {
   console.log("Paideia CLI");
   console.log("");
   console.log("Usage:");
-  console.log("  paideia dev");
-  console.log("  paideia build");
-  console.log("  paideia start");
-  console.log("  paideia doctor");
+  console.log("  paideia <command>");
   console.log("");
   console.log("Commands:");
-  console.log("  dev      Start the live development runtime");
-  console.log("  build    Build production artifacts");
-  console.log("  start    Start the production runtime");
-  console.log("  doctor   Run runtime diagnostics");
+  console.log("  paideia dev      Start the development runtime");
+  console.log("  paideia build    Build production artifacts");
+  console.log("  paideia start    Start the production runtime");
+  console.log("  paideia doctor   Run runtime diagnostics");
   console.log("");
   console.log("Options:");
   console.log("  --help      Show help");
@@ -32,10 +33,10 @@ function printHelp() {
 }
 
 const commands = {
-  dev: ["node", [path.join(CLI_DIR, "scripts", "dev.mjs")]],
-  build: ["node", [path.join(CLI_DIR, "scripts", "build.mjs")]],
-  start: ["node", [path.join(CLI_DIR, "scripts", "start.mjs")]],
-  doctor: ["node", [path.join(CLI_DIR, "scripts", "doctor.mjs")]],
+  dev: ["node", [resolveScript("scripts/dev.mjs")]],
+  build: ["node", [resolveScript("scripts/build.mjs")]],
+  start: ["node", [resolveScript("scripts/start.mjs")]],
+  doctor: ["node", [resolveScript("scripts/doctor.mjs")]],
 };
 
 if (!command || command === "--help" || command === "-h") {
