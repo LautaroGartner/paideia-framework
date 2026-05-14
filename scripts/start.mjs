@@ -11,6 +11,7 @@ import { createRuntimeServer } from "../runtime/server.mjs";
 import { validateRuntimeStartup } from "../runtime/validate.mjs";
 
 const config = createRuntimeConfig();
+let shuttingDown = false;
 
 function assertRuntimeReady(config) {
   const result = validateRuntimeStartup(config);
@@ -44,6 +45,12 @@ server.listen(config.port, () => {
 });
 
 function shutdown(signal) {
+  if (shuttingDown) {
+    return;
+  }
+
+  shuttingDown = true;
+
   info(`${signal} received`, {
     signal,
   });

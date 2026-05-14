@@ -22,43 +22,44 @@ const leadResource = resource(
   },
 
   {
-  storage: "local",
+    storage: "local",
 
-  permissions: {
-    create: "public",
-    update: "public",
-    delete: "admin",
-    ai: "authenticated",
-  },
-
-  actions: [
-    {
-      name: "markContacted",
-      label: "Mark contacted",
-      type: "update",
-      set: {
-        status: "contacted",
-      },
-      log: "Lead was marked as contacted.",
+    permissions: {
+      create: "public",
+      update: "public",
+      delete: "admin",
+      ai: "authenticated",
     },
 
-    ai.summarizeRecord({
-      name: "summarize",
-      label: "Summarize",
-      log: "AI summary generated for one Lead record.",
-    }),
-
-    {
-      name: "close",
-      label: "Close",
-      type: "update",
-      set: {
-        status: "closed",
+    actions: [
+      {
+        name: "markContacted",
+        label: "Mark contacted",
+        type: "update",
+        set: {
+          status: "contacted",
+        },
+        log: "Lead was marked as contacted.",
       },
-      log: "Lead was closed.",
-    },
-  ],
-});
+
+      ai.summarizeRecord({
+        name: "summarize",
+        label: "Summarize",
+        log: "AI summary generated for one Lead record.",
+      }),
+
+      {
+        name: "close",
+        label: "Close",
+        type: "update",
+        set: {
+          status: "closed",
+        },
+        log: "Lead was closed.",
+      },
+    ],
+  }
+);
 
 mkdirSync("dist", { recursive: true });
 

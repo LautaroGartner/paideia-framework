@@ -13,11 +13,6 @@ export function createRuntimeServer({ config, logger }) {
   return http.createServer((req, res) => {
     sendSecurityHeaders(res);
 
-    if (isHealthRequest(req.url)) {
-      sendHealthResponse(res, config);
-      return;
-    }
-
     if (!isMethodAllowed(req.method)) {
       logger.warn("method rejected", {
         method: req.method,
@@ -26,6 +21,13 @@ export function createRuntimeServer({ config, logger }) {
 
       res.writeHead(405, { "Content-Type": "text/plain; charset=utf-8" });
       res.end("Method Not Allowed");
+      return;
+    }
+
+    if (isHealthRequest(req.url)) {
+      sendHealthResponse(res, config, {
+        head: req.method === "HEAD",
+      });
       return;
     }
 

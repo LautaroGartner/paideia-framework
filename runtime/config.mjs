@@ -1,11 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
 
 const ROOT = process.cwd();
+const PACKAGE_ROOT = path.dirname(
+  path.dirname(fileURLToPath(import.meta.url))
+);
 
 function readPackageVersion() {
-  const packagePath = path.join(ROOT, "package.json");
+  const packagePath = path.join(PACKAGE_ROOT, "package.json");
   const raw = fs.readFileSync(packagePath, "utf8");
   const pkg = JSON.parse(raw);
 

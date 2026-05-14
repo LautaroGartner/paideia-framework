@@ -11,8 +11,14 @@ export function isMethodAllowed(method) {
 }
 
 export function resolveRequestPath(reqUrl, { port, distDir }) {
-  const url = new URL(reqUrl ?? "/", `http://localhost:${port}`);
-  const pathname = decodeURIComponent(url.pathname);
+  let pathname = "/";
+
+  try {
+    const url = new URL(reqUrl ?? "/", `http://localhost:${port}`);
+    pathname = decodeURIComponent(url.pathname);
+  } catch {
+    return null;
+  }
 
   const requestedPath = pathname === "/" ? "/index.html" : pathname;
   const safePath = path.normalize(requestedPath).replace(/^(\.\.[/\\])+/, "");
@@ -20,8 +26,13 @@ export function resolveRequestPath(reqUrl, { port, distDir }) {
 
   const resolved = path.resolve(filePath);
   const resolvedDist = path.resolve(distDir);
+  const relativePath = path.relative(resolvedDist, resolved);
 
-  if (!resolved.startsWith(resolvedDist)) {
+  if (
+    relativePath === ".." ||
+    relativePath.startsWith(`..${path.sep}`) ||
+    path.isAbsolute(relativePath)
+  ) {
     return null;
   }
 

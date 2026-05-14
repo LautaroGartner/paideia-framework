@@ -3,10 +3,15 @@ export function isHealthRequest(reqUrl) {
   return url.pathname === "/__paideia/health";
 }
 
-export function sendHealthResponse(res, config) {
+export function sendHealthResponse(res, config, { head = false } = {}) {
   res.writeHead(200, {
     "Content-Type": "application/json; charset=utf-8",
   });
+
+  if (head) {
+    res.end();
+    return;
+  }
 
   res.end(
     JSON.stringify(
