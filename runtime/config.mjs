@@ -16,15 +16,28 @@ function readPackageVersion() {
   return pkg.version ?? "0.0.0";
 }
 
+function readRuntimeMode() {
+  const mode = process.env.PAIDEIA_MODE ?? "production";
+
+  if (mode !== "development" && mode !== "production") {
+    return "production";
+  }
+
+  return mode;
+}
+
 export function createRuntimeConfig() {
+  const mode = readRuntimeMode();
   const port = Number(process.env.PAIDEIA_PORT ?? 3000);
   const distDir = path.join(ROOT, "dist");
 
   return {
     framework: "paideia",
     version: readPackageVersion(),
-    runtime: "production",
+    mode,
+    runtime: mode,
     rootDir: ROOT,
+    packageRoot: PACKAGE_ROOT,
     distDir,
     port,
     url: `http://localhost:${port}`,

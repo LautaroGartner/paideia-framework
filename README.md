@@ -4,7 +4,7 @@ Inspectable AI-native application runtime framework.
 
 Describe the system. Generate the software. Keep it understandable.
 
-Status: `v1.2.0-alpha.1`
+Status: `v1.2.0-alpha.2`
 
 Paideia is an AI-native application runtime focused on inspectability, operational clarity, and secure defaults.
 
@@ -106,6 +106,17 @@ PAIDEIA_PORT=4000 paideia dev
 PAIDEIA_PORT=4000 paideia start
 ```
 
+## Runtime Modes
+
+Paideia recognizes an explicit runtime mode contract:
+
+```txt
+development
+production
+```
+
+The production runtime defaults to `production`. Invalid `PAIDEIA_MODE` values fall back to `production` so malformed environment configuration does not expose development behavior by accident.
+
 ## Production Runtime
 
 Build production artifacts:
@@ -176,7 +187,7 @@ Example response:
 {
   "status": "ok",
   "framework": "paideia",
-  "version": "1.2.0-alpha.1",
+  "version": "1.2.0-alpha.2",
   "runtime": "production",
   "dist": "ready"
 }
@@ -551,7 +562,8 @@ Future work should extend the same trust model instead of burying it:
 - v1.1: production runtime, diagnostics, structured logs, health, and CLI surface
 - v1.1.1: runtime and CLI hardening patch
 - v1.2.0-alpha.1: full CLI lifecycle with `paideia dev`, `paideia build`, `paideia doctor`, and `paideia start`
-- v1.2: dev runtime extraction, runtime mode hardening, CLI runtime commands, and package distribution polish
+- v1.2.0-alpha.2: explicit runtime mode contract with safe fallback to production
+- v1.2: dev runtime extraction, CLI runtime commands, and package distribution polish
 - v1.3: real storage adapters, from local to memory, SQLite, and Postgres
 - v1.4: real auth and session boundaries
 - v1.5: working API routes from the manifested API contract
