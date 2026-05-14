@@ -4,7 +4,7 @@ Inspectable AI-native application runtime framework.
 
 Describe the system. Generate the software. Keep it understandable.
 
-Status: `v1.1.0`
+Status: `v1.1.1`
 
 Paideia is an AI-native application runtime focused on inspectability, operational clarity, and secure defaults.
 
@@ -150,7 +150,7 @@ Example response:
 {
   "status": "ok",
   "framework": "paideia",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "runtime": "production",
   "dist": "ready"
 }
