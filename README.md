@@ -6,7 +6,7 @@ Describe the system. Generate the software. Keep it understandable.
 
 Paideia is an inspectable AI-native runtime for generated systems.
 
-Status: `v1.2.0`
+Status: `v1.3.0-alpha.1`
 
 Paideia is an AI-native application runtime focused on inspectability, operational clarity, and secure defaults.
 
@@ -189,7 +189,7 @@ Example response:
 {
   "status": "ok",
   "framework": "paideia",
-  "version": "1.2.0",
+  "version": "1.3.0-alpha.1",
   "runtime": "production",
   "dist": "ready"
 }
@@ -576,7 +576,8 @@ Future work should extend the same trust model instead of burying it:
 - v1.2.0-beta.1: coherent CLI toolchain with build, inspection, explanation, diagnostics, and runtime commands
 - v1.2.0-rc.1: release-candidate hardening for the frozen CLI lifecycle
 - v1.2.0: Paideia becomes a coherent CLI toolchain
-- v1.3: real storage adapters, from local to memory, SQLite, and Postgres
+- v1.3.0-alpha.1: action contracts are explicit in the generated manifest
+- v1.3: runtime contracts, actions, and capability clarity
 - v1.4: real auth and session boundaries
 - v1.5: working API routes from the manifested API contract
 - v1.6: AI provider adapters with audit logs

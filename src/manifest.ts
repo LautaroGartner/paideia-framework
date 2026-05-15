@@ -73,7 +73,14 @@ export function generateSystemManifest(
             name: action.name,
             label: action.label,
             type: action.type,
-            capability: action.capability,
+            permission: resource.permissions.ai,
+            effect: {
+              kind: `ai.${action.capability}`,
+            },
+            events: {
+              success: "ai.executed",
+              denied: "permission.denied",
+            },
             log: action.log ?? null,
           };
         }
@@ -82,7 +89,15 @@ export function generateSystemManifest(
           name: action.name,
           label: action.label,
           type: action.type,
-          set: action.set,
+          permission: resource.permissions.update,
+          effect: {
+            kind: "record.update",
+            set: action.set,
+          },
+          events: {
+            success: "action.executed",
+            denied: "permission.denied",
+          },
           log: action.log ?? null,
         };
       }),

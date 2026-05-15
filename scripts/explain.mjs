@@ -81,8 +81,13 @@ if (actions.length === 0) {
   console.log("- No actions declared.");
 } else {
   for (const action of actions) {
+    console.log(`- ${action.label ?? action.name ?? "unknown"}`);
+    console.log(`  - Type: ${action.type ?? "unknown"}`);
     console.log(
-      `- ${action.name ?? "unknown"} (${action.type ?? "unknown"})`
+      `  - Permission: ${action.permission ?? "unknown"}`
+    );
+    console.log(
+      `  - Effect: ${action.effect?.kind ?? "unknown"}`
     );
   }
 }
