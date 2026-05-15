@@ -301,7 +301,11 @@ export function generateClientScript(
           addLog(
             "success",
             "Action ran",
-            payload.log || payload.label + " ran on one " + resourceName + " record."
+            payload.log ||
+              payload.action.label +
+                " ran on one " +
+                resourceName +
+                " record."
           );
         });
 
@@ -313,9 +317,9 @@ export function generateClientScript(
           addLog(
             "error",
             "Permission denied",
-            payload.operation +
+            (payload.action?.label || payload.operation) +
               " requires " +
-              payload.requiredPermission +
+              (payload.required || payload.requiredPermission) +
               " permission."
           );
         });
@@ -350,15 +354,57 @@ export function generateClientScript(
         }
 
         function getPermissionForAction(action) {
+          return (
+            action.permission ||
+            (
+              action.type === "ai"
+                ? permissions.ai
+                : action.type === "update"
+                  ? permissions.update
+                  : "admin"
+            )
+          );
+        }
+
+        function getActionEffect(action) {
+          if (action.effect && action.effect.kind) {
+            return action.effect;
+          }
+
           if (action.type === "ai") {
-            return permissions.ai;
+            return {
+              kind: "ai." + action.capability,
+            };
           }
 
           if (action.type === "update") {
-            return permissions.update;
+            return {
+              kind: "record.update",
+              set: action.set,
+            };
           }
 
-          return "admin";
+          return {
+            kind: action.type || "unknown",
+          };
+        }
+
+        function createActionEvent(type, action, extra) {
+          return {
+            type,
+            action: {
+              name: action.name,
+              label: action.label,
+              type: action.type,
+            },
+            resource: {
+              name: resourceName,
+              slug: resourceSlug,
+            },
+            permission: getPermissionForAction(action),
+            time: new Date().toISOString(),
+            ...(extra || {}),
+          };
         }
 
         const recordsStorageKey = "paideia:" + resourceSlug + ":records";
@@ -671,10 +717,11 @@ export function generateClientScript(
 
           const summary = generateAiSummary(record);
 
-          emitRuntimeEvent("ai.executed", {
-            action,
+          emitRuntimeEvent("ai.executed", createActionEvent("ai.executed", action, {
+            effect: getActionEffect(action),
+            log: action.log,
             summary,
-          });
+          }));
 
           return {
             ...record,
@@ -853,11 +900,13 @@ export function generateClientScript(
               const requiredPermission = getPermissionForAction(action);
 
               if (!canAccess(requiredPermission)) {
-                emitRuntimeEvent("permission.denied", {
-                  operation: action.name,
-                  requiredPermission,
-                  currentPermission: currentPermissionLevel,
-                });
+                emitRuntimeEvent(
+                  "permission.denied",
+                  createActionEvent("permission.denied", action, {
+                    required: requiredPermission,
+                    received: currentPermissionLevel,
+                  })
+                );
 
                 return;
               }
@@ -890,12 +939,13 @@ export function generateClientScript(
                 saveRecords(nextRecords);
                 renderRecords();
 
-                emitRuntimeEvent("action.executed", {
-                  action,
-                  name: action.name,
-                  label: action.label,
-                  log: action.log,
-                });
+                emitRuntimeEvent(
+                  "action.executed",
+                  createActionEvent("action.executed", action, {
+                    effect: getActionEffect(action),
+                    log: action.log,
+                  })
+                );
                 ${refreshRuntimeStats}
 
                 return;

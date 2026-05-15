@@ -89,6 +89,13 @@ if (actions.length === 0) {
     console.log(
       `  - Effect: ${action.effect?.kind ?? "unknown"}`
     );
+    console.log("  - Events:");
+    console.log(
+      `    - Success: ${action.events?.success ?? "unknown"}`
+    );
+    console.log(
+      `    - Denied: ${action.events?.denied ?? "unknown"}`
+    );
   }
 }
 
