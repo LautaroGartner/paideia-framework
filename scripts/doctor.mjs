@@ -4,6 +4,7 @@ import process from "node:process";
 
 import { createRuntimeConfig } from "../runtime/config.mjs";
 import {
+  validateActionContracts,
   validateRuntimeStartup,
   validateSchemaSql,
   validateSystemJson,
@@ -76,6 +77,17 @@ if (systemJson.ok) {
 } else {
   fail(
     `${systemJson.label} (${systemJson.reason})`,
+    "run `paideia build` to regenerate dist/system.json"
+  );
+}
+
+const actionContracts = validateActionContracts(config);
+
+if (actionContracts.ok) {
+  pass(actionContracts.label);
+} else {
+  fail(
+    `${actionContracts.label} (${actionContracts.reason})`,
     "run `paideia build` to regenerate dist/system.json"
   );
 }

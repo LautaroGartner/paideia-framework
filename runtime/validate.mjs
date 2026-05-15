@@ -66,6 +66,119 @@ export function validateSystemJson(config) {
   }
 }
 
+export function validateActionContracts(config) {
+  const filePath = path.join(config.distDir, "system.json");
+
+  if (!fs.existsSync(filePath)) {
+    return {
+      ok: false,
+      label: "action contracts valid",
+      reason: "dist/system.json missing",
+    };
+  }
+
+  let manifest;
+
+  try {
+    manifest = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch (error) {
+    return {
+      ok: false,
+      label: "action contracts valid",
+      reason: error.message,
+    };
+  }
+
+  const actions = manifest?.resource?.actions ?? [];
+
+  if (!Array.isArray(actions)) {
+    return {
+      ok: false,
+      label: "action contracts valid",
+      reason: "resource.actions must be an array",
+    };
+  }
+
+  for (const action of actions) {
+    const name = action?.name ?? "unknown";
+    const required = ["name", "label", "type", "permission"];
+
+    for (const key of required) {
+      if (!action?.[key]) {
+        return {
+          ok: false,
+          label: "action contracts valid",
+          reason: `${name} missing ${key}`,
+        };
+      }
+    }
+
+    if (!action.effect || typeof action.effect !== "object") {
+      return {
+        ok: false,
+        label: "action contracts valid",
+        reason: `${name} missing effect`,
+      };
+    }
+
+    if (!action.effect.kind) {
+      return {
+        ok: false,
+        label: "action contracts valid",
+        reason: `${name} missing effect.kind`,
+      };
+    }
+
+    if (!action.events || typeof action.events !== "object") {
+      return {
+        ok: false,
+        label: "action contracts valid",
+        reason: `${name} missing events`,
+      };
+    }
+
+    if (!action.events.success) {
+      return {
+        ok: false,
+        label: "action contracts valid",
+        reason: `${name} missing events.success`,
+      };
+    }
+
+    if (!action.events.denied) {
+      return {
+        ok: false,
+        label: "action contracts valid",
+        reason: `${name} missing events.denied`,
+      };
+    }
+
+    if (action.type === "update" && !action.effect.set) {
+      return {
+        ok: false,
+        label: "action contracts valid",
+        reason: `${name} update action missing effect.set`,
+      };
+    }
+
+    if (
+      action.type === "ai" &&
+      !String(action.effect.kind).startsWith("ai.")
+    ) {
+      return {
+        ok: false,
+        label: "action contracts valid",
+        reason: `${name} ai action must use ai.* effect`,
+      };
+    }
+  }
+
+  return {
+    ok: true,
+    label: "action contracts valid",
+  };
+}
+
 export function validateSchemaSql(config) {
   const filePath = path.join(config.distDir, "schema.sql");
 
