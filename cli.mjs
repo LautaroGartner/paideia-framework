@@ -26,6 +26,9 @@ function printHelp() {
   console.log("  paideia build    Build production artifacts");
   console.log("  paideia start    Start the production runtime");
   console.log("  paideia doctor   Run runtime diagnostics");
+  console.log("  paideia manifest Print generated system manifest");
+  console.log("  paideia schema   Print generated SQL schema");
+  console.log("  paideia explain  Explain generated system as Markdown");
   console.log("");
   console.log("Options:");
   console.log("  --help      Show help");
@@ -54,6 +57,18 @@ const commands = {
   doctor: {
     bin: "node",
     args: [resolveScript("scripts/doctor.mjs")],
+  },
+  manifest: {
+    bin: "node",
+    args: [resolveScript("scripts/manifest.mjs")],
+  },
+  schema: {
+    bin: "node",
+    args: [resolveScript("scripts/schema.mjs")],
+  },
+  explain: {
+    bin: "node",
+    args: [resolveScript("scripts/explain.mjs")],
   },
 };
 

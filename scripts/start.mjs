@@ -24,7 +24,7 @@ function assertRuntimeReady(config) {
     }
 
     console.error("[paideia] error: runtime startup validation failed");
-    console.error("[paideia] run `npm run build` and try again");
+    console.error("[paideia] run `paideia build` and try again");
     process.exit(1);
   }
 }

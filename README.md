@@ -4,7 +4,7 @@ Inspectable AI-native application runtime framework.
 
 Describe the system. Generate the software. Keep it understandable.
 
-Status: `v1.2.0-alpha.3`
+Status: `v1.2.0-rc.1`
 
 Paideia is an AI-native application runtime focused on inspectability, operational clarity, and secure defaults.
 
@@ -187,7 +187,7 @@ Example response:
 {
   "status": "ok",
   "framework": "paideia",
-  "version": "1.2.0-alpha.3",
+  "version": "1.2.0-rc.1",
   "runtime": "production",
   "dist": "ready"
 }
@@ -226,6 +226,8 @@ npm run doctor
 - `.paideia/logs/runtime.log` is readable when present
 - `.paideia/logs/crash.log` is readable when present
 
+When diagnostics fail, doctor prints the likely next action. It also ends with a compact summary of passed, failed, and skipped checks.
+
 ## Runtime State
 
 Paideia writes local runtime state under:
@@ -251,16 +253,21 @@ Current structure:
 
 ## CLI
 
-The minimal CLI wrapper currently supports:
+The CLI lifecycle is now frozen for v1.2:
 
 ```bash
 paideia dev
 paideia build
-paideia start
+paideia manifest
+paideia schema
+paideia explain
 paideia doctor
+paideia start
 paideia --version
 paideia --help
 ```
+
+`manifest` prints the machine-readable generated contract from `dist/system.json`. `schema` prints the generated SQL shape from `dist/schema.sql`. `explain` prints a Markdown summary of the generated system from the manifest.
 
 The package also declares:
 
@@ -564,7 +571,9 @@ Future work should extend the same trust model instead of burying it:
 - v1.2.0-alpha.1: full CLI lifecycle with `paideia dev`, `paideia build`, `paideia doctor`, and `paideia start`
 - v1.2.0-alpha.2: explicit runtime mode contract with safe fallback to production
 - v1.2.0-alpha.3: CLI-owned mode wiring for development and production commands
-- v1.2: dev runtime extraction, CLI runtime commands, and package distribution polish
+- v1.2.0-beta.1: coherent CLI toolchain with build, inspection, explanation, diagnostics, and runtime commands
+- v1.2.0-rc.1: release-candidate hardening for the frozen CLI lifecycle
+- v1.2: Paideia becomes a coherent CLI toolchain
 - v1.3: real storage adapters, from local to memory, SQLite, and Postgres
 - v1.4: real auth and session boundaries
 - v1.5: working API routes from the manifested API contract

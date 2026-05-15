@@ -13,19 +13,49 @@ const config = createRuntimeConfig();
 const result = validateRuntimeStartup(config);
 
 let failed = false;
+let passed = 0;
+let failedCount = 0;
+let skipped = 0;
+
+function printFix(message) {
+  console.log(`  → ${message}`);
+}
+
+function pass(label) {
+  console.log(`✓ ${label}`);
+  passed += 1;
+}
+
+function fail(label, fix) {
+  console.log(`✗ ${label}`);
+
+  if (fix) {
+    printFix(fix);
+  }
+
+  failed = true;
+  failedCount += 1;
+}
+
+function skip(label) {
+  console.log(`• ${label}`);
+  skipped += 1;
+}
 
 function checkReadableFile(label, filePath) {
   if (!fs.existsSync(filePath)) {
-    console.log(`• ${label} not created yet`);
+    skip(`${label} not created yet`);
     return;
   }
 
   try {
     fs.accessSync(filePath, fs.constants.R_OK);
-    console.log(`✓ ${label} readable`);
+    pass(`${label} readable`);
   } catch {
-    console.log(`✗ ${label} readable`);
-    failed = true;
+    fail(
+      `${label} readable`,
+      "check `.paideia/` file permissions"
+    );
   }
 }
 
@@ -33,29 +63,32 @@ console.log("[paideia] running doctor\n");
 
 for (const check of result.checks) {
   if (fs.existsSync(check.path)) {
-    console.log(`✓ ${check.label}`);
+    pass(check.label);
   } else {
-    console.log(`✗ ${check.label}`);
-    failed = true;
+    fail(check.label, "run `paideia build`");
   }
 }
 
 const systemJson = validateSystemJson(config);
 
 if (systemJson.ok) {
-  console.log(`✓ ${systemJson.label}`);
+  pass(systemJson.label);
 } else {
-  console.log(`✗ ${systemJson.label} (${systemJson.reason})`);
-  failed = true;
+  fail(
+    `${systemJson.label} (${systemJson.reason})`,
+    "run `paideia build` to regenerate dist/system.json"
+  );
 }
 
 const schemaSql = validateSchemaSql(config);
 
 if (schemaSql.ok) {
-  console.log(`✓ ${schemaSql.label}`);
+  pass(schemaSql.label);
 } else {
-  console.log(`✗ ${schemaSql.label} (${schemaSql.reason})`);
-  failed = true;
+  fail(
+    `${schemaSql.label} (${schemaSql.reason})`,
+    "run `paideia build` to regenerate dist/schema.sql"
+  );
 }
 
 const logsDir = path.join(
@@ -74,6 +107,11 @@ checkReadableFile(
   path.join(logsDir, "crash.log")
 );
 
+console.log("");
+console.log("[paideia] doctor summary");
+console.log(`✓ passed: ${passed}`);
+console.log(`✗ failed: ${failedCount}`);
+console.log(`• skipped: ${skipped}`);
 console.log("");
 
 if (failed) {
