@@ -4,7 +4,7 @@ Inspectable AI-native application runtime framework.
 
 Describe the system. Generate the software. Keep it understandable.
 
-Status: `v1.2.0-rc.1`
+Status: `v1.2.0`
 
 Paideia is an AI-native application runtime focused on inspectability, operational clarity, and secure defaults.
 
@@ -187,7 +187,7 @@ Example response:
 {
   "status": "ok",
   "framework": "paideia",
-  "version": "1.2.0-rc.1",
+  "version": "1.2.0",
   "runtime": "production",
   "dist": "ready"
 }
@@ -573,7 +573,7 @@ Future work should extend the same trust model instead of burying it:
 - v1.2.0-alpha.3: CLI-owned mode wiring for development and production commands
 - v1.2.0-beta.1: coherent CLI toolchain with build, inspection, explanation, diagnostics, and runtime commands
 - v1.2.0-rc.1: release-candidate hardening for the frozen CLI lifecycle
-- v1.2: Paideia becomes a coherent CLI toolchain
+- v1.2.0: Paideia becomes a coherent CLI toolchain
 - v1.3: real storage adapters, from local to memory, SQLite, and Postgres
 - v1.4: real auth and session boundaries
 - v1.5: working API routes from the manifested API contract

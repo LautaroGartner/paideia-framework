@@ -15,7 +15,7 @@ The resource declaration in `src/index.ts` defines:
 Run the live development runtime from the repo root:
 
 ```bash
-npm run dev
+paideia dev
 ```
 
 Then open the local URL, create a lead, try the restricted AI summary, and inspect the browser log, CLI events, `dist/system.json`, `dist/schema.sql`, and the development-only `/__paideia/runtime` endpoint.
@@ -23,19 +23,19 @@ Then open the local URL, create a lead, try the restricted AI summary, and inspe
 Build production artifacts:
 
 ```bash
-npm run build
+paideia build
 ```
 
 Run diagnostics:
 
 ```bash
-node cli.mjs doctor
+paideia doctor
 ```
 
 Start the production runtime:
 
 ```bash
-node cli.mjs start
+paideia start
 ```
 
 In production, Paideia intentionally does not expose `/__paideia/runtime`. The safe operational endpoint is:
