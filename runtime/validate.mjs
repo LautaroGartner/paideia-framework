@@ -179,6 +179,103 @@ export function validateActionContracts(config) {
   };
 }
 
+export function validateActionEventContracts(config) {
+  const filePath = path.join(config.distDir, "system.json");
+
+  if (!fs.existsSync(filePath)) {
+    return {
+      ok: false,
+      label: "action event contracts valid",
+      reason: "dist/system.json missing",
+    };
+  }
+
+  let manifest;
+
+  try {
+    manifest = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch (error) {
+    return {
+      ok: false,
+      label: "action event contracts valid",
+      reason: error.message,
+    };
+  }
+
+  const actions = manifest?.resource?.actions ?? [];
+
+  if (!Array.isArray(actions)) {
+    return {
+      ok: false,
+      label: "action event contracts valid",
+      reason: "resource.actions must be an array",
+    };
+  }
+
+  for (const action of actions) {
+    const name = action?.name ?? "unknown";
+
+    if (!action?.events || typeof action.events !== "object") {
+      return {
+        ok: false,
+        label: "action event contracts valid",
+        reason: `${name} missing events`,
+      };
+    }
+
+    if (!action.events.success) {
+      return {
+        ok: false,
+        label: "action event contracts valid",
+        reason: `${name} missing events.success`,
+      };
+    }
+
+    if (!action.events.denied) {
+      return {
+        ok: false,
+        label: "action event contracts valid",
+        reason: `${name} missing events.denied`,
+      };
+    }
+
+    if (
+      action.type === "update" &&
+      action.events.success !== "action.executed"
+    ) {
+      return {
+        ok: false,
+        label: "action event contracts valid",
+        reason: `${name} update action must use action.executed`,
+      };
+    }
+
+    if (
+      action.type === "ai" &&
+      action.events.success !== "ai.executed"
+    ) {
+      return {
+        ok: false,
+        label: "action event contracts valid",
+        reason: `${name} ai action must use ai.executed`,
+      };
+    }
+
+    if (action.events.denied !== "permission.denied") {
+      return {
+        ok: false,
+        label: "action event contracts valid",
+        reason: `${name} denied event must use permission.denied`,
+      };
+    }
+  }
+
+  return {
+    ok: true,
+    label: "action event contracts valid",
+  };
+}
+
 export function validateSchemaSql(config) {
   const filePath = path.join(config.distDir, "schema.sql");
 
