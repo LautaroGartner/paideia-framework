@@ -59,11 +59,16 @@ export function validateSystemJson(config) {
       validateManifestContract(parsed);
 
     if (!contract.ok) {
+      const [firstDiagnostic] =
+        contract.diagnostics;
+
       return {
         ok: false,
         label: "dist/system.json contract valid",
-        reason: contract.error.message,
-        error: contract.error,
+        reason:
+          firstDiagnostic?.message ??
+          "manifest contract invalid",
+        diagnostics: contract.diagnostics,
       };
     }
 
