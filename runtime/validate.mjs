@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import { validateManifestContract } from "./validate-manifest.mjs";
+
 export function validateRuntimeStartup(config) {
   const checks = [
     {
@@ -53,9 +55,21 @@ export function validateSystemJson(config) {
       };
     }
 
+    const contract =
+      validateManifestContract(parsed);
+
+    if (!contract.ok) {
+      return {
+        ok: false,
+        label: "dist/system.json contract valid",
+        reason: contract.error.message,
+        error: contract.error,
+      };
+    }
+
     return {
       ok: true,
-      label: "dist/system.json valid",
+      label: "dist/system.json contract valid",
     };
   } catch (error) {
     return {
