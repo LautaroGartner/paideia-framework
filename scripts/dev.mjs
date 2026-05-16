@@ -12,7 +12,15 @@ import path from "node:path";
 import process from "node:process";
 import readline from "node:readline";
 
-const ROOT = process.cwd();
+import {
+  appRoot,
+  assertPackageCheckoutProject,
+  packageRoot,
+} from "./project.mjs";
+
+assertPackageCheckoutProject("dev");
+
+const ROOT = appRoot;
 
 const SOURCE_DIR = path.join(ROOT, "src");
 
@@ -23,18 +31,18 @@ const DEV_SERVER_PORT = Number(
 const DIST_DIR = path.join(ROOT, "dist");
 
 const BUILD_ENTRY = path.join(
-  ROOT,
+  packageRoot,
   "build",
   "index.js"
 );
 
 const PACKAGE_JSON_PATH = path.join(
-  ROOT,
+  packageRoot,
   "package.json"
 );
 
 const TSC_BIN = path.join(
-  ROOT,
+  packageRoot,
   "node_modules",
   ".bin",
   process.platform === "win32"
@@ -638,15 +646,16 @@ function getTscSpawnConfig() {
 function runProcess(
   command,
   args,
-  extraEnv = {}
+  options = {}
 ) {
   return new Promise((resolve) => {
     const child = spawn(command, args, {
-      cwd: ROOT,
+      cwd: options.cwd ?? ROOT,
 
       env: {
         ...process.env,
-        ...extraEnv,
+        ...options.env,
+        PAIDEIA_PACKAGE_ROOT: packageRoot,
       },
 
       stdio: [
@@ -743,7 +752,10 @@ async function rebuild(reason) {
   const compileResult =
     await runProcess(
       tsc.command,
-      tsc.args
+      tsc.args,
+      {
+        cwd: packageRoot,
+      }
     );
 
   if (!compileResult.ok) {
@@ -791,7 +803,10 @@ async function rebuild(reason) {
       process.execPath,
       [BUILD_ENTRY],
       {
-        NODE_ENV: "development",
+        cwd: ROOT,
+        env: {
+          NODE_ENV: "development",
+        },
       }
     );
 

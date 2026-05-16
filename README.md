@@ -6,7 +6,7 @@ Describe the system. Generate the software. Keep it understandable.
 
 Paideia is an inspectable AI-native runtime for generated systems.
 
-Status: `v1.3.0-alpha.5`
+Status: `v1.3.0-alpha.6`
 
 Paideia is an AI-native application runtime focused on inspectability, operational clarity, and secure defaults.
 
@@ -189,7 +189,7 @@ Example response:
 {
   "status": "ok",
   "framework": "paideia",
-  "version": "1.3.0-alpha.5",
+  "version": "1.3.0-alpha.6",
   "runtime": "production",
   "dist": "ready"
 }
@@ -282,6 +282,56 @@ The package also declares:
 ```
 
 The npm scripts delegate to the same CLI commands, so repository checkouts and installed usage follow one lifecycle path.
+
+### Installed CLI Workflow
+
+Paideia now separates the installed package root from the directory where the command is run:
+
+```txt
+package root
+  Paideia CLI, runtime, source, and build tooling
+
+project root
+  the current working directory where generated output is read or written
+```
+
+This means `paideia --version` and `paideia --help` are supported from any directory after installing or linking the package:
+
+```bash
+npm link
+mkdir /tmp/paideia-smoke
+cd /tmp/paideia-smoke
+paideia --version
+paideia --help
+paideia doctor
+```
+
+External project scaffolding is not supported yet. Outside the Paideia checkout, lifecycle commands fail with explicit guidance instead of assuming the repository demo layout:
+
+```txt
+paideia build
+paideia dev
+```
+
+For now these commands must be run from the Paideia project checkout. They resolve framework internals from the installed package root and write generated artifacts to the current project root's `dist/` directory.
+
+Commands that read generated output always operate on the current project root:
+
+```txt
+paideia start
+paideia doctor
+paideia manifest
+paideia schema
+paideia explain
+```
+
+If `dist/` has not been generated, they fail cleanly and guide you to run `paideia build`.
+
+The installed CLI smoke check exercises this contract from a fresh temp project:
+
+```bash
+npm run test:install-smoke
+```
 
 ## Resource Model
 
@@ -583,6 +633,7 @@ Future work should extend the same trust model instead of burying it:
 - v1.3.0-alpha.3: community health files reinforce contribution and security expectations
 - v1.3.0-alpha.4: runtime actions emit structured, inspectable events
 - v1.3.0-alpha.5: doctor validates generated action event contracts
+- v1.3.0-alpha.6: installed-package CLI smoke hardening
 - v1.3: runtime contracts, actions, and capability clarity
 - v1.4: real auth and session boundaries
 - v1.5: working API routes from the manifested API contract
