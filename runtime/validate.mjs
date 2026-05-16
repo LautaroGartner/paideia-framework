@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import { normalizeManifestContract } from "./normalize-manifest.mjs";
 import { validateManifestContract } from "./validate-manifest.mjs";
 
 export function validateRuntimeStartup(config) {
@@ -45,7 +46,7 @@ export function validateSystemJson(config) {
 
   try {
     const raw = fs.readFileSync(filePath, "utf8");
-    const parsed = JSON.parse(raw);
+    let parsed = JSON.parse(raw);
 
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return {
@@ -72,9 +73,12 @@ export function validateSystemJson(config) {
       };
     }
 
+    parsed = normalizeManifestContract(parsed);
+
     return {
       ok: true,
       label: "dist/system.json contract valid",
+      manifest: parsed,
     };
   } catch (error) {
     return {
