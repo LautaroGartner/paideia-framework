@@ -1,3 +1,5 @@
+import { posts } from "./writing/index.js";
+
 export type SitePage = {
   path: string;
   title: string;
@@ -7,10 +9,20 @@ export type SitePage = {
   tokenSummary?: string;
 };
 
+export type WritingPost = {
+  slug: string;
+  title: string;
+  description: string;
+  publishedAt: string;
+  body: string;
+  tokenSummary: string;
+};
+
 export type SiteDefinition = {
   title: string;
   description: string;
   pages: SitePage[];
+  posts: WritingPost[];
 };
 
 export function defineSite(site: SiteDefinition): SiteDefinition {
@@ -20,6 +32,7 @@ export function defineSite(site: SiteDefinition): SiteDefinition {
 export const site = defineSite({
   title: "Lautaro Gärtner",
   description: "Building Paideia Framework in public.",
+  posts,
   pages: [
     {
       path: "/",

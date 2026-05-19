@@ -146,6 +146,64 @@ function validateSiteContract(site, diagnostics) {
       }
     }
   });
+
+  if (
+    site.posts !== undefined &&
+    !Array.isArray(site.posts)
+  ) {
+    diagnostics.push(
+      diagnostic(
+        "INVALID_SITE_POSTS",
+        "site.posts",
+        "site.posts must be an array when present.",
+        {
+          received: site.posts,
+        }
+      )
+    );
+    return;
+  }
+
+  (site.posts ?? []).forEach((post, index) => {
+    const postPath = `site.posts[${index}]`;
+
+    if (!isObject(post)) {
+      diagnostics.push(
+        diagnostic(
+          "INVALID_SITE_POST",
+          postPath,
+          "Every site post must be an object.",
+          {
+            received: post,
+          }
+        )
+      );
+      return;
+    }
+
+    for (const key of [
+      "slug",
+      "path",
+      "title",
+      "description",
+      "publishedAt",
+      "tokenSummary",
+      "output",
+    ]) {
+      if (!isNonEmptyString(post[key])) {
+        diagnostics.push(
+          diagnostic(
+            "INVALID_SITE_POST_FIELD",
+            `${postPath}.${key}`,
+            `Every site post must include a non-empty ${key}.`,
+            {
+              received: post[key],
+            }
+          )
+        );
+      }
+    }
+  });
 }
 
 export function validateManifestContract(manifest) {

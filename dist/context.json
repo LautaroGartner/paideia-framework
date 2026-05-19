@@ -17,8 +17,16 @@
       "tokenSummary": "Writing index for essays and notes about software, agents, and Paideia."
     }
   ],
+  "posts": [
+    {
+      "slug": "building-paideia",
+      "title": "Building Paideia",
+      "publishedAt": "2026-05-20",
+      "tokenSummary": "Introduction post explaining the motivation and philosophy behind Paideia Framework."
+    }
+  ],
   "generatedBy": {
     "name": "Paideia Framework",
-    "version": "1.5.0-alpha.2"
+    "version": "1.5.0-alpha.3"
   }
 }

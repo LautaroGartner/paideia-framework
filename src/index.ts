@@ -9,8 +9,10 @@ import { site } from "./site.js";
 import {
   generateContextJson,
   generateLlmsText,
+  generatePostPage,
   generateSiteManifest,
   generateSitePage,
+  getPostOutputPath,
   getSiteOutputPath,
 } from "./site-build.js";
 
@@ -32,6 +34,20 @@ for (const page of site.pages) {
   });
 
   writeFileSync(outputPath, generateSitePage(site, page));
+  console.log(`Generated ${outputPath}`);
+}
+
+for (const post of site.posts) {
+  const outputPath = path.join(
+    "dist",
+    getPostOutputPath(post)
+  );
+
+  mkdirSync(path.dirname(outputPath), {
+    recursive: true,
+  });
+
+  writeFileSync(outputPath, generatePostPage(site, post));
   console.log(`Generated ${outputPath}`);
 }
 

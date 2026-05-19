@@ -1,7 +1,7 @@
 {
   "framework": {
     "name": "Paideia Framework",
-    "version": "1.5.0-alpha.2",
+    "version": "1.5.0-alpha.3",
     "mode": "production"
   },
   "site": {
@@ -24,6 +24,17 @@
         "tokenSummary": "Writing index for essays and notes about software, agents, and Paideia.",
         "output": "writing/index.html"
       }
+    ],
+    "posts": [
+      {
+        "slug": "building-paideia",
+        "path": "/writing/building-paideia",
+        "title": "Building Paideia",
+        "description": "Why I started building Paideia Framework.",
+        "publishedAt": "2026-05-20",
+        "tokenSummary": "Introduction post explaining the motivation and philosophy behind Paideia Framework.",
+        "output": "writing/building-paideia/index.html"
+      }
     ]
   },
   "runtime": {
@@ -34,6 +45,7 @@
     },
     "generatedArtifacts": [
       "pages",
+      "posts",
       "system.json",
       "llms.txt",
       "context.json"
