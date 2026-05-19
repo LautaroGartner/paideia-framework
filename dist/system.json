@@ -1,7 +1,7 @@
 {
   "framework": {
     "name": "Paideia Framework",
-    "version": "1.5.0-alpha.1",
+    "version": "1.5.0-alpha.2",
     "mode": "production"
   },
   "site": {
@@ -11,11 +11,17 @@
       {
         "path": "/",
         "title": "Home",
+        "description": "Personal site for Lautaro Gärtner and Paideia Framework.",
+        "nav": true,
+        "tokenSummary": "Home page introducing Lautaro and the Paideia Framework build log.",
         "output": "index.html"
       },
       {
         "path": "/writing",
         "title": "Writing",
+        "description": "Notes on software, systems, agents, and Paideia.",
+        "nav": true,
+        "tokenSummary": "Writing index for essays and notes about software, agents, and Paideia.",
         "output": "writing/index.html"
       }
     ]

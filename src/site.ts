@@ -1,7 +1,10 @@
 export type SitePage = {
   path: string;
   title: string;
+  description?: string;
   body: string;
+  nav?: boolean;
+  tokenSummary?: string;
 };
 
 export type SiteDefinition = {
@@ -21,12 +24,18 @@ export const site = defineSite({
     {
       path: "/",
       title: "Home",
+      description: "Personal site for Lautaro Gärtner and Paideia Framework.",
       body: "Building Paideia Framework in public.",
+      nav: true,
+      tokenSummary: "Home page introducing Lautaro and the Paideia Framework build log.",
     },
     {
       path: "/writing",
       title: "Writing",
+      description: "Notes on software, systems, agents, and Paideia.",
       body: "Notes on software, systems, and building Paideia.",
+      nav: true,
+      tokenSummary: "Writing index for essays and notes about software, agents, and Paideia.",
     },
   ],
 });
