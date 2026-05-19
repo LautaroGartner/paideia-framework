@@ -22,6 +22,7 @@
     "start": "node cli.mjs start",
     "doctor": "node cli.mjs doctor",
     "paideia": "node cli.mjs",
+    "test:manifest": "node tests/manifest-contract.test.mjs",
     "test:install-smoke": "node tests/install-smoke.mjs"
   },
   "devDependencies": {

@@ -1,0 +1,29 @@
+{
+  "framework": {
+    "name": "Wrong",
+    "version": "",
+    "mode": "staging"
+  },
+  "resource": {
+    "name": "",
+    "slug": "",
+    "fields": [
+      {
+        "name": "",
+        "type": ""
+      }
+    ],
+    "actions": [
+      {
+        "name": "",
+        "label": "",
+        "type": "delete"
+      }
+    ]
+  },
+  "runtime": {
+    "persistence": {
+      "adapter": 42
+    }
+  }
+}
