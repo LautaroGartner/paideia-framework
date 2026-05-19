@@ -9,6 +9,7 @@ import { createRuntimeConfig } from "./runtime/config.mjs";
 
 const config = createRuntimeConfig();
 const command = process.argv[2];
+const args = process.argv.slice(3);
 const CLI_DIR = path.dirname(fileURLToPath(import.meta.url));
 
 function resolveScript(scriptPath) {
@@ -26,6 +27,7 @@ function printHelp() {
   console.log("  paideia build    Build production artifacts");
   console.log("  paideia start    Start the production runtime");
   console.log("  paideia doctor   Run runtime diagnostics");
+  console.log("  paideia new post Create a writing post contract");
   console.log("  paideia manifest Print generated system manifest");
   console.log("  paideia schema   Print generated SQL schema");
   console.log("  paideia explain  Explain generated system as Markdown");
@@ -71,6 +73,24 @@ const commands = {
     args: [resolveScript("scripts/explain.mjs")],
   },
 };
+
+if (command === "new") {
+  const type = args[0];
+  const title = args.slice(1).join(" ");
+
+  if (type !== "post" || !title.trim()) {
+    console.error("[paideia] usage: paideia new post \"Post title\"");
+    process.exit(1);
+  }
+
+  commands.new = {
+    bin: "node",
+    args: [
+      resolveScript("scripts/new-post.mjs"),
+      title,
+    ],
+  };
+}
 
 if (!command || command === "--help" || command === "-h") {
   printHelp();
