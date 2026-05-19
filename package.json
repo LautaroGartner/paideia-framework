@@ -1,6 +1,6 @@
 {
   "name": "paideia-framework",
-  "version": "1.6.0-alpha.1",
+  "version": "1.6.0-alpha.2",
   "type": "module",
   "bin": {
     "paideia": "./cli.mjs"
@@ -24,6 +24,7 @@
     "paideia": "node cli.mjs",
     "test:manifest": "node tests/manifest-contract.test.mjs",
     "test:site": "node tests/site-runtime.test.mjs",
+    "test:writing": "node tests/writing-validation.test.mjs",
     "test:install-smoke": "node tests/install-smoke.mjs"
   },
   "devDependencies": {

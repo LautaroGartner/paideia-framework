@@ -4,8 +4,8 @@ Inspectable AI-native application runtime framework.
 
 Describe the system. Generate the software. Keep it understandable.
 
-Current version: v1.6.0-alpha.1
-Post creation CLI
+Current version: v1.6.0-alpha.2
+Writing diagnostics
 
 Paideia starts from a resource declaration and generates a small, inspectable application foundation around it: UI, validation, local persistence, permissions, actions, AI capability contracts, SQL schema, runtime events, and a manifest that explains what was generated.
 

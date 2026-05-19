@@ -5,6 +5,7 @@ import {
 } from "fs";
 import path from "node:path";
 
+import { validateWritingPosts } from "../runtime/validate-writing.mjs";
 import { site } from "./site.js";
 import {
   generateContextJson,
@@ -16,6 +17,18 @@ import {
   getPostOutputPath,
   getSiteOutputPath,
 } from "./site-build.js";
+
+const writingValidation = validateWritingPosts(site.posts);
+
+for (const item of writingValidation.diagnostics) {
+  const prefix = item.severity === "warning" ? "warning" : "error";
+  console.log(`[paideia] ${prefix}: ${item.code} at ${item.path}`);
+  console.log(`[paideia] ${item.message}`);
+}
+
+if (!writingValidation.ok) {
+  throw new Error("Writing validation failed.");
+}
 
 rmSync("dist", {
   force: true,
