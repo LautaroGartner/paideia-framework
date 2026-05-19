@@ -9,6 +9,7 @@ import { site } from "./site.js";
 import {
   generateContextJson,
   generateLlmsText,
+  generateNotFoundPage,
   generatePostPage,
   generateSiteManifest,
   generateSitePage,
@@ -54,7 +55,9 @@ for (const post of site.posts) {
 writeFileSync("dist/system.json", generateSiteManifest(site));
 writeFileSync("dist/llms.txt", generateLlmsText(site));
 writeFileSync("dist/context.json", generateContextJson(site));
+writeFileSync("dist/404.html", generateNotFoundPage(site));
 
 console.log("Generated dist/system.json");
 console.log("Generated dist/llms.txt");
 console.log("Generated dist/context.json");
+console.log("Generated dist/404.html");

@@ -42,6 +42,10 @@ export function validateRuntimeStartup(config) {
   if (manifest?.site) {
     checks.push(
       {
+        label: "dist/404.html exists",
+        path: path.join(config.distDir, "404.html"),
+      },
+      {
         label: "dist/llms.txt exists",
         path: path.join(config.distDir, "llms.txt"),
       },

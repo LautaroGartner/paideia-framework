@@ -21,6 +21,9 @@ export type WritingPost = {
 export type SiteDefinition = {
   title: string;
   description: string;
+  url?: string;
+  author?: string;
+  language?: string;
   pages: SitePage[];
   posts: WritingPost[];
 };
@@ -32,6 +35,9 @@ export function defineSite(site: SiteDefinition): SiteDefinition {
 export const site = defineSite({
   title: "Lautaro Gärtner",
   description: "Building Paideia Framework in public.",
+  url: "https://lautarogartner.com",
+  author: "Lautaro Gärtner",
+  language: "en",
   posts,
   pages: [
     {

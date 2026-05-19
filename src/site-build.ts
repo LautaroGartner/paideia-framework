@@ -15,6 +15,57 @@ function normalizePath(pagePath: string): string {
   return `/${pagePath.replace(/^\/+|\/+$/g, "")}`;
 }
 
+function sortPosts(posts: WritingPost[]): WritingPost[] {
+  return [...posts].sort((left, right) =>
+    right.publishedAt.localeCompare(left.publishedAt)
+  );
+}
+
+function siteLanguage(site: SiteDefinition): string {
+  return site.language ?? "en";
+}
+
+function canonicalUrl(
+  site: SiteDefinition,
+  pagePath: string
+): string | null {
+  if (!site.url) {
+    return null;
+  }
+
+  const base = site.url.replace(/\/+$/g, "");
+  const normalized = normalizePath(pagePath);
+
+  if (normalized === "/") {
+    return `${base}/`;
+  }
+
+  return `${base}${normalized}`;
+}
+
+function renderHead(options: {
+  site: SiteDefinition;
+  path: string;
+  title: string;
+  description: string;
+}): string {
+  const canonical = canonicalUrl(
+    options.site,
+    options.path
+  );
+  const author = options.site.author
+    ? `\n    <meta name="author" content="${escapeHtml(options.site.author)}">`
+    : "";
+  const canonicalLink = canonical
+    ? `\n    <link rel="canonical" href="${escapeHtml(canonical)}">`
+    : "";
+
+  return `<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${escapeHtml(options.title)}</title>
+    <meta name="description" content="${escapeHtml(options.description)}">${author}${canonicalLink}`;
+}
+
 function pageOutputPath(page: SitePage): string {
   const normalized = normalizePath(page.path);
 
@@ -57,13 +108,15 @@ function renderBody(value: string): string {
 }
 
 function renderPostList(posts: WritingPost[]): string {
-  if (posts.length === 0) {
+  const orderedPosts = sortPosts(posts);
+
+  if (orderedPosts.length === 0) {
     return "";
   }
 
   return `
         <section class="post-list" aria-label="Writing">
-          ${posts
+          ${orderedPosts
             .map(
               (post) => `<article>
             <time datetime="${escapeHtml(post.publishedAt)}">${escapeHtml(post.publishedAt)}</time>
@@ -103,12 +156,14 @@ export function generateSitePage(
       : "";
 
   return `<!doctype html>
-<html lang="en">
+<html lang="${escapeHtml(siteLanguage(site))}">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${escapeHtml(title)}</title>
-    <meta name="description" content="${escapeHtml(description)}">
+    ${renderHead({
+      site,
+      path: page.path,
+      title,
+      description,
+    })}
     <style>
       :root {
         color-scheme: light;
@@ -263,12 +318,14 @@ export function generatePostPage(
   );
 
   return `<!doctype html>
-<html lang="en">
+<html lang="${escapeHtml(siteLanguage(site))}">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${escapeHtml(post.title)} - ${escapeHtml(site.title)}</title>
-    <meta name="description" content="${escapeHtml(post.description)}">
+    ${renderHead({
+      site,
+      path: postPath(post),
+      title: `${post.title} - ${site.title}`,
+      description: post.description,
+    })}
     <style>
       :root {
         color-scheme: light;
@@ -403,7 +460,136 @@ ${renderNavigation(navPages)}
 `;
 }
 
+export function generateNotFoundPage(site: SiteDefinition): string {
+  const navPages = site.pages.filter(
+    (item) => item.nav !== false
+  );
+
+  return `<!doctype html>
+<html lang="${escapeHtml(siteLanguage(site))}">
+  <head>
+    ${renderHead({
+      site,
+      path: "/404",
+      title: `Page not found - ${site.title}`,
+      description: "The requested page could not be found.",
+    })}
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f7f6f2;
+        color: #191816;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+      }
+
+      .shell {
+        width: min(760px, calc(100vw - 40px));
+        margin: 0 auto;
+        padding: 42px 0 72px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        border-bottom: 1px solid #dedbd2;
+        padding-bottom: 18px;
+      }
+
+      header a,
+      nav a {
+        color: inherit;
+        font-size: 0.92rem;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      nav a {
+        color: #5f5a50;
+        font-weight: 650;
+      }
+
+      main {
+        padding-top: 78px;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 680px;
+        font-size: clamp(2.4rem, 7vw, 4.7rem);
+        line-height: 0.96;
+        letter-spacing: 0;
+      }
+
+      p {
+        max-width: 620px;
+        margin: 26px 0 0;
+        color: #4f4a43;
+        font-size: 1.15rem;
+        line-height: 1.7;
+      }
+
+      footer {
+        margin-top: 92px;
+        border-top: 1px solid #dedbd2;
+        padding-top: 18px;
+        color: #716b61;
+        font-size: 0.88rem;
+      }
+
+      @media (max-width: 640px) {
+        .shell {
+          width: min(100vw - 28px, 760px);
+          padding-top: 26px;
+        }
+
+        header {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        main {
+          padding-top: 54px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header>
+        <a href="/">${escapeHtml(site.title)}</a>
+${renderNavigation(navPages)}
+      </header>
+      <main>
+        <h1>Page not found</h1>
+        <p>The page you are looking for does not exist yet.</p>
+      </main>
+      <footer>Generated by Paideia Framework v${escapeHtml(FRAMEWORK_VERSION)}.</footer>
+    </div>
+  </body>
+</html>
+`;
+}
+
 export function generateSiteManifest(site: SiteDefinition): string {
+  const orderedPosts = sortPosts(site.posts);
+
   const manifest = {
     framework: {
       name: "Paideia Framework",
@@ -413,17 +599,22 @@ export function generateSiteManifest(site: SiteDefinition): string {
     site: {
       title: site.title,
       description: site.description,
+      url: site.url ?? null,
+      author: site.author ?? null,
+      language: siteLanguage(site),
       pages: site.pages.map((page) => ({
         path: normalizePath(page.path),
+        canonical: canonicalUrl(site, page.path),
         title: page.title,
         description: page.description ?? null,
         nav: page.nav !== false,
         tokenSummary: page.tokenSummary ?? null,
         output: pageOutputPath(page),
       })),
-      posts: site.posts.map((post) => ({
+      posts: orderedPosts.map((post) => ({
         slug: post.slug,
         path: postPath(post),
+        canonical: canonicalUrl(site, postPath(post)),
         title: post.title,
         description: post.description,
         publishedAt: post.publishedAt,
@@ -438,6 +629,7 @@ export function generateSiteManifest(site: SiteDefinition): string {
         output: "dist",
       },
       generatedArtifacts: [
+        "404.html",
         "pages",
         "posts",
         "system.json",
@@ -456,6 +648,7 @@ export function generateSiteManifest(site: SiteDefinition): string {
 }
 
 export function generateLlmsText(site: SiteDefinition): string {
+  const orderedPosts = sortPosts(site.posts);
   const pages = site.pages
     .map((page) => {
       const summary = page.tokenSummary
@@ -464,7 +657,7 @@ export function generateLlmsText(site: SiteDefinition): string {
       return `- ${page.title}: ${normalizePath(page.path)}${summary}`;
     })
     .join("\n");
-  const posts = site.posts
+  const posts = orderedPosts
     .map(
       (post) =>
         `- ${post.title}: ${postPath(post)} - ${post.tokenSummary}`
@@ -483,6 +676,9 @@ Useful agent entrypoints:
 ## Site
 
 ${site.description}
+${site.url ? `\nCanonical site URL: ${site.url}` : ""}
+${site.author ? `\nAuthor: ${site.author}` : ""}
+Language: ${siteLanguage(site)}
 
 ## Pages
 
@@ -499,21 +695,29 @@ Paideia Framework v${FRAMEWORK_VERSION}
 }
 
 export function generateContextJson(site: SiteDefinition): string {
+  const orderedPosts = sortPosts(site.posts);
+
   const context = {
     site: {
       title: site.title,
       description: site.description,
+      url: site.url ?? null,
+      author: site.author ?? null,
+      language: siteLanguage(site),
     },
     pages: site.pages.map((page) => ({
       path: normalizePath(page.path),
+      canonical: canonicalUrl(site, page.path),
       title: page.title,
       description:
         page.description ?? site.description,
       tokenSummary:
         page.tokenSummary ?? page.body,
     })),
-    posts: site.posts.map((post) => ({
+    posts: orderedPosts.map((post) => ({
       slug: post.slug,
+      path: postPath(post),
+      canonical: canonicalUrl(site, postPath(post)),
       title: post.title,
       publishedAt: post.publishedAt,
       tokenSummary: post.tokenSummary,

@@ -100,6 +100,25 @@ function validateSiteContract(site, diagnostics) {
     );
   }
 
+  for (const key of ["url", "author", "language"]) {
+    if (
+      site[key] !== undefined &&
+      site[key] !== null &&
+      !isNonEmptyString(site[key])
+    ) {
+      diagnostics.push(
+        diagnostic(
+          "INVALID_SITE_METADATA",
+          `site.${key}`,
+          `site.${key} must be a non-empty string when present.`,
+          {
+            received: site[key],
+          }
+        )
+      );
+    }
+  }
+
   if (!Array.isArray(site.pages)) {
     diagnostics.push(
       diagnostic(
@@ -144,6 +163,23 @@ function validateSiteContract(site, diagnostics) {
           )
         );
       }
+    }
+
+    if (
+      page.canonical !== undefined &&
+      page.canonical !== null &&
+      !isNonEmptyString(page.canonical)
+    ) {
+      diagnostics.push(
+        diagnostic(
+          "INVALID_SITE_PAGE_CANONICAL",
+          `${pagePath}.canonical`,
+          "Site page canonical must be a non-empty string when present.",
+          {
+            received: page.canonical,
+          }
+        )
+      );
     }
   });
 
@@ -202,6 +238,23 @@ function validateSiteContract(site, diagnostics) {
           )
         );
       }
+    }
+
+    if (
+      post.canonical !== undefined &&
+      post.canonical !== null &&
+      !isNonEmptyString(post.canonical)
+    ) {
+      diagnostics.push(
+        diagnostic(
+          "INVALID_SITE_POST_CANONICAL",
+          `${postPath}.canonical`,
+          "Site post canonical must be a non-empty string when present.",
+          {
+            received: post.canonical,
+          }
+        )
+      );
     }
   });
 }

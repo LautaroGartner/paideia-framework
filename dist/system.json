@@ -1,15 +1,19 @@
 {
   "framework": {
     "name": "Paideia Framework",
-    "version": "1.5.0-alpha.3",
+    "version": "1.5.0-beta.1",
     "mode": "production"
   },
   "site": {
     "title": "Lautaro Gärtner",
     "description": "Building Paideia Framework in public.",
+    "url": "https://lautarogartner.com",
+    "author": "Lautaro Gärtner",
+    "language": "en",
     "pages": [
       {
         "path": "/",
+        "canonical": "https://lautarogartner.com/",
         "title": "Home",
         "description": "Personal site for Lautaro Gärtner and Paideia Framework.",
         "nav": true,
@@ -18,6 +22,7 @@
       },
       {
         "path": "/writing",
+        "canonical": "https://lautarogartner.com/writing",
         "title": "Writing",
         "description": "Notes on software, systems, agents, and Paideia.",
         "nav": true,
@@ -29,6 +34,7 @@
       {
         "slug": "building-paideia",
         "path": "/writing/building-paideia",
+        "canonical": "https://lautarogartner.com/writing/building-paideia",
         "title": "Building Paideia",
         "description": "Why I started building Paideia Framework.",
         "publishedAt": "2026-05-20",
@@ -44,6 +50,7 @@
       "output": "dist"
     },
     "generatedArtifacts": [
+      "404.html",
       "pages",
       "posts",
       "system.json",

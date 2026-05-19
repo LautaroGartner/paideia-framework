@@ -41,6 +41,22 @@ export function createRuntimeServer({ config, logger }) {
         path: req.url,
       });
 
+      const notFoundPath = `${config.distDir}/404.html`;
+
+      if (fs.existsSync(notFoundPath)) {
+        res.writeHead(404, {
+          "Content-Type": getContentType(notFoundPath),
+        });
+
+        if (req.method === "HEAD") {
+          res.end();
+          return;
+        }
+
+        fs.createReadStream(notFoundPath).pipe(res);
+        return;
+      }
+
       res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
       res.end("Not Found");
       return;
