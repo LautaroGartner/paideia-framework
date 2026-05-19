@@ -32,8 +32,12 @@
       "tokenSummary": "Introduction post explaining the motivation and philosophy behind Paideia Framework."
     }
   ],
+  "writing": {
+    "postCount": 1,
+    "latestPost": "building-paideia"
+  },
   "generatedBy": {
     "name": "Paideia Framework",
-    "version": "1.6.0-alpha.2"
+    "version": "1.6.0-beta.1"
   }
 }
