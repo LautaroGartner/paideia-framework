@@ -10,13 +10,27 @@ export function isMethodAllowed(method) {
   return method === "GET" || method === "HEAD";
 }
 
-export function resolveRequestPath(reqUrl, { port, distDir }) {
-  let pathname = "/";
-
+export function getRequestPathname(reqUrl, port) {
   try {
     const url = new URL(reqUrl ?? "/", `http://localhost:${port}`);
-    pathname = decodeURIComponent(url.pathname);
+    return decodeURIComponent(url.pathname);
   } catch {
+    return null;
+  }
+}
+
+export function isBrowserAssetProbe(pathname) {
+  return [
+    "/favicon.ico",
+    "/apple-touch-icon.png",
+    "/apple-touch-icon-precomposed.png",
+  ].includes(pathname);
+}
+
+export function resolveRequestPath(reqUrl, { port, distDir }) {
+  const pathname = getRequestPathname(reqUrl, port);
+
+  if (!pathname) {
     return null;
   }
 

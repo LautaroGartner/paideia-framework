@@ -4,6 +4,8 @@ import fs from "node:fs";
 import { isHealthRequest, sendHealthResponse } from "./health.mjs";
 import { getContentType } from "./mime.mjs";
 import {
+  getRequestPathname,
+  isBrowserAssetProbe,
   isMethodAllowed,
   resolveRequestPath,
   sendSecurityHeaders,
@@ -31,6 +33,14 @@ export function createRuntimeServer({ config, logger }) {
       return;
     }
 
+    const pathname = getRequestPathname(req.url, config.port);
+
+    if (isBrowserAssetProbe(pathname)) {
+      res.writeHead(204);
+      res.end();
+      return;
+    }
+
     const filePath = resolveRequestPath(req.url, {
       port: config.port,
       distDir: config.distDir,
@@ -38,7 +48,7 @@ export function createRuntimeServer({ config, logger }) {
 
     if (!filePath || !fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
       logger.warn("404 request", {
-        path: req.url,
+        path: pathname ?? req.url,
       });
 
       const notFoundPath = `${config.distDir}/404.html`;
