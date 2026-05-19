@@ -1,72 +1,76 @@
-import { mkdirSync, writeFileSync } from "fs";
-import { ai } from "./ai.js";
-import { generateDatabaseSchema } from "./database.js";
-import { email, select, string } from "./fields.js";
-import { generateSystemManifest } from "./manifest.js";
-import { generatePage } from "./page.js";
-import { resource } from "./resource.js";
+import {
+  mkdirSync,
+  rmSync,
+  writeFileSync,
+} from "fs";
+import path from "node:path";
 
-const leadResource = resource(
-  "Lead",
-  {
-    name: string("Name").required().min(2),
+import { validateWritingPosts } from "../runtime/validate-writing.mjs";
+import { site } from "./site.js";
+import {
+  generateContextJson,
+  generateLlmsText,
+  generateNotFoundPage,
+  generatePostPage,
+  generateSiteManifest,
+  generateSitePage,
+  getPostOutputPath,
+  getSiteOutputPath,
+} from "./site-build.js";
 
-    email: email("Email").required(),
+const writingValidation = validateWritingPosts(site.posts);
 
-    status: select(
-      ["new", "contacted", "closed"],
-      "Status"
-    ).required(),
+for (const item of writingValidation.diagnostics) {
+  const prefix = item.severity === "warning" ? "warning" : "error";
+  console.log(`[paideia] ${prefix}: ${item.code} at ${item.path}`);
+  console.log(`[paideia] ${item.message}`);
+}
 
-    notes: string("Notes"),
-  },
+if (!writingValidation.ok) {
+  throw new Error("Writing validation failed.");
+}
 
-  {
-    storage: "local",
-
-    permissions: {
-      create: "public",
-      update: "public",
-      delete: "admin",
-      ai: "authenticated",
-    },
-
-    actions: [
-      {
-        name: "markContacted",
-        label: "Mark contacted",
-        type: "update",
-        set: {
-          status: "contacted",
-        },
-        log: "Lead was marked as contacted.",
-      },
-
-      ai.summarizeRecord({
-        name: "summarize",
-        label: "Summarize",
-        log: "AI summary generated for one Lead record.",
-      }),
-
-      {
-        name: "close",
-        label: "Close",
-        type: "update",
-        set: {
-          status: "closed",
-        },
-        log: "Lead was closed.",
-      },
-    ],
-  }
-);
+rmSync("dist", {
+  force: true,
+  recursive: true,
+});
 
 mkdirSync("dist", { recursive: true });
 
-writeFileSync("dist/index.html", generatePage(leadResource));
-writeFileSync("dist/schema.sql", generateDatabaseSchema(leadResource));
-writeFileSync("dist/system.json", generateSystemManifest(leadResource));
+for (const page of site.pages) {
+  const outputPath = path.join(
+    "dist",
+    getSiteOutputPath(page)
+  );
 
-console.log("Generated dist/index.html");
-console.log("Generated dist/schema.sql");
+  mkdirSync(path.dirname(outputPath), {
+    recursive: true,
+  });
+
+  writeFileSync(outputPath, generateSitePage(site, page));
+  console.log(`Generated ${outputPath}`);
+}
+
+for (const post of site.posts) {
+  const outputPath = path.join(
+    "dist",
+    getPostOutputPath(post)
+  );
+
+  mkdirSync(path.dirname(outputPath), {
+    recursive: true,
+  });
+
+  writeFileSync(outputPath, generatePostPage(site, post));
+  console.log(`Generated ${outputPath}`);
+}
+
+writeFileSync("dist/system.json", generateSiteManifest(site));
+writeFileSync("dist/llms.txt", generateLlmsText(site));
+writeFileSync("dist/context.json", generateContextJson(site));
+writeFileSync("dist/404.html", generateNotFoundPage(site));
+
 console.log("Generated dist/system.json");
+console.log("Generated dist/llms.txt");
+console.log("Generated dist/context.json");
+console.log("Generated dist/404.html");

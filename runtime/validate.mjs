@@ -1,6 +1,26 @@
 import fs from "node:fs";
 import path from "node:path";
 
+import { normalizeManifestContract } from "./normalize-manifest.mjs";
+import { validateManifestContract } from "./validate-manifest.mjs";
+
+function readSystemJson(config) {
+  const filePath = path.join(config.distDir, "system.json");
+
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? parsed
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 export function validateRuntimeStartup(config) {
   const checks = [
     {
@@ -15,11 +35,31 @@ export function validateRuntimeStartup(config) {
       label: "dist/system.json exists",
       path: path.join(config.distDir, "system.json"),
     },
-    {
+  ];
+
+  const manifest = readSystemJson(config);
+
+  if (manifest?.site) {
+    checks.push(
+      {
+        label: "dist/404.html exists",
+        path: path.join(config.distDir, "404.html"),
+      },
+      {
+        label: "dist/llms.txt exists",
+        path: path.join(config.distDir, "llms.txt"),
+      },
+      {
+        label: "dist/context.json exists",
+        path: path.join(config.distDir, "context.json"),
+      }
+    );
+  } else {
+    checks.push({
       label: "dist/schema.sql exists",
       path: path.join(config.distDir, "schema.sql"),
-    },
-  ];
+    });
+  }
 
   const failures = checks.filter((check) => !fs.existsSync(check.path));
 
@@ -43,7 +83,7 @@ export function validateSystemJson(config) {
 
   try {
     const raw = fs.readFileSync(filePath, "utf8");
-    const parsed = JSON.parse(raw);
+    let parsed = JSON.parse(raw);
 
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return {
@@ -53,9 +93,29 @@ export function validateSystemJson(config) {
       };
     }
 
+    const contract =
+      validateManifestContract(parsed);
+
+    if (!contract.ok) {
+      const [firstDiagnostic] =
+        contract.diagnostics;
+
+      return {
+        ok: false,
+        label: "dist/system.json contract valid",
+        reason:
+          firstDiagnostic?.message ??
+          "manifest contract invalid",
+        diagnostics: contract.diagnostics,
+      };
+    }
+
+    parsed = normalizeManifestContract(parsed);
+
     return {
       ok: true,
-      label: "dist/system.json valid",
+      label: "dist/system.json contract valid",
+      manifest: parsed,
     };
   } catch (error) {
     return {
@@ -277,6 +337,15 @@ export function validateActionEventContracts(config) {
 }
 
 export function validateSchemaSql(config) {
+  const manifest = readSystemJson(config);
+
+  if (manifest?.site) {
+    return {
+      ok: true,
+      label: "dist/schema.sql skipped for static site",
+    };
+  }
+
   const filePath = path.join(config.distDir, "schema.sql");
 
   if (!fs.existsSync(filePath)) {

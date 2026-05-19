@@ -1,0 +1,43 @@
+{
+  "site": {
+    "title": "Lautaro Gärtner",
+    "description": "Building Paideia Framework in public.",
+    "url": "https://lautarogartner.com",
+    "author": "Lautaro Gärtner",
+    "language": "en"
+  },
+  "pages": [
+    {
+      "path": "/",
+      "canonical": "https://lautarogartner.com/",
+      "title": "Home",
+      "description": "Personal site for Lautaro Gärtner and Paideia Framework.",
+      "tokenSummary": "Home page introducing Lautaro and the Paideia Framework build log."
+    },
+    {
+      "path": "/writing",
+      "canonical": "https://lautarogartner.com/writing",
+      "title": "Writing",
+      "description": "Notes on software, systems, agents, and Paideia.",
+      "tokenSummary": "Writing index for essays and notes about software, agents, and Paideia."
+    }
+  ],
+  "posts": [
+    {
+      "slug": "building-paideia",
+      "path": "/writing/building-paideia",
+      "canonical": "https://lautarogartner.com/writing/building-paideia",
+      "title": "Building Paideia",
+      "publishedAt": "2026-05-20",
+      "tokenSummary": "Introduction post explaining the motivation and philosophy behind Paideia Framework."
+    }
+  ],
+  "writing": {
+    "postCount": 1,
+    "latestPost": "building-paideia"
+  },
+  "generatedBy": {
+    "name": "Paideia Framework",
+    "version": "1.6.0"
+  }
+}

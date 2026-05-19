@@ -51,7 +51,7 @@ function shutdown(signal) {
 
   shuttingDown = true;
 
-  info(`${signal} received`, {
+  info("goodbye", {
     signal,
   });
 
@@ -65,7 +65,7 @@ function shutdown(signal) {
       process.exit(1);
     }
 
-    info("runtime stopped cleanly");
+    info("goodbye — runtime stopped cleanly");
     process.exit(0);
   });
 }

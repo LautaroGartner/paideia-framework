@@ -1,0 +1,43 @@
+{
+  "framework": {
+    "name": "Paideia Framework",
+    "version": "1.4.0",
+    "mode": "production"
+  },
+  "resource": {
+    "name": "Lead",
+    "slug": "lead",
+    "permissions": {
+      "create": "public",
+      "update": "public",
+      "delete": "admin",
+      "ai": "authenticated"
+    },
+    "fields": [
+      {
+        "name": "name",
+        "label": "Name",
+        "type": "string"
+      }
+    ],
+    "actions": [
+      {
+        "name": "markContacted",
+        "label": "Mark contacted",
+        "type": "update",
+        "permission": "public"
+      }
+    ]
+  },
+  "runtime": {
+    "target": "browser",
+    "persistence": {
+      "adapter": "local"
+    },
+    "generatedInterface": {
+      "form": true,
+      "table": true,
+      "validation": true
+    }
+  }
+}
