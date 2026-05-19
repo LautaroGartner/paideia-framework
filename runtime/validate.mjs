@@ -4,6 +4,23 @@ import path from "node:path";
 import { normalizeManifestContract } from "./normalize-manifest.mjs";
 import { validateManifestContract } from "./validate-manifest.mjs";
 
+function readSystemJson(config) {
+  const filePath = path.join(config.distDir, "system.json");
+
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? parsed
+      : null;
+  } catch {
+    return null;
+  }
+}
+
 export function validateRuntimeStartup(config) {
   const checks = [
     {
@@ -18,11 +35,27 @@ export function validateRuntimeStartup(config) {
       label: "dist/system.json exists",
       path: path.join(config.distDir, "system.json"),
     },
-    {
+  ];
+
+  const manifest = readSystemJson(config);
+
+  if (manifest?.site) {
+    checks.push(
+      {
+        label: "dist/llms.txt exists",
+        path: path.join(config.distDir, "llms.txt"),
+      },
+      {
+        label: "dist/context.json exists",
+        path: path.join(config.distDir, "context.json"),
+      }
+    );
+  } else {
+    checks.push({
       label: "dist/schema.sql exists",
       path: path.join(config.distDir, "schema.sql"),
-    },
-  ];
+    });
+  }
 
   const failures = checks.filter((check) => !fs.existsSync(check.path));
 
@@ -300,6 +333,15 @@ export function validateActionEventContracts(config) {
 }
 
 export function validateSchemaSql(config) {
+  const manifest = readSystemJson(config);
+
+  if (manifest?.site) {
+    return {
+      ok: true,
+      label: "dist/schema.sql skipped for static site",
+    };
+  }
+
   const filePath = path.join(config.distDir, "schema.sql");
 
   if (!fs.existsSync(filePath)) {

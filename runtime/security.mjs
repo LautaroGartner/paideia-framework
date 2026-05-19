@@ -20,7 +20,12 @@ export function resolveRequestPath(reqUrl, { port, distDir }) {
     return null;
   }
 
-  const requestedPath = pathname === "/" ? "/index.html" : pathname;
+  const requestedPath =
+    pathname === "/"
+      ? "/index.html"
+      : path.extname(pathname)
+        ? pathname
+        : `${pathname.replace(/\/$/, "")}/index.html`;
   const safePath = path.normalize(requestedPath).replace(/^(\.\.[/\\])+/, "");
   const filePath = path.join(distDir, safePath);
 

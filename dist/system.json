@@ -1,236 +1,41 @@
 {
   "framework": {
     "name": "Paideia Framework",
-    "version": "1.4.0",
+    "version": "1.5.0-alpha.1",
     "mode": "production"
   },
-  "resource": {
-    "name": "Lead",
-    "slug": "lead",
-    "permissions": {
-      "create": "public",
-      "update": "public",
-      "delete": "admin",
-      "ai": "authenticated"
-    },
-    "fields": [
+  "site": {
+    "title": "Lautaro Gärtner",
+    "description": "Building Paideia Framework in public.",
+    "pages": [
       {
-        "name": "name",
-        "label": "Name",
-        "type": "string",
-        "required": true,
-        "minLength": 2,
-        "maxLength": null,
-        "options": null
+        "path": "/",
+        "title": "Home",
+        "output": "index.html"
       },
       {
-        "name": "email",
-        "label": "Email",
-        "type": "email",
-        "required": true,
-        "minLength": null,
-        "maxLength": null,
-        "options": null
-      },
-      {
-        "name": "status",
-        "label": "Status",
-        "type": "select",
-        "required": true,
-        "minLength": null,
-        "maxLength": null,
-        "options": [
-          "new",
-          "contacted",
-          "closed"
-        ]
-      },
-      {
-        "name": "notes",
-        "label": "Notes",
-        "type": "string",
-        "required": false,
-        "minLength": null,
-        "maxLength": null,
-        "options": null
-      }
-    ],
-    "actions": [
-      {
-        "name": "markContacted",
-        "label": "Mark contacted",
-        "type": "update",
-        "permission": "public",
-        "effect": {
-          "kind": "record.update",
-          "set": {
-            "status": "contacted"
-          }
-        },
-        "events": {
-          "success": "action.executed",
-          "denied": "permission.denied"
-        },
-        "log": "Lead was marked as contacted."
-      },
-      {
-        "name": "summarize",
-        "label": "Summarize",
-        "type": "ai",
-        "permission": "authenticated",
-        "effect": {
-          "kind": "ai.summarizeRecord"
-        },
-        "events": {
-          "success": "ai.executed",
-          "denied": "permission.denied"
-        },
-        "log": "AI summary generated for one Lead record."
-      },
-      {
-        "name": "close",
-        "label": "Close",
-        "type": "update",
-        "permission": "public",
-        "effect": {
-          "kind": "record.update",
-          "set": {
-            "status": "closed"
-          }
-        },
-        "events": {
-          "success": "action.executed",
-          "denied": "permission.denied"
-        },
-        "log": "Lead was closed."
+        "path": "/writing",
+        "title": "Writing",
+        "output": "writing/index.html"
       }
     ]
   },
   "runtime": {
-    "target": "browser",
-    "persistence": {
-      "adapter": "local",
-      "strategy": "localStorage",
-      "scope": "browser-local",
-      "namespacedByResource": true
+    "target": "static-site",
+    "generation": {
+      "strategy": "static",
+      "output": "dist"
     },
-    "composition": {
-      "layout": "stack",
-      "generatedSections": [
-        "form",
-        "table"
-      ]
-    },
-    "generatedInterface": {
-      "form": true,
-      "table": true,
-      "validation": true
-    },
-    "events": [
-      "record.created",
-      "record.deleted",
-      "records.cleared",
-      "validation.failed",
-      "action.executed",
-      "ai.executed",
-      "permission.denied"
-    ],
-    "developerTools": {
-      "inspectPanel": false,
-      "frameworkLog": false
-    }
-  },
-  "capabilities": [
-    {
-      "name": "storage.local",
-      "source": "runtime",
-      "adapter": "local"
-    },
-    {
-      "name": "runtime.browser",
-      "source": "runtime"
-    },
-    {
-      "name": "record.read",
-      "source": "runtime"
-    },
-    {
-      "name": "record.create",
-      "source": "runtime"
-    },
-    {
-      "name": "record.delete",
-      "source": "runtime"
-    },
-    {
-      "name": "record.update",
-      "source": "action",
-      "actions": [
-        "markContacted",
-        "close"
-      ]
-    },
-    {
-      "name": "ai.summarizeRecord",
-      "source": "ai",
-      "actions": [
-        "summarize"
-      ]
-    }
-  ],
-  "api": {
-    "enabled": false,
-    "resource": "lead",
-    "routes": [
-      {
-        "method": "GET",
-        "path": "/api/leads",
-        "capability": "record.read"
-      },
-      {
-        "method": "POST",
-        "path": "/api/leads",
-        "capability": "record.create"
-      },
-      {
-        "method": "PATCH",
-        "path": "/api/leads/:id",
-        "capability": "record.update"
-      },
-      {
-        "method": "DELETE",
-        "path": "/api/leads/:id",
-        "capability": "record.delete"
-      }
+    "generatedArtifacts": [
+      "pages",
+      "system.json",
+      "llms.txt",
+      "context.json"
     ]
   },
-  "ai": {
-    "enabled": true,
-    "capabilities": [
-      "summarizeRecord"
-    ],
-    "declaredActions": [
-      {
-        "name": "summarize",
-        "label": "Summarize",
-        "capability": "summarizeRecord"
-      }
-    ],
-    "guarantees": {
-      "requiresExplicitDeclaration": true,
-      "doesNotRunByDefault": true,
-      "generatedUiOnlyWhenDeclared": true,
-      "silentMutation": false
-    }
-  },
   "trust": {
+    "siteContractExplicit": true,
     "generatedArtifactsInspectable": true,
-    "aiBehaviorManifested": true,
-    "devToolingEnvironmentAware": true,
-    "persistenceIsVisible": true,
-    "permissionsManifested": true,
-    "permissionsEnforced": true,
-    "runtimeTargetManifested": true,
-    "apiContractManifested": true
+    "tokenFriendlyContextAvailable": true
   }
 }

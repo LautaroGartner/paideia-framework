@@ -1,72 +1,44 @@
-import { mkdirSync, writeFileSync } from "fs";
-import { ai } from "./ai.js";
-import { generateDatabaseSchema } from "./database.js";
-import { email, select, string } from "./fields.js";
-import { generateSystemManifest } from "./manifest.js";
-import { generatePage } from "./page.js";
-import { resource } from "./resource.js";
+import {
+  mkdirSync,
+  rmSync,
+  writeFileSync,
+} from "fs";
+import path from "node:path";
 
-const leadResource = resource(
-  "Lead",
-  {
-    name: string("Name").required().min(2),
+import { site } from "./site.js";
+import {
+  generateContextJson,
+  generateLlmsText,
+  generateSiteManifest,
+  generateSitePage,
+  getSiteOutputPath,
+} from "./site-build.js";
 
-    email: email("Email").required(),
-
-    status: select(
-      ["new", "contacted", "closed"],
-      "Status"
-    ).required(),
-
-    notes: string("Notes"),
-  },
-
-  {
-    storage: "local",
-
-    permissions: {
-      create: "public",
-      update: "public",
-      delete: "admin",
-      ai: "authenticated",
-    },
-
-    actions: [
-      {
-        name: "markContacted",
-        label: "Mark contacted",
-        type: "update",
-        set: {
-          status: "contacted",
-        },
-        log: "Lead was marked as contacted.",
-      },
-
-      ai.summarizeRecord({
-        name: "summarize",
-        label: "Summarize",
-        log: "AI summary generated for one Lead record.",
-      }),
-
-      {
-        name: "close",
-        label: "Close",
-        type: "update",
-        set: {
-          status: "closed",
-        },
-        log: "Lead was closed.",
-      },
-    ],
-  }
-);
+rmSync("dist", {
+  force: true,
+  recursive: true,
+});
 
 mkdirSync("dist", { recursive: true });
 
-writeFileSync("dist/index.html", generatePage(leadResource));
-writeFileSync("dist/schema.sql", generateDatabaseSchema(leadResource));
-writeFileSync("dist/system.json", generateSystemManifest(leadResource));
+for (const page of site.pages) {
+  const outputPath = path.join(
+    "dist",
+    getSiteOutputPath(page)
+  );
 
-console.log("Generated dist/index.html");
-console.log("Generated dist/schema.sql");
+  mkdirSync(path.dirname(outputPath), {
+    recursive: true,
+  });
+
+  writeFileSync(outputPath, generateSitePage(site, page));
+  console.log(`Generated ${outputPath}`);
+}
+
+writeFileSync("dist/system.json", generateSiteManifest(site));
+writeFileSync("dist/llms.txt", generateLlmsText(site));
+writeFileSync("dist/context.json", generateContextJson(site));
+
 console.log("Generated dist/system.json");
+console.log("Generated dist/llms.txt");
+console.log("Generated dist/context.json");

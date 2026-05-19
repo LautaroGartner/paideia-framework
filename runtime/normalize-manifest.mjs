@@ -25,6 +25,10 @@ function normalizeActions(actions = []) {
 }
 
 export function normalizeManifestContract(manifest) {
+  if (!manifest.resource) {
+    return manifest;
+  }
+
   return {
     ...manifest,
     resource: {

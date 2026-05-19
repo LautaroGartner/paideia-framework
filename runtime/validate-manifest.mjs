@@ -59,6 +59,95 @@ function normalizeFields(fields) {
   );
 }
 
+function validateSiteContract(site, diagnostics) {
+  if (!isObject(site)) {
+    diagnostics.push(
+      diagnostic(
+        "MISSING_SITE_CONTRACT",
+        "site",
+        "Manifest must include a site contract.",
+        {
+          received: site,
+        }
+      )
+    );
+    return;
+  }
+
+  if (!isNonEmptyString(site.title)) {
+    diagnostics.push(
+      diagnostic(
+        "INVALID_SITE_TITLE",
+        "site.title",
+        "site.title must be a non-empty string.",
+        {
+          received: site.title,
+        }
+      )
+    );
+  }
+
+  if (!isNonEmptyString(site.description)) {
+    diagnostics.push(
+      diagnostic(
+        "INVALID_SITE_DESCRIPTION",
+        "site.description",
+        "site.description must be a non-empty string.",
+        {
+          received: site.description,
+        }
+      )
+    );
+  }
+
+  if (!Array.isArray(site.pages)) {
+    diagnostics.push(
+      diagnostic(
+        "INVALID_SITE_PAGES",
+        "site.pages",
+        "site.pages must be an array.",
+        {
+          received: site.pages,
+        }
+      )
+    );
+    return;
+  }
+
+  site.pages.forEach((page, index) => {
+    const pagePath = `site.pages[${index}]`;
+
+    if (!isObject(page)) {
+      diagnostics.push(
+        diagnostic(
+          "INVALID_SITE_PAGE",
+          pagePath,
+          "Every site page must be an object.",
+          {
+            received: page,
+          }
+        )
+      );
+      return;
+    }
+
+    for (const key of ["path", "title", "output"]) {
+      if (!isNonEmptyString(page[key])) {
+        diagnostics.push(
+          diagnostic(
+            "INVALID_SITE_PAGE_FIELD",
+            `${pagePath}.${key}`,
+            `Every site page must include a non-empty ${key}.`,
+            {
+              received: page[key],
+            }
+          )
+        );
+      }
+    }
+  });
+}
+
 export function validateManifestContract(manifest) {
   const diagnostics = [];
 
@@ -148,7 +237,14 @@ export function validateManifestContract(manifest) {
     }
   }
 
-  if (!isObject(manifest.resource)) {
+  const hasSiteContract = isObject(manifest.site);
+
+  if (hasSiteContract) {
+    validateSiteContract(
+      manifest.site,
+      diagnostics
+    );
+  } else if (!isObject(manifest.resource)) {
     diagnostics.push(
       diagnostic(
         "MISSING_RESOURCE_CONTRACT",
@@ -350,7 +446,35 @@ export function validateManifestContract(manifest) {
       )
     );
   } else {
-    if (!isObject(manifest.runtime.persistence)) {
+    if (hasSiteContract) {
+      if (manifest.runtime.target !== "static-site") {
+        diagnostics.push(
+          diagnostic(
+            "INVALID_STATIC_SITE_TARGET",
+            "runtime.target",
+            "Static site manifests must use runtime.target static-site.",
+            {
+              expected: "static-site",
+              received: manifest.runtime.target,
+            }
+          )
+        );
+      }
+
+      if (!isObject(manifest.runtime.generation)) {
+        diagnostics.push(
+          diagnostic(
+            "MISSING_STATIC_SITE_GENERATION",
+            "runtime.generation",
+            "Static site manifests must include generation metadata.",
+            {
+              received:
+                manifest.runtime.generation,
+            }
+          )
+        );
+      }
+    } else if (!isObject(manifest.runtime.persistence)) {
       diagnostics.push(
         diagnostic(
           "MISSING_RUNTIME_PERSISTENCE",
@@ -381,6 +505,7 @@ export function validateManifestContract(manifest) {
     }
 
     if (
+      !hasSiteContract &&
       !isObject(
         manifest.runtime.generatedInterface
       )
