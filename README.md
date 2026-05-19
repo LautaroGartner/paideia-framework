@@ -1,318 +1,180 @@
 # Paideia Framework
 
-Inspectable AI-native application runtime framework.
+Inspectable website and application runtime framework.
 
-Describe the system. Generate the software. Keep it understandable.
+Build software that humans and agents can understand.
 
-Current version: v1.6.0-rc.1
-Authoring release tests
+Current version: `v1.6.0`
+Authoring ergonomics foundation
 
-Paideia starts from a resource declaration and generates a small, inspectable application foundation around it: UI, validation, local persistence, permissions, actions, AI capability contracts, SQL schema, runtime events, and a manifest that explains what was generated.
-
-`v1.3.0` froze the first serious contract line:
-
-```txt
-Actions are explicit, inspectable, diagnosable runtime contracts.
-```
-
-That means actions are not just buttons in generated UI. They are declared in `dist/system.json`, rendered by `paideia explain`, validated by `paideia doctor`, and emitted as structured runtime events.
-
-`v1.4.0` stabilizes the manifest-first runtime foundation: validated manifest in, stable runtime contract out.
-
-## Screenshots
-
-| Generated runtime | Development CLI |
-| --- | --- |
-| ![Generated runtime](screenshots/runtime.png) | ![Development CLI](screenshots/cli.png) |
-
-| Development inspect panel | Manifest contract |
-| --- | --- |
-| ![Development inspect panel](screenshots/inspect-panel.png) | ![Manifest contract](screenshots/manifest.png) |
-
-| Accessibility report |
-| --- |
-| ![Accessibility report](screenshots/a11y.png) |
-
-The CLI and inspect-panel screenshots show development tooling. Production exposes only the generated app and the safe `/__paideia/health` endpoint.
+---
 
 ## What Paideia Is
 
-Paideia is:
+Paideia is an experimental framework for building:
 
-- a small operational runtime for generated applications
-- a resource-driven generator for inspectable software foundations
-- a manifest-centered trust model for humans and AI tools
-- an experiment in making generated systems understandable instead of opaque
+* small inspectable websites
+* structured writing systems
+* agent-readable applications
+* explicit runtime contracts
+* token-friendly software
 
-Paideia is not yet:
+Paideia generates both:
 
-- a real authentication system
-- a production database layer
-- a production backend route runtime
-- a hosted platform
-- a real AI provider integration
-- an external project scaffolder
+* human-facing pages
+* machine-readable runtime context
 
-## Current Limitations
+The goal is not abstraction for its own sake.
 
-Paideia is still early and intentionally small. `v1.3.0` is usable for generating, inspecting, diagnosing, and serving the included Lead demo, but it is not a full application platform yet.
+The goal is software that can explain itself.
 
-Current runtime limitations include:
+---
 
-- browser-local persistence only
-- simulated authentication roles
-- simulated AI behavior
-- manifested API routes, but no production backend route runtime yet
-- no production database adapters yet
-- no deployment adapters yet
-- no `paideia new` project scaffolder yet
+## Current Capabilities
 
-## Demo Story
+`v1.6.0` can currently generate and serve:
 
-The included demo is a lead intake system.
+* static pages
+* structured writing collections
+* individual post pages
+* generated navigation
+* `404.html`
+* `system.json`
+* `context.json`
+* `llms.txt`
+* runtime diagnostics
+* writing validation
+* post creation CLI workflow
 
-It shows how one resource declaration can produce a generated runtime that explains itself:
+Paideia now powers its own website runtime.
 
-1. Create a lead.
-2. Trigger validation when required fields are missing or invalid.
-3. Mark the lead as contacted with a declared update action.
-4. Try to summarize the lead as the public user.
-5. Watch the AI action get blocked by permissions.
-6. Inspect the event, manifest, schema, and runtime diagnostics to understand why.
+---
 
-The point is not that Paideia has a form. The point is that the generated system can explain its own shape, permissions, actions, and runtime behavior.
+## Philosophy
 
-## What Paideia Generates
+Paideia is built around a few constraints:
 
-From the current Lead resource declaration, Paideia generates:
+* explicit contracts over hidden magic
+* inspectable generated output
+* small operational surfaces
+* minimal dependencies
+* AI-native, not AI-chaotic
+* software understandable by humans and agents
+* structure where mistakes are expensive
+* flexibility where creativity matters
 
-- `dist/index.html`: a browser runtime for creating, validating, storing, and acting on records
-- `dist/schema.sql`: a SQL schema for the resource
-- `dist/system.json`: a manifest describing the generated system contract
+---
 
-The generated browser runtime uses `localStorage` for persistence. Runtime dependencies are intentionally zero.
+# Human + Agent Readability
 
-## Action Contracts
+Paideia applications expose structured runtime context.
 
-`v1.3.0` makes actions explicit in the generated manifest.
-
-Example action contract:
-
-```json
-{
-  "name": "summarize",
-  "label": "Summarize",
-  "type": "ai",
-  "permission": "authenticated",
-  "effect": {
-    "kind": "ai.summarizeRecord"
-  },
-  "events": {
-    "success": "ai.executed",
-    "denied": "permission.denied"
-  },
-  "log": "AI summary generated for one Lead record."
-}
-```
-
-Action contracts are:
-
-- generated into `dist/system.json`
-- rendered by `paideia explain`
-- validated by `paideia doctor`
-- connected to runtime event emission
-- tied to explicit permission requirements
-
-## Runtime Events
-
-The generated browser runtime emits named events:
+Generated outputs currently include:
 
 ```txt
-record.created
-record.deleted
-records.cleared
-validation.failed
-action.executed
-ai.executed
-permission.denied
+dist/
+  index.html
+  writing/index.html
+  writing/<post>/index.html
+  404.html
+  system.json
+  context.json
+  llms.txt
 ```
 
-Action event payloads include action metadata, resource metadata, permission context, effect details, and timestamps.
+## `system.json`
 
-In development, browser events are visible in the generated framework log and bridged to the CLI:
+Machine-readable runtime contract.
 
-```txt
-[12:44:10 PM] Browser record.created
+Includes:
+
+* framework metadata
+* site metadata
+* pages
+* writing metadata
+* runtime capabilities
+* generation structure
+
+## `context.json`
+
+Compressed runtime/site summary for agents.
+
+Includes:
+
+* site map
+* writing summaries
+* latest posts
+* token-friendly metadata
+
+## `llms.txt`
+
+Human + agent guidance entrypoint.
+
+---
+
+# Website Runtime
+
+The current runtime generates a minimal static website from explicit contracts.
+
+Example:
+
+```ts
+export const site = defineSite({
+  title: "Lautaro Gärtner",
+  description: "Building Paideia Framework in public.",
+  pages: [
+    {
+      path: "/",
+      title: "Home",
+      body: "Building Paideia Framework in public.",
+    },
+  ],
+});
 ```
 
-Production builds omit the browser-to-CLI bridge.
+Writing is also contract-based:
 
-## Manifest Contract
+```ts
+export const post = {
+  slug: "building-paideia",
+  title: "Building Paideia",
+  description: "Why I started building Paideia.",
+  publishedAt: "2026-05-20",
+  body: `
+Paideia began as an experiment around inspectable runtimes,
+minimal software systems, and explicit contracts.
+`,
+  tokenSummary:
+    "Introduction post explaining the motivation behind Paideia Framework.",
+};
+```
 
-`dist/system.json` is the contract of the generated system. It includes:
+---
 
-- framework name, version, and mode
-- resource fields, actions, and permissions
-- action effects and success/denied event contracts
-- runtime target, persistence, composition, events, and developer tooling flags
-- capabilities for storage, runtime, records, actions, and AI
-- API route contracts
-- AI guarantees and declared actions
-- trust guarantees
+# CLI
 
-This manifest is designed for humans, AI tools, editors, diagnostics, and future automation.
-
-## CLI
-
-The `v1.3.0` CLI lifecycle is:
+Current CLI surface:
 
 ```bash
-paideia dev
 paideia build
-paideia manifest
-paideia schema
-paideia explain
-paideia doctor
 paideia start
+paideia doctor
+paideia new post "Post title"
 paideia --version
 paideia --help
 ```
 
-Command behavior:
+## Commands
 
-- `dev`: starts the development runtime on port `4317` by default
-- `build`: generates production artifacts into `dist/`
-- `manifest`: prints `dist/system.json`
-- `schema`: prints `dist/schema.sql`
-- `explain`: prints a Markdown summary of the generated system contract
-- `doctor`: validates generated artifacts, action contracts, and action event contracts
-- `start`: serves production artifacts on port `3000` by default
+### `paideia build`
 
-The package declares:
+Generates website artifacts into `dist/`.
 
-```json
-{
-  "bin": {
-    "paideia": "./cli.mjs"
-  }
-}
-```
+### `paideia start`
 
-The npm scripts delegate to the same CLI path:
+Starts the production runtime.
 
-```bash
-npm run build
-npm run doctor
-npm run start
-```
-
-## Installed CLI Workflow
-
-Paideia separates the installed package root from the directory where the command is run:
-
-```txt
-package root
-  Paideia CLI, runtime, source, and build tooling
-
-project root
-  the current working directory where generated output is read or written
-```
-
-Supported from any directory after installing or linking the package:
-
-```bash
-paideia --version
-paideia --help
-paideia doctor
-paideia manifest
-paideia schema
-paideia explain
-paideia start
-```
-
-If generated output is missing, read-side commands fail cleanly and guide you to run `paideia build`.
-
-External project generation is not supported yet. Outside the Paideia checkout, `paideia build` and `paideia dev` fail with explicit guidance instead of assuming the repository demo layout.
-
-The installed CLI smoke check packs Paideia, installs it into a fresh temp project, and runs the installed binary:
-
-```bash
-npm run test:install-smoke
-```
-
-## Development Runtime
-
-Start the live development runtime:
-
-```bash
-paideia dev
-```
-
-Default development port:
-
-```txt
-4317
-```
-
-Custom port:
-
-```bash
-PAIDEIA_PORT=4000 paideia dev
-```
-
-Development mode includes:
-
-- file watching
-- rebuilds
-- local HTTP serving
-- browser-to-CLI event bridge
-- interactive CLI commands
-- generated inspect panel
-- generated framework log
-- dev server runtime inspector API
-- accessibility report
-
-Interactive commands:
-
-```txt
-help
-open
-runtime
-manifest
-schema
-events
-a11y
-clear
-exit
-```
-
-Development-only HTTP routes:
-
-```txt
-GET /__paideia/runtime
-GET /__paideia/manifest
-GET /__paideia/schema
-GET /__paideia/events
-GET /__paideia/accessibility
-```
-
-These endpoints are development tooling. They are not part of production output.
-
-## Production Runtime
-
-Build production artifacts:
-
-```bash
-paideia build
-```
-
-Start the production runtime:
-
-```bash
-paideia start
-```
-
-Default production port:
+Default port:
 
 ```txt
 3000
@@ -324,49 +186,69 @@ Custom port:
 PAIDEIA_PORT=4000 paideia start
 ```
 
-Production serves generated files from `dist/` and deliberately excludes development tooling such as the inspect panel, framework log, runtime inspector API, and browser-to-CLI bridge.
+### `paideia doctor`
 
-Production runtime behavior:
+Validates generated runtime artifacts and runtime state.
 
-- deterministic artifact serving from `dist/`
-- lifecycle logs for boot, ready, shutdown, and fatal errors
-- graceful shutdown on `SIGINT` and `SIGTERM`
-- `GET` and `HEAD` only
-- hardened path containment for generated artifacts
-- malformed URL handling
-- explicit MIME types
-- generic 404 responses
-- method restrictions before health handling
-- security headers:
-  - `X-Content-Type-Options: nosniff`
-  - `X-Frame-Options: DENY`
-  - `Referrer-Policy: no-referrer`
+### `paideia new post`
 
-### Health Endpoint
+Creates a new writing contract:
 
-Production exposes one intentional operational endpoint:
+```bash
+paideia new post "My Post"
+```
+
+Generates:
+
+```txt
+src/writing/my-post.ts
+```
+
+---
+
+# Production Runtime
+
+The runtime intentionally stays small and operationally explicit.
+
+Current production behavior:
+
+* deterministic static serving from `dist/`
+* generated 404 handling
+* graceful shutdown
+* hardened path resolution
+* explicit MIME handling
+* method restrictions
+* structured runtime logs
+* health endpoint
+* minimal trusted surface
+
+Production excludes development tooling.
+
+---
+
+# Health Endpoint
+
+Production exposes one operational endpoint:
 
 ```txt
 GET /__paideia/health
 ```
 
-Example response:
+Example:
 
 ```json
 {
   "status": "ok",
   "framework": "paideia",
-  "version": "1.3.0",
+  "version": "1.6.0",
   "runtime": "production",
   "dist": "ready"
 }
 ```
 
-This endpoint exposes only safe operational metadata. It does not expose filesystem paths, environment variables, stack traces, schema contents, generated app internals, or runtime adapters.
+---
 
-Other internal runtime routes, such as `/__paideia/runtime`, remain hidden in production.
-
-## Diagnostics
+# Diagnostics
 
 Run diagnostics:
 
@@ -374,157 +256,53 @@ Run diagnostics:
 paideia doctor
 ```
 
-`doctor` validates:
+Current checks include:
 
-- `dist/` exists
-- `dist/index.html` exists
-- `dist/system.json` exists and is valid JSON
-- `dist/schema.sql` exists, is non-empty, and includes `CREATE TABLE`
-- generated action contracts
-- generated action event contracts
-- `.paideia/logs/runtime.log` is readable when present
-- `.paideia/logs/crash.log` is readable when present
+* generated runtime artifacts
+* `system.json`
+* `context.json`
+* writing runtime structure
+* generated pages
+* generated post pages
+* runtime logs
+* writing validation
+* manifest validation
 
-When diagnostics fail, doctor prints the likely next action. It also ends with a compact summary of passed, failed, and skipped checks.
+---
 
-## Runtime State
+# Writing Diagnostics
 
-Paideia writes local runtime state under:
+Paideia validates writing contracts before generation.
 
-```txt
-.paideia/
-```
+Current validation includes:
 
-Current structure:
+* duplicate slugs
+* missing title
+* missing body
+* invalid dates
+* invalid collection shape
+* warning-level missing descriptions
+* warning-level missing token summaries
 
-```txt
-.paideia/
-  logs/
-    runtime.log
-    crash.log
-```
+Diagnostics are explicit and structured.
 
-`runtime.log` is append-only operational history. It records lifecycle events, rejected methods, 404 requests, startup validation failures, and mirrored crash entries.
+---
 
-`crash.log` is append-only fatal incident history. It records uncaught exceptions and unhandled rejections.
+# Testing
 
-`.paideia/` is local runtime state and should not be committed.
-
-## Resource Model
-
-Resources describe the shape and behavior of the system:
-
-```ts
-const leadResource = resource(
-  "Lead",
-  {
-    name: string("Name").required().min(2),
-    email: email("Email").required(),
-    status: select(["new", "contacted", "closed"], "Status").required(),
-    notes: string("Notes"),
-  },
-  {
-    storage: "local",
-    permissions: {
-      create: "public",
-      update: "public",
-      delete: "admin",
-      ai: "authenticated",
-    },
-    actions: [
-      {
-        name: "markContacted",
-        label: "Mark contacted",
-        type: "update",
-        set: {
-          status: "contacted",
-        },
-      },
-      ai.summarizeRecord({
-        name: "summarize",
-        label: "Summarize",
-      }),
-    ],
-  }
-);
-```
-
-A resource can declare:
-
-- fields and validation rules
-- local storage behavior
-- permission requirements
-- update actions
-- explicit AI actions
-- runtime target
-
-The reusable Lead example lives in `examples/lead-system/resource.ts`.
-
-## Permissions
-
-Paideia permissions are explicit and manifested:
-
-```txt
-public
-authenticated
-admin
-```
-
-The generated browser runtime enforces declared permissions for creation, update actions, deletion, and AI actions. The manifest records those requirements so the generated system can be inspected instead of guessed.
-
-## Capabilities
-
-Capabilities describe what the generated system can do:
-
-- `storage.local`
-- `runtime.browser`
-- `record.read`
-- `record.create`
-- `record.update`
-- `record.delete`
-- `ai.summarizeRecord`
-
-Capabilities are derived from the resource and actions, then written to `dist/system.json`.
-
-## AI Philosophy
-
-Paideia is AI-native, not AI-chaotic.
-
-AI behavior must be:
-
-- explicitly declared
-- visible in the generated UI only when declared
-- represented in the manifest
-- auditable through logs and runtime events in development
-- blocked by permissions when required
-
-AI must not silently mutate state.
-
-## Verification
-
-The v1.3.0 release line was verified with:
+Current verification flow:
 
 ```bash
-node cli.mjs build
-node cli.mjs doctor
-node cli.mjs manifest
-node cli.mjs schema
-node cli.mjs explain
+npm run test:new-post
+npm run test:writing
+npm run test:site
+npm run test:manifest
 npm run test:install-smoke
-PAIDEIA_PORT=4023 node cli.mjs start
-curl http://localhost:4023/__paideia/health
 ```
 
-Production hardening checks:
+---
 
-```txt
-GET /__paideia/health -> 200
-GET /__paideia/runtime -> 404
-POST /__paideia/health -> 405
-encoded path traversal attempts -> 404
-```
-
-## Dependency Policy
+# Dependency Policy
 
 Current dependency shape:
 
@@ -535,63 +313,106 @@ dev dependencies:
 - @types/node
 ```
 
-This is intentional. Paideia favors simple infrastructure, small trusted surfaces, and inspectable generated output.
+This is intentional.
 
-## Runtime Philosophy
+Paideia favors:
 
-Paideia's runtime should stay:
+* simple infrastructure
+* inspectable systems
+* small trusted surfaces
+* readable generated output
 
-- small
-- inspectable
-- operationally explicit
-- secure by default
-- boring in production
+---
 
-The runtime favors native Node modules, explicit files, structured logs, and stable contracts over middleware stacks or hidden magic.
+# Runtime Philosophy
 
-## Roadmap
+Paideia applications should remain:
 
-The next architectural phase is not more action features, more CLI commands, or more UI generation.
+* small
+* understandable
+* inspectable
+* operationally explicit
+* token-efficient
+* secure by default
+* boring in production
 
-The next phase is:
+---
+
+# Current Status
+
+Paideia is still early.
+
+It is not yet:
+
+* a full application platform
+* a production database runtime
+* a hosted deployment platform
+* a production auth system
+* a general-purpose frontend framework competitor
+
+But it is now capable of powering a real minimal website and structured writing system.
+
+That is an important threshold.
+
+---
+
+# Roadmap
+
+## v1.4
+
+Manifest-first runtime foundation
+
+## v1.5
+
+Website runtime foundation
+
+## v1.6
+
+Authoring ergonomics foundation
+
+## v1.7
+
+Content format and writing ergonomics
+
+## v2
+
+Useful small websites and applications
+
+Long-term direction:
 
 ```txt
-v1.4: manifest-first runtime foundation
+explicit contracts
+→ inspectable runtime
+→ human-readable software
+→ agent-readable software
 ```
 
-The long-term direction:
+---
 
-```txt
-resource declaration
--> manifest contract
--> runtime execution
-```
+# Release History
 
-Eventually:
+## v1.1
 
-```txt
-Paideia language / AI contract generation
--> manifest contract
--> runtime execution
-```
+Production runtime foundation
 
-Future milestones:
+## v1.3
 
-- `v1.4`: manifest-first runtime foundation
-- `v1.4.0-alpha.1`: manifest contract validation
-- `v1.4.0-alpha.2`: path-aware manifest diagnostics
-- `v1.4.0-beta.1`: normalized manifest runtime contract
-- `v1.4.0`: manifest-first runtime foundation
-- `v1.5`: Paideia-powered website runtime
-- `v1.6`: AI provider adapters with audit logs
-- `v2`: deeper runtime, compiler, and language direction
+Explicit action/runtime contracts
 
-## Release History
+## v1.4
 
-- `v1.1`: production runtime, diagnostics, structured logs, health, and CLI surface
-- `v1.2`: coherent CLI toolchain
-- `v1.3.0`: actions are explicit, inspectable, diagnosable runtime contracts
+Manifest-first runtime contracts
 
-## License
+## v1.5
+
+Website runtime foundation
+
+## v1.6
+
+Authoring ergonomics foundation
+
+---
+
+# License
 
 MIT
