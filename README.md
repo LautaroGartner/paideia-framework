@@ -4,7 +4,8 @@ Inspectable AI-native application runtime framework.
 
 Describe the system. Generate the software. Keep it understandable.
 
-Status: `v1.4.0-beta.1`
+Current version: v1.4.0
+Manifest-first runtime foundation
 
 Paideia starts from a resource declaration and generates a small, inspectable application foundation around it: UI, validation, local persistence, permissions, actions, AI capability contracts, SQL schema, runtime events, and a manifest that explains what was generated.
 
@@ -16,7 +17,7 @@ Actions are explicit, inspectable, diagnosable runtime contracts.
 
 That means actions are not just buttons in generated UI. They are declared in `dist/system.json`, rendered by `paideia explain`, validated by `paideia doctor`, and emitted as structured runtime events.
 
-`v1.4.0-beta.1` adds manifest normalization: validated manifest in, stable runtime contract out.
+`v1.4.0` stabilizes the manifest-first runtime foundation: validated manifest in, stable runtime contract out.
 
 ## Screenshots
 
@@ -580,6 +581,7 @@ Future milestones:
 - `v1.4.0-alpha.1`: manifest contract validation
 - `v1.4.0-alpha.2`: path-aware manifest diagnostics
 - `v1.4.0-beta.1`: normalized manifest runtime contract
+- `v1.4.0`: manifest-first runtime foundation
 - `v1.5`: working API routes from the manifested API contract
 - `v1.6`: AI provider adapters with audit logs
 - `v2`: deeper runtime, compiler, and language direction
