@@ -46,6 +46,12 @@ console.log(
     .map(([kind, count]) => `${kind}=${count}`)
     .join(", ")}`
 );
+console.log("Capabilities:");
+
+for (const capability of runtime.capabilities ?? []) {
+  console.log(`- ${capability}`);
+}
+
 console.log(
   `Manifest: ${
     runtime.runtime?.normalizedManifest ? "normalized" : "raw"

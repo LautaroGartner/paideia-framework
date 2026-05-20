@@ -1,54 +1,67 @@
 {
   "framework": {
     "name": "Paideia Framework",
-    "version": "1.7.0-beta.1"
+    "version": "1.7.0-rc.1"
   },
   "build": {
-    "id": "1cea7bb",
-    "generatedAt": "2026-05-20T12:12:40.550Z",
+    "id": "9e1a6fd",
+    "generatedAt": "2026-05-20T12:16:24.904Z",
     "mode": "production",
     "artifactCount": 8
   },
+  "capabilities": [
+    "site.static",
+    "writing.posts",
+    "runtime.inspect",
+    "runtime.identity",
+    "runtime.artifactInventory",
+    "manifest.validate",
+    "manifest.normalize",
+    "diagnostics.manifest",
+    "diagnostics.writing",
+    "agent.context",
+    "agent.guide"
+  ],
   "artifacts": [
     {
       "path": "index.html",
       "kind": "page",
-      "bytes": 4295
+      "bytes": 4293
     },
     {
       "path": "writing/index.html",
       "kind": "page",
-      "bytes": 4295
+      "bytes": 4293
     },
     {
       "path": "writing/building-paideia/index.html",
       "kind": "post",
-      "bytes": 3856
+      "bytes": 3854
     },
     {
       "path": "404.html",
       "kind": "fallback",
-      "bytes": 3282
+      "bytes": 3280
     },
     {
       "path": "system.json",
       "kind": "contract",
-      "bytes": 1984
+      "bytes": 2272
     },
     {
       "path": "context.json",
       "kind": "agent-context",
-      "bytes": 1318
+      "bytes": 1316
     },
     {
       "path": "runtime.json",
       "kind": "runtime-identity",
-      "bytes": 1127
+      "bytes": 1415
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 785
+      "bytes": 783
     }
   ],
   "site": {

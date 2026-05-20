@@ -45,6 +45,15 @@ assert.equal(
 );
 
 const runtime = readJson("dist/runtime.json");
+const system = readJson("dist/system.json");
+const requiredCapabilities = [
+  "site.static",
+  "runtime.identity",
+  "manifest.validate",
+  "manifest.normalize",
+  "agent.context",
+  "agent.guide",
+];
 
 assert.equal(
   runtime.framework?.name,
@@ -56,6 +65,18 @@ assert.equal(typeof runtime.build?.generatedAt, "string");
 assert.equal(runtime.build?.mode, "production");
 assert.equal(typeof runtime.build?.artifactCount, "number");
 assert.equal(Array.isArray(runtime.artifacts), true);
+assert.ok(Array.isArray(runtime.capabilities));
+assert.ok(runtime.capabilities.includes("runtime.identity"));
+assert.equal(
+  new Set(runtime.capabilities).size,
+  runtime.capabilities.length
+);
+assert.deepEqual(system.capabilities, runtime.capabilities);
+
+for (const capability of requiredCapabilities) {
+  assert.ok(runtime.capabilities.includes(capability));
+}
+
 assert.equal(typeof runtime.site?.pages, "number");
 assert.equal(typeof runtime.site?.posts, "number");
 assert.equal(runtime.runtime?.inspectable, true);
@@ -104,6 +125,8 @@ assert.equal(inspect.status, 0, inspect.stderr);
 assert.ok(inspect.stdout.includes("Framework: Paideia Framework"));
 assert.ok(inspect.stdout.includes(`Build ID: ${runtime.build.id}`));
 assert.ok(inspect.stdout.includes("Artifact kinds:"));
+assert.ok(inspect.stdout.includes("Capabilities:"));
+assert.ok(inspect.stdout.includes("- runtime.identity"));
 assert.ok(inspect.stdout.includes("Manifest: normalized"));
 assert.ok(inspect.stdout.includes("Diagnostics: passing"));
 

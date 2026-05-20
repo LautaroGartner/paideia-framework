@@ -4,12 +4,59 @@ import path from "node:path";
 import { normalizeManifestContract } from "./normalize-manifest.mjs";
 import { validateManifestContract } from "./validate-manifest.mjs";
 
+const REQUIRED_RUNTIME_CAPABILITIES = [
+  "site.static",
+  "runtime.identity",
+  "manifest.validate",
+  "manifest.normalize",
+  "agent.context",
+  "agent.guide",
+];
+
 function isObject(value) {
   return (
     value !== null &&
     typeof value === "object" &&
     !Array.isArray(value)
   );
+}
+
+function validateCapabilities(value, label) {
+  if (!Array.isArray(value)) {
+    return {
+      ok: false,
+      reason: `${label} must be an array`,
+    };
+  }
+
+  for (const capability of value) {
+    if (typeof capability !== "string" || capability.length === 0) {
+      return {
+        ok: false,
+        reason: `${label} must contain strings only`,
+      };
+    }
+  }
+
+  if (new Set(value).size !== value.length) {
+    return {
+      ok: false,
+      reason: `${label} must not contain duplicates`,
+    };
+  }
+
+  for (const capability of REQUIRED_RUNTIME_CAPABILITIES) {
+    if (!value.includes(capability)) {
+      return {
+        ok: false,
+        reason: `${label} missing ${capability}`,
+      };
+    }
+  }
+
+  return {
+    ok: true,
+  };
 }
 
 function readSystemJson(config) {
@@ -123,6 +170,19 @@ export function validateSystemJson(config) {
     }
 
     parsed = normalizeManifestContract(parsed);
+
+    const capabilities = validateCapabilities(
+      parsed.capabilities,
+      "system.json capabilities"
+    );
+
+    if (!capabilities.ok) {
+      return {
+        ok: false,
+        label: "dist/system.json contract valid",
+        reason: capabilities.reason,
+      };
+    }
 
     return {
       ok: true,
@@ -251,6 +311,19 @@ export function validateRuntimeJson(config) {
           reason: `${artifact.path} listed in runtime inventory but missing`,
         };
       }
+    }
+
+    const capabilities = validateCapabilities(
+      parsed.capabilities,
+      "runtime.json capabilities"
+    );
+
+    if (!capabilities.ok) {
+      return {
+        ok: false,
+        label: "dist/runtime.json valid",
+        reason: capabilities.reason,
+      };
     }
 
     return {

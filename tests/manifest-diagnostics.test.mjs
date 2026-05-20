@@ -6,6 +6,15 @@ import path from "node:path";
 import { validateManifestContract } from "../runtime/validate-manifest.mjs";
 import { validateSystemJson } from "../runtime/validate.mjs";
 
+const requiredCapabilities = [
+  "site.static",
+  "runtime.identity",
+  "manifest.validate",
+  "manifest.normalize",
+  "agent.context",
+  "agent.guide",
+];
+
 function readFixture(name) {
   return JSON.parse(
     fs.readFileSync(
@@ -16,6 +25,37 @@ function readFixture(name) {
       "utf8"
     )
   );
+}
+
+function readContractFixture(name) {
+  return JSON.parse(
+    fs.readFileSync(
+      new URL(`./fixtures/${name}`, import.meta.url),
+      "utf8"
+    )
+  );
+}
+
+function validateSystemJsonFixture(manifest) {
+  const tempDir = fs.mkdtempSync(
+    path.join(os.tmpdir(), "paideia-manifest-")
+  );
+
+  try {
+    fs.writeFileSync(
+      path.join(tempDir, "system.json"),
+      JSON.stringify(manifest)
+    );
+
+    return validateSystemJson({
+      distDir: tempDir,
+    });
+  } finally {
+    fs.rmSync(tempDir, {
+      recursive: true,
+      force: true,
+    });
+  }
 }
 
 function assertDiagnostic(result, code, diagnosticPath) {
@@ -63,30 +103,41 @@ for (const [fixture, code, diagnosticPath] of cases) {
   assertDiagnostic(result, code, diagnosticPath);
 }
 
-const tempDir = fs.mkdtempSync(
-  path.join(os.tmpdir(), "paideia-manifest-")
+const systemResult = validateSystemJsonFixture(
+  readFixture("invalid-action-type.json")
 );
 
-try {
-  fs.writeFileSync(
-    path.join(tempDir, "system.json"),
-    JSON.stringify(readFixture("invalid-action-type.json"))
-  );
+assertDiagnostic(
+  systemResult,
+  "INVALID_ACTION_TYPE",
+  "resource.actions.badAction.type"
+);
 
-  const result = validateSystemJson({
-    distDir: tempDir,
-  });
+const duplicateCapabilities = validateSystemJsonFixture({
+  ...readContractFixture("manifest-valid.json"),
+  capabilities: [
+    ...requiredCapabilities,
+    "runtime.identity",
+  ],
+});
 
-  assertDiagnostic(
-    result,
-    "INVALID_ACTION_TYPE",
-    "resource.actions.badAction.type"
-  );
-} finally {
-  fs.rmSync(tempDir, {
-    recursive: true,
-    force: true,
-  });
-}
+assert.equal(duplicateCapabilities.ok, false);
+assert.equal(
+  duplicateCapabilities.reason,
+  "system.json capabilities must not contain duplicates"
+);
+
+const missingCapabilities = validateSystemJsonFixture({
+  ...readContractFixture("manifest-valid.json"),
+  capabilities: requiredCapabilities.filter(
+    (capability) => capability !== "agent.guide"
+  ),
+});
+
+assert.equal(missingCapabilities.ok, false);
+assert.equal(
+  missingCapabilities.reason,
+  "system.json capabilities missing agent.guide"
+);
 
 console.log("manifest diagnostic tests passed");

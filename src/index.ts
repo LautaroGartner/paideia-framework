@@ -14,7 +14,7 @@ import {
   generateNotFoundPage,
   generatePostPage,
   generateRuntimeIdentity,
-  generateSiteManifest,
+  generateSiteManifestWithCapabilities,
   generateSitePage,
   getPostOutputPath,
   getSiteOutputPath,
@@ -38,6 +38,20 @@ rmSync("dist", {
 });
 
 mkdirSync("dist", { recursive: true });
+
+const runtimeCapabilities = [
+  "site.static",
+  "writing.posts",
+  "runtime.inspect",
+  "runtime.identity",
+  "runtime.artifactInventory",
+  "manifest.validate",
+  "manifest.normalize",
+  "diagnostics.manifest",
+  "diagnostics.writing",
+  "agent.context",
+  "agent.guide",
+];
 
 const artifacts = [
   ...site.pages.map((page) => ({
@@ -124,6 +138,7 @@ function addRuntimeIdentity(): void {
       artifactCount: artifacts.length,
       artifacts: artifactInventory(),
       buildId: buildId(),
+      capabilities: runtimeCapabilities,
       generatedAt: new Date().toISOString(),
       mode: "production",
     });
@@ -154,7 +169,10 @@ for (const post of site.posts) {
 }
 
 addArtifact("404.html", generateNotFoundPage(site));
-addArtifact("system.json", generateSiteManifest(site));
+addArtifact(
+  "system.json",
+  generateSiteManifestWithCapabilities(site, runtimeCapabilities)
+);
 addArtifact("context.json", generateContextJson(site));
 addArtifact("llms.txt", generateLlmsText(site));
 addRuntimeIdentity();

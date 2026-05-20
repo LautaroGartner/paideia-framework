@@ -1,9 +1,22 @@
 {
   "framework": {
     "name": "Paideia Framework",
-    "version": "1.7.0-beta.1",
+    "version": "1.7.0-rc.1",
     "mode": "production"
   },
+  "capabilities": [
+    "site.static",
+    "writing.posts",
+    "runtime.inspect",
+    "runtime.identity",
+    "runtime.artifactInventory",
+    "manifest.validate",
+    "manifest.normalize",
+    "diagnostics.manifest",
+    "diagnostics.writing",
+    "agent.context",
+    "agent.guide"
+  ],
   "site": {
     "title": "Lautaro Gärtner",
     "description": "Building Paideia Framework in public.",

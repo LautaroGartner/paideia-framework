@@ -688,6 +688,13 @@ ${renderNavigation(navPages)}
 }
 
 export function generateSiteManifest(site: SiteDefinition): string {
+  return generateSiteManifestWithCapabilities(site, []);
+}
+
+export function generateSiteManifestWithCapabilities(
+  site: SiteDefinition,
+  capabilities: string[]
+): string {
   const orderedPosts = sortPosts(site.posts);
 
   const manifest = {
@@ -696,6 +703,7 @@ export function generateSiteManifest(site: SiteDefinition): string {
       version: FRAMEWORK_VERSION,
       mode: config.mode,
     },
+    capabilities,
     site: {
       title: site.title,
       description: site.description,
@@ -758,6 +766,7 @@ export function generateRuntimeIdentity(
       bytes: number;
     }>;
     buildId: string;
+    capabilities: string[];
     generatedAt: string;
     mode: "development" | "production";
   }
@@ -773,6 +782,7 @@ export function generateRuntimeIdentity(
       mode: options.mode,
       artifactCount: options.artifactCount,
     },
+    capabilities: options.capabilities,
     artifacts: options.artifacts,
     site: {
       pages: site.pages.length,
