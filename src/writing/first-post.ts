@@ -1,7 +1,6 @@
 export const post = {
   slug: "building-paideia",
   title: "Building Paideia: Software That Explains Itself",
-  label: "Paideia note",
   topics: [
     "inspectability",
     "system contracts",

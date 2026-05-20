@@ -28,7 +28,6 @@
       "path": "/generated-systems-should-explain-themselves",
       "canonical": "https://lautarogartner.com/generated-systems-should-explain-themselves",
       "title": "Why Generated Systems Should Explain Themselves",
-      "label": "Paideia note",
       "topics": [
         "runtime identity",
         "generated systems",
@@ -42,7 +41,6 @@
       "path": "/building-paideia",
       "canonical": "https://lautarogartner.com/building-paideia",
       "title": "Building Paideia: Software That Explains Itself",
-      "label": "Paideia note",
       "topics": [
         "inspectability",
         "system contracts",

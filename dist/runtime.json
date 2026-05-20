@@ -4,8 +4,8 @@
     "version": "1.7.0"
   },
   "build": {
-    "id": "4011844",
-    "generatedAt": "2026-05-20T18:36:05.315Z",
+    "id": "7722bc6",
+    "generatedAt": "2026-05-20T22:53:05.740Z",
     "mode": "production",
     "artifactCount": 10
   },
@@ -26,27 +26,27 @@
     {
       "path": "index.html",
       "kind": "page",
-      "bytes": 6007
+      "bytes": 7052
     },
     {
       "path": "about/index.html",
       "kind": "page",
-      "bytes": 12136
+      "bytes": 13289
     },
     {
       "path": "generated-systems-should-explain-themselves/index.html",
       "kind": "post",
-      "bytes": 8923
+      "bytes": 10354
     },
     {
       "path": "building-paideia/index.html",
       "kind": "post",
-      "bytes": 12240
+      "bytes": 13671
     },
     {
       "path": "404.html",
       "kind": "fallback",
-      "bytes": 3400
+      "bytes": 4297
     },
     {
       "path": "favicon.svg",
@@ -56,17 +56,17 @@
     {
       "path": "system.json",
       "kind": "contract",
-      "bytes": 3685
+      "bytes": 3619
     },
     {
       "path": "context.json",
       "kind": "agent-context",
-      "bytes": 2426
+      "bytes": 2364
     },
     {
       "path": "runtime.json",
       "kind": "runtime-identity",
-      "bytes": 1615
+      "bytes": 1616
     },
     {
       "path": "llms.txt",

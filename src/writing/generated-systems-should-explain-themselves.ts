@@ -1,7 +1,6 @@
 export const post = {
   slug: "generated-systems-should-explain-themselves",
   title: "Why Generated Systems Should Explain Themselves",
-  label: "Paideia note",
   topics: [
     "runtime identity",
     "generated systems",
