@@ -752,6 +752,7 @@ export function generateRuntimeIdentity(
   site: SiteDefinition,
   options: {
     artifactCount: number;
+    buildId: string;
     generatedAt: string;
     mode: "development" | "production";
   }
@@ -762,6 +763,7 @@ export function generateRuntimeIdentity(
       version: FRAMEWORK_VERSION,
     },
     build: {
+      id: options.buildId,
       generatedAt: options.generatedAt,
       mode: options.mode,
       artifactCount: options.artifactCount,

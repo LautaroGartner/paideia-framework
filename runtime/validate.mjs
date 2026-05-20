@@ -168,6 +168,17 @@ export function validateRuntimeJson(config) {
       };
     }
 
+    if (
+      typeof parsed.build?.id !== "string" ||
+      !/^[0-9a-f]{7,16}$/i.test(parsed.build.id)
+    ) {
+      return {
+        ok: false,
+        label: "dist/runtime.json valid",
+        reason: "build.id must be a short hex hash",
+      };
+    }
+
     if (typeof parsed.build?.generatedAt !== "string") {
       return {
         ok: false,

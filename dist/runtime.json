@@ -1,10 +1,11 @@
 {
   "framework": {
     "name": "Paideia Framework",
-    "version": "1.7.0-alpha.1"
+    "version": "1.7.0-alpha.2"
   },
   "build": {
-    "generatedAt": "2026-05-20T11:48:16.501Z",
+    "id": "3d40451",
+    "generatedAt": "2026-05-20T11:52:55.923Z",
     "mode": "production",
     "artifactCount": 8
   },

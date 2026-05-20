@@ -31,6 +31,7 @@ const runtime = runtimeResult.runtime;
 
 console.log(`Framework: ${runtime.framework?.name ?? "unknown"}`);
 console.log(`Version: ${runtime.framework?.version ?? "unknown"}`);
+console.log(`Build ID: ${runtime.build?.id ?? "unknown"}`);
 console.log(`Pages: ${runtime.site?.pages ?? 0}`);
 console.log(`Posts: ${runtime.site?.posts ?? 0}`);
 console.log(`Artifacts: ${runtime.build?.artifactCount ?? 0}`);

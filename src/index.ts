@@ -3,6 +3,7 @@ import {
   rmSync,
   writeFileSync,
 } from "fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
 
 import { validateWritingPosts } from "../runtime/validate-writing.mjs";
@@ -48,6 +49,12 @@ const artifacts = [
   "llms.txt",
 ];
 
+const contentArtifacts = artifacts.filter(
+  (artifact) => artifact !== "runtime.json"
+);
+
+const outputs = new Map<string, string>();
+
 function writeArtifact(relativePath: string, contents: string): void {
   const outputPath = path.join("dist", relativePath);
 
@@ -58,32 +65,53 @@ function writeArtifact(relativePath: string, contents: string): void {
   writeFileSync(outputPath, contents);
 }
 
+function addArtifact(relativePath: string, contents: string): void {
+  outputs.set(relativePath, contents);
+}
+
+function buildId(): string {
+  const hash = createHash("sha256");
+
+  for (const artifact of contentArtifacts) {
+    hash.update(`${artifact}\0`);
+    hash.update(outputs.get(artifact) ?? "");
+    hash.update("\0");
+  }
+
+  return hash.digest("hex").slice(0, 7);
+}
+
 for (const page of site.pages) {
-  writeArtifact(
+  addArtifact(
     getSiteOutputPath(page),
     generateSitePage(site, page)
   );
 }
 
 for (const post of site.posts) {
-  writeArtifact(
+  addArtifact(
     getPostOutputPath(post),
     generatePostPage(site, post)
   );
 }
 
-writeArtifact("404.html", generateNotFoundPage(site));
-writeArtifact("system.json", generateSiteManifest(site));
-writeArtifact("context.json", generateContextJson(site));
-writeArtifact(
+addArtifact("404.html", generateNotFoundPage(site));
+addArtifact("system.json", generateSiteManifest(site));
+addArtifact("context.json", generateContextJson(site));
+addArtifact("llms.txt", generateLlmsText(site));
+addArtifact(
   "runtime.json",
   generateRuntimeIdentity(site, {
     artifactCount: artifacts.length,
+    buildId: buildId(),
     generatedAt: new Date().toISOString(),
     mode: "production",
   })
 );
-writeArtifact("llms.txt", generateLlmsText(site));
+
+for (const artifact of artifacts) {
+  writeArtifact(artifact, outputs.get(artifact) ?? "");
+}
 
 console.log("[paideia] build complete");
 console.log("");

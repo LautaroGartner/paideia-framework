@@ -51,6 +51,7 @@ assert.equal(
   "Paideia Framework"
 );
 assert.equal(typeof runtime.framework?.version, "string");
+assert.match(runtime.build?.id, /^[0-9a-f]{7,16}$/);
 assert.equal(typeof runtime.build?.generatedAt, "string");
 assert.equal(runtime.build?.mode, "production");
 assert.equal(typeof runtime.build?.artifactCount, "number");
@@ -73,7 +74,24 @@ const inspect = spawnSync("node", ["cli.mjs", "inspect"], {
 
 assert.equal(inspect.status, 0, inspect.stderr);
 assert.ok(inspect.stdout.includes("Framework: Paideia Framework"));
+assert.ok(inspect.stdout.includes(`Build ID: ${runtime.build.id}`));
 assert.ok(inspect.stdout.includes("Manifest: normalized"));
 assert.ok(inspect.stdout.includes("Diagnostics: passing"));
+
+const firstBuildId = runtime.build.id;
+const rebuild = spawnSync("npm", ["run", "build"], {
+  cwd: repoRoot,
+  encoding: "utf8",
+});
+
+assert.equal(rebuild.status, 0, rebuild.stderr);
+
+const rebuiltRuntime = readJson("dist/runtime.json");
+
+assert.equal(
+  rebuiltRuntime.build?.id,
+  firstBuildId,
+  "build id should remain stable across unchanged builds"
+);
 
 console.log("runtime identity tests passed");
