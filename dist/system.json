@@ -45,33 +45,23 @@
     ],
     "posts": [
       {
-        "slug": "building-paideia-software-that-explains-itself",
-        "path": "/writing/building-paideia-software-that-explains-itself",
-        "canonical": "https://lautarogartner.com/writing/building-paideia-software-that-explains-itself",
-        "title": "Building Paideia: Software That Explains Itself",
-        "description": "An essay on building Paideia, why generated software should be readable, and what changes when runtime systems can describe their own shape.",
-        "publishedAt": "2026-05-20",
-        "tokenSummary": "Long-form positioning essay about building Paideia as a small framework for self-describing generated systems with runtime identity, artifact inventory, deterministic build IDs, capabilities, diagnostics, and inspectability.",
-        "output": "writing/building-paideia-software-that-explains-itself/index.html"
-      },
-      {
         "slug": "generated-systems-should-explain-themselves",
         "path": "/writing/generated-systems-should-explain-themselves",
         "canonical": "https://lautarogartner.com/writing/generated-systems-should-explain-themselves",
         "title": "Why Generated Systems Should Explain Themselves",
-        "description": "A note on readable software, explicit runtime identity, and why generated systems should be able to describe what they made.",
+        "description": "Why generated software should expose its shape, contracts, capabilities, and security-relevant runtime facts.",
         "publishedAt": "2026-05-20",
-        "tokenSummary": "Positioning essay arguing that generated systems should expose explicit runtime identity, artifact inventories, capabilities, diagnostics, and agent-readable context.",
+        "tokenSummary": "Developer-facing essay explaining why generated systems should expose runtime identity, artifact inventories, capabilities, diagnostics, and security-relevant facts.",
         "output": "writing/generated-systems-should-explain-themselves/index.html"
       },
       {
         "slug": "building-paideia",
         "path": "/writing/building-paideia",
         "canonical": "https://lautarogartner.com/writing/building-paideia",
-        "title": "Building Paideia",
-        "description": "Why I started building Paideia Framework.",
+        "title": "Building Paideia: Software That Explains Itself",
+        "description": "Why I am building Paideia as a small framework for readable, inspectable, self-describing software systems.",
         "publishedAt": "2026-05-20",
-        "tokenSummary": "Introduction post explaining the motivation and philosophy behind Paideia Framework.",
+        "tokenSummary": "Long-form positioning essay about building Paideia as a small framework for self-describing generated systems with runtime identity, artifact inventory, deterministic build IDs, capabilities, diagnostics, and inspectability.",
         "output": "writing/building-paideia/index.html"
       }
     ]
