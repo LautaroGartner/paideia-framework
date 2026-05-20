@@ -1,6 +1,12 @@
 export const post = {
   slug: "building-paideia",
   title: "Building Paideia: Software That Explains Itself",
+  label: "Paideia note",
+  topics: [
+    "inspectability",
+    "system contracts",
+    "framework notes",
+  ],
   description:
     "Why I am building Paideia as a small framework for readable, inspectable, self-describing software systems.",
   publishedAt: "2026-05-20",

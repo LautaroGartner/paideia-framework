@@ -4,10 +4,10 @@
     "version": "1.7.0"
   },
   "build": {
-    "id": "7cfb235",
-    "generatedAt": "2026-05-20T12:35:35.026Z",
+    "id": "4011844",
+    "generatedAt": "2026-05-20T18:36:05.315Z",
     "mode": "production",
-    "artifactCount": 9
+    "artifactCount": 10
   },
   "capabilities": [
     "site.static",
@@ -26,47 +26,52 @@
     {
       "path": "index.html",
       "kind": "page",
-      "bytes": 4791
+      "bytes": 6007
     },
     {
-      "path": "writing/index.html",
+      "path": "about/index.html",
       "kind": "page",
-      "bytes": 4776
+      "bytes": 12136
     },
     {
-      "path": "writing/generated-systems-should-explain-themselves/index.html",
+      "path": "generated-systems-should-explain-themselves/index.html",
       "kind": "post",
-      "bytes": 8085
+      "bytes": 8923
     },
     {
-      "path": "writing/building-paideia/index.html",
+      "path": "building-paideia/index.html",
       "kind": "post",
-      "bytes": 11402
+      "bytes": 12240
     },
     {
       "path": "404.html",
       "kind": "fallback",
-      "bytes": 3275
+      "bytes": 3400
+    },
+    {
+      "path": "favicon.svg",
+      "kind": "asset",
+      "bytes": 339
     },
     {
       "path": "system.json",
       "kind": "contract",
-      "bytes": 3354
+      "bytes": 3685
     },
     {
       "path": "context.json",
       "kind": "agent-context",
-      "bytes": 2123
+      "bytes": 2426
     },
     {
       "path": "runtime.json",
       "kind": "runtime-identity",
-      "bytes": 1547
+      "bytes": 1615
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 1299
+      "bytes": 1351
     }
   ],
   "site": {

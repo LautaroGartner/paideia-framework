@@ -1,6 +1,12 @@
 export const post = {
   slug: "generated-systems-should-explain-themselves",
   title: "Why Generated Systems Should Explain Themselves",
+  label: "Paideia note",
+  topics: [
+    "runtime identity",
+    "generated systems",
+    "agents",
+  ],
   description:
     "Why generated software should expose its shape, contracts, capabilities, and security-relevant runtime facts.",
   publishedAt: "2026-05-20",

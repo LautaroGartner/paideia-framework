@@ -5,14 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Building Paideia: Software That Explains Itself - Lautaro Gärtner</title>
     <meta name="description" content="Why I am building Paideia as a small framework for readable, inspectable, self-describing software systems.">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <meta name="author" content="Lautaro Gärtner">
-    <link rel="canonical" href="https://lautarogartner.com/writing/building-paideia">
+    <link rel="canonical" href="https://lautarogartner.com/building-paideia">
     <style>
       :root {
+        --accent: #5f6f52;
+        --bg: #fbfaf7;
+        --line: #e8e2d8;
+        --muted: #6f6a61;
+        --text: #151515;
         color-scheme: light;
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: #f7f6f2;
-        color: #191816;
+        background: var(--bg);
+        color: var(--text);
       }
 
       * {
@@ -27,7 +33,7 @@
       .shell {
         width: min(760px, calc(100vw - 40px));
         margin: 0 auto;
-        padding: 42px 0 72px;
+        padding: 36px 0 64px;
       }
 
       header {
@@ -35,15 +41,15 @@
         justify-content: space-between;
         align-items: center;
         gap: 20px;
-        border-bottom: 1px solid #dedbd2;
-        padding-bottom: 18px;
+        padding-bottom: 10px;
       }
 
       header a,
+      header .brand,
       nav a {
         color: inherit;
-        font-size: 0.92rem;
-        font-weight: 700;
+        font-size: 0.9rem;
+        font-weight: 600;
         text-decoration: none;
       }
 
@@ -54,45 +60,67 @@
       }
 
       nav a {
-        color: #5f5a50;
-        font-weight: 650;
+        color: var(--muted);
+        font-weight: 500;
       }
 
       main {
-        padding-top: 78px;
+        padding-top: 64px;
       }
 
-      time {
-        color: #716b61;
-        font-size: 0.92rem;
+      .meta {
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.78rem;
+        line-height: 1.5;
+      }
+
+      .meta a {
+        color: inherit;
+      }
+
+      .post-kicker {
+        margin: 0 0 8px;
+        color: var(--accent);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        line-height: 1.4;
+        text-transform: uppercase;
       }
 
       h1 {
-        margin: 14px 0 0;
+        margin: 12px 0 0;
         max-width: 680px;
-        font-size: clamp(2.4rem, 7vw, 4.7rem);
-        line-height: 0.96;
+        font-size: clamp(2rem, 7vw, 3.4rem);
+        line-height: 1;
         letter-spacing: 0;
       }
 
       .description {
         max-width: 620px;
-        margin: 24px 0 0;
-        color: #4f4a43;
-        font-size: 1.15rem;
+        margin: 22px 0 0;
+        color: var(--text);
+        font-size: 1rem;
         line-height: 1.7;
       }
 
       .post-body {
-        margin-top: 50px;
+        margin-top: 46px;
       }
 
       .post-body p {
         max-width: 640px;
         margin: 0 0 24px;
-        color: #292622;
-        font-size: 1.1rem;
+        color: var(--text);
+        font-size: 1.03rem;
         line-height: 1.8;
+      }
+
+      a:hover {
+        color: var(--accent);
+        text-decoration: underline;
+        text-underline-offset: 3px;
       }
 
       footer {
@@ -102,9 +130,9 @@
         gap: 18px;
         flex-wrap: wrap;
         margin-top: 92px;
-        border-top: 1px solid #dedbd2;
+        border-top: 1px solid var(--line);
         padding-top: 18px;
-        color: #716b61;
+        color: var(--muted);
         font-size: 0.88rem;
       }
 
@@ -119,16 +147,15 @@
       @media (max-width: 640px) {
         .shell {
           width: min(100vw - 28px, 760px);
-          padding-top: 26px;
+          padding-top: 24px;
         }
 
         header {
-          align-items: flex-start;
-          flex-direction: column;
+          gap: 16px;
         }
 
         main {
-          padding-top: 54px;
+          padding-top: 48px;
         }
 
         footer {
@@ -141,15 +168,15 @@
   <body>
     <div class="shell">
       <header>
-        <a href="/">Lautaro Gärtner</a>
-
+        <a class="brand" href="/">Lautaro Gärtner</a>
         <nav aria-label="Site">
-          <a href="/">Home</a>
-          <a href="/writing">Writing</a>
+          <a href="/about">About</a>
+          <a href="https://x.com/lautyxgr" rel="me">𝕏 Follow me</a>
         </nav>
       </header>
       <main>
-        <time datetime="2026-05-20">2026-05-20</time>
+        <p class="post-kicker">Paideia note</p>
+        <div class="meta"><a href="https://x.com/lautyxgr" rel="me">@lautyxgr</a> | <time datetime="2026-05-20">May 20, 2026</time> | today</div>
         <h1>Building Paideia: Software That Explains Itself</h1>
         <p class="description">Why I am building Paideia as a small framework for readable, inspectable, self-describing software systems.</p>
         <div class="post-body">
@@ -189,13 +216,9 @@
         </div>
       </main>
       <footer>
+        <span>Lautaro Gärtner (<a href="https://x.com/lautyxgr" rel="me">@lautyxgr</a>)</span>
         <span>Generated by Paideia Framework v1.7.0.</span>
-        <nav aria-label="Agent files">
-          <a href="/system.json">system.json</a>
-          <a href="/runtime.json">runtime.json</a>
-          <a href="/context.json">context.json</a>
-          <a href="/llms.txt">llms.txt</a>
-        </nav>
+        <a href="https://github.com/LautaroGartner/paideia-framework">Source</a>
       </footer>
     </div>
   </body>

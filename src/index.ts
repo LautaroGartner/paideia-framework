@@ -10,6 +10,7 @@ import { validateWritingPosts } from "../runtime/validate-writing.mjs";
 import { site } from "./site.js";
 import {
   generateContextJson,
+  generateFaviconSvg,
   generateLlmsText,
   generateNotFoundPage,
   generatePostPage,
@@ -65,6 +66,10 @@ const artifacts = [
   {
     path: "404.html",
     kind: "fallback",
+  },
+  {
+    path: "favicon.svg",
+    kind: "asset",
   },
   {
     path: "system.json",
@@ -169,6 +174,7 @@ for (const post of site.posts) {
 }
 
 addArtifact("404.html", generateNotFoundPage(site));
+addArtifact("favicon.svg", generateFaviconSvg());
 addArtifact(
   "system.json",
   generateSiteManifestWithCapabilities(site, runtimeCapabilities)

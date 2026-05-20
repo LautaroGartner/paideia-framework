@@ -22,9 +22,13 @@ function readJson(path) {
 }
 
 assertFileExists("dist/index.html");
-assertFileExists("dist/writing/index.html");
-assertFileExists("dist/writing/building-paideia/index.html");
+assertFileExists("dist/about/index.html");
+assertFileExists("dist/building-paideia/index.html");
+assertFileExists(
+  "dist/generated-systems-should-explain-themselves/index.html"
+);
 assertFileExists("dist/404.html");
+assertFileExists("dist/favicon.svg");
 assertFileExists("dist/llms.txt");
 assertFileExists("dist/context.json");
 
@@ -36,10 +40,12 @@ assert.equal(Array.isArray(context.pages), true);
 assert.equal(Array.isArray(context.posts), true);
 
 const postHtml = readText(
-  "dist/writing/building-paideia/index.html"
+  "dist/building-paideia/index.html"
 );
 
 assert.ok(postHtml.includes("Building Paideia"));
+assert.ok(postHtml.includes("@lautyxgr"));
+assert.ok(postHtml.includes("May 20, 2026"));
 
 const system = readJson("dist/system.json");
 
