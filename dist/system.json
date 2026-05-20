@@ -45,6 +45,16 @@
     ],
     "posts": [
       {
+        "slug": "building-paideia-software-that-explains-itself",
+        "path": "/writing/building-paideia-software-that-explains-itself",
+        "canonical": "https://lautarogartner.com/writing/building-paideia-software-that-explains-itself",
+        "title": "Building Paideia: Software That Explains Itself",
+        "description": "An essay on building Paideia, why generated software should be readable, and what changes when runtime systems can describe their own shape.",
+        "publishedAt": "2026-05-20",
+        "tokenSummary": "Long-form positioning essay about building Paideia as a small framework for self-describing generated systems with runtime identity, artifact inventory, deterministic build IDs, capabilities, diagnostics, and inspectability.",
+        "output": "writing/building-paideia-software-that-explains-itself/index.html"
+      },
+      {
         "slug": "generated-systems-should-explain-themselves",
         "path": "/writing/generated-systems-should-explain-themselves",
         "canonical": "https://lautarogartner.com/writing/generated-systems-should-explain-themselves",
