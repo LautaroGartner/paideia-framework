@@ -4,8 +4,8 @@ Inspectable website and application runtime framework.
 
 Build software that humans and agents can understand.
 
-Current version: `v1.6.0`
-Authoring ergonomics foundation
+Current version: `v1.7.0`
+Runtime identity foundation
 
 ---
 
@@ -32,7 +32,7 @@ The goal is software that can explain itself.
 
 ## Current Capabilities
 
-`v1.6.0` can currently generate and serve:
+`v1.7.0` can currently generate and serve:
 
 * static pages
 * structured writing collections
@@ -43,8 +43,12 @@ The goal is software that can explain itself.
 * `runtime.json`
 * `context.json`
 * `llms.txt`
+* deterministic build identity
+* generated artifact inventory
+* runtime capability declarations
 * runtime diagnostics
 * writing validation
+* runtime inspection CLI
 * post creation CLI workflow
 
 Paideia now powers its own website runtime.
@@ -90,16 +94,38 @@ Machine-readable runtime contract.
 
 ## `runtime.json`
 
-Runtime identity and build metadata.
+Runtime identity, build metadata, and generated artifact inventory.
 
 Includes:
 
 * framework metadata
-* site metadata
-* pages
-* writing metadata
-* runtime capabilities
-* generation structure
+* deterministic build fingerprint
+* generated artifact paths, kinds, and byte sizes
+* runtime capability declarations
+* site and writing counts
+* normalized manifest status
+* agent-readable runtime flags
+
+## Runtime Capabilities
+
+Generated systems declare what they can do:
+
+```txt
+site.static
+writing.posts
+runtime.inspect
+runtime.identity
+runtime.artifactInventory
+manifest.validate
+manifest.normalize
+diagnostics.manifest
+diagnostics.writing
+agent.context
+agent.guide
+```
+
+Capabilities are emitted in both `system.json` and `runtime.json`.
+`paideia doctor` validates that the declarations are present, unique, and complete.
 
 ## `context.json`
 
@@ -175,7 +201,7 @@ paideia --help
 
 ### `paideia build`
 
-Generates website artifacts into `dist/`.
+Generates website artifacts into `dist/` and prints a structured build summary.
 
 ### `paideia start`
 
@@ -200,7 +226,7 @@ Reports manifest contract failures with diagnostic codes, paths, and messages.
 
 ### `paideia inspect`
 
-Prints the generated runtime identity summary.
+Prints the generated runtime identity summary, build ID, artifact kinds, capabilities, manifest status, and diagnostic status.
 
 ### `paideia new post`
 
@@ -252,7 +278,7 @@ Example:
 {
   "status": "ok",
   "framework": "paideia",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "runtime": "production",
   "dist": "ready"
 }
@@ -280,6 +306,9 @@ Current checks include:
 * runtime logs
 * writing validation
 * manifest validation
+* runtime identity validation
+* capability validation
+* artifact inventory validation
 
 ---
 
@@ -310,6 +339,8 @@ npm run test:new-post
 npm run test:writing
 npm run test:site
 npm run test:manifest
+npm run test:manifest-diagnostics
+npm run test:runtime
 npm run test:install-smoke
 ```
 
@@ -363,7 +394,7 @@ It is not yet:
 * a production auth system
 * a general-purpose frontend framework competitor
 
-But it is now capable of powering a real minimal website and structured writing system.
+But it is now capable of powering a real minimal website and structured writing system with a self-describing runtime identity layer.
 
 That is an important threshold.
 
@@ -385,7 +416,7 @@ Authoring ergonomics foundation
 
 ## v1.7
 
-Content format and writing ergonomics
+Runtime identity foundation
 
 ## v2
 
@@ -423,6 +454,10 @@ Website runtime foundation
 ## v1.6
 
 Authoring ergonomics foundation
+
+## v1.7
+
+Runtime identity foundation
 
 ---
 

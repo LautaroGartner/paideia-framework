@@ -1,7 +1,7 @@
 {
   "site": {
     "title": "Lautaro Gärtner",
-    "description": "Building Paideia Framework in public.",
+    "description": "Building Paideia Framework: self-describing software systems.",
     "url": "https://lautarogartner.com",
     "author": "Lautaro Gärtner",
     "language": "en"
@@ -12,17 +12,25 @@
       "canonical": "https://lautarogartner.com/",
       "title": "Home",
       "description": "Personal site for Lautaro Gärtner and Paideia Framework.",
-      "tokenSummary": "Home page introducing Lautaro and the Paideia Framework build log."
+      "tokenSummary": "Home page introducing Lautaro and Paideia Framework as a self-describing runtime experiment."
     },
     {
       "path": "/writing",
       "canonical": "https://lautarogartner.com/writing",
       "title": "Writing",
       "description": "Notes on software, systems, agents, and Paideia.",
-      "tokenSummary": "Writing index for essays and notes about software, agents, and Paideia."
+      "tokenSummary": "Writing index for essays and notes about readable software, agents, generated systems, and Paideia."
     }
   ],
   "posts": [
+    {
+      "slug": "generated-systems-should-explain-themselves",
+      "path": "/writing/generated-systems-should-explain-themselves",
+      "canonical": "https://lautarogartner.com/writing/generated-systems-should-explain-themselves",
+      "title": "Why Generated Systems Should Explain Themselves",
+      "publishedAt": "2026-05-20",
+      "tokenSummary": "Positioning essay arguing that generated systems should expose explicit runtime identity, artifact inventories, capabilities, diagnostics, and agent-readable context."
+    },
     {
       "slug": "building-paideia",
       "path": "/writing/building-paideia",
@@ -33,11 +41,11 @@
     }
   ],
   "writing": {
-    "postCount": 1,
-    "latestPost": "building-paideia"
+    "postCount": 2,
+    "latestPost": "generated-systems-should-explain-themselves"
   },
   "generatedBy": {
     "name": "Paideia Framework",
-    "version": "1.7.0-rc.1"
+    "version": "1.7.0"
   }
 }

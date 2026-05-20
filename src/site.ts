@@ -34,7 +34,7 @@ export function defineSite(site: SiteDefinition): SiteDefinition {
 
 export const site = defineSite({
   title: "Lautaro Gärtner",
-  description: "Building Paideia Framework in public.",
+  description: "Building Paideia Framework: self-describing software systems.",
   url: "https://lautarogartner.com",
   author: "Lautaro Gärtner",
   language: "en",
@@ -43,18 +43,21 @@ export const site = defineSite({
     {
       path: "/",
       title: "Home",
-      description: "Personal site for Lautaro Gärtner and Paideia Framework.",
-      body: "Building Paideia Framework in public.",
+      description:
+        "Personal site for Lautaro Gärtner and Paideia Framework.",
+      body: "Building Paideia Framework: small software systems that can explain themselves.",
       nav: true,
-      tokenSummary: "Home page introducing Lautaro and the Paideia Framework build log.",
+      tokenSummary:
+        "Home page introducing Lautaro and Paideia Framework as a self-describing runtime experiment.",
     },
     {
       path: "/writing",
       title: "Writing",
       description: "Notes on software, systems, agents, and Paideia.",
-      body: "Notes on software, systems, and building Paideia.",
+      body: "Notes on readable software, generated systems, agents, and building Paideia.",
       nav: true,
-      tokenSummary: "Writing index for essays and notes about software, agents, and Paideia.",
+      tokenSummary:
+        "Writing index for essays and notes about readable software, agents, generated systems, and Paideia.",
     },
   ],
 });

@@ -1,7 +1,7 @@
 {
   "framework": {
     "name": "Paideia Framework",
-    "version": "1.7.0-rc.1",
+    "version": "1.7.0",
     "mode": "production"
   },
   "capabilities": [
@@ -19,7 +19,7 @@
   ],
   "site": {
     "title": "Lautaro Gärtner",
-    "description": "Building Paideia Framework in public.",
+    "description": "Building Paideia Framework: self-describing software systems.",
     "url": "https://lautarogartner.com",
     "author": "Lautaro Gärtner",
     "language": "en",
@@ -30,7 +30,7 @@
         "title": "Home",
         "description": "Personal site for Lautaro Gärtner and Paideia Framework.",
         "nav": true,
-        "tokenSummary": "Home page introducing Lautaro and the Paideia Framework build log.",
+        "tokenSummary": "Home page introducing Lautaro and Paideia Framework as a self-describing runtime experiment.",
         "output": "index.html"
       },
       {
@@ -39,11 +39,21 @@
         "title": "Writing",
         "description": "Notes on software, systems, agents, and Paideia.",
         "nav": true,
-        "tokenSummary": "Writing index for essays and notes about software, agents, and Paideia.",
+        "tokenSummary": "Writing index for essays and notes about readable software, agents, generated systems, and Paideia.",
         "output": "writing/index.html"
       }
     ],
     "posts": [
+      {
+        "slug": "generated-systems-should-explain-themselves",
+        "path": "/writing/generated-systems-should-explain-themselves",
+        "canonical": "https://lautarogartner.com/writing/generated-systems-should-explain-themselves",
+        "title": "Why Generated Systems Should Explain Themselves",
+        "description": "A note on readable software, explicit runtime identity, and why generated systems should be able to describe what they made.",
+        "publishedAt": "2026-05-20",
+        "tokenSummary": "Positioning essay arguing that generated systems should expose explicit runtime identity, artifact inventories, capabilities, diagnostics, and agent-readable context.",
+        "output": "writing/generated-systems-should-explain-themselves/index.html"
+      },
       {
         "slug": "building-paideia",
         "path": "/writing/building-paideia",
