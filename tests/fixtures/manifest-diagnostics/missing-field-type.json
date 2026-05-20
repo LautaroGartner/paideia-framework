@@ -1,0 +1,20 @@
+{
+  "framework": {
+    "name": "Paideia Framework",
+    "version": "1.6.1",
+    "mode": "production"
+  },
+  "resource": {
+    "name": "Article",
+    "slug": "articles",
+    "fields": {
+      "title": {}
+    }
+  },
+  "runtime": {
+    "persistence": {
+      "adapter": "sqlite"
+    },
+    "generatedInterface": {}
+  }
+}

@@ -76,10 +76,34 @@ const systemJson = validateSystemJson(config);
 if (systemJson.ok) {
   pass(systemJson.label);
 } else {
+  const hasDiagnostics =
+    (systemJson.diagnostics ?? []).length > 0;
+
   fail(
-    `${systemJson.label} (${systemJson.reason})`,
-    "run `paideia build` to regenerate dist/system.json"
+    hasDiagnostics
+      ? "dist/system.json contract invalid"
+      : `${systemJson.label} (${systemJson.reason})`,
+    hasDiagnostics
+      ? undefined
+      : "run `paideia build` to regenerate dist/system.json"
   );
+
+  for (const diagnostic of systemJson.diagnostics ?? []) {
+    fail(`${diagnostic.code} at ${diagnostic.path}`);
+    console.log(`  ${diagnostic.message}`);
+
+    if ("expected" in diagnostic) {
+      console.log(
+        `  expected: ${JSON.stringify(diagnostic.expected)}`
+      );
+    }
+
+    if ("received" in diagnostic) {
+      console.log(
+        `  received: ${JSON.stringify(diagnostic.received)}`
+      );
+    }
+  }
 }
 
 const actionContracts = validateActionContracts(config);

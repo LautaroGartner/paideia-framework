@@ -2,6 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 
+import { createRuntimeConfig } from "../runtime/config.mjs";
+import { validateSystemJson } from "../runtime/validate.mjs";
+
 const ROOT = process.cwd();
 const manifestPath = path.join(ROOT, "dist", "system.json");
 
@@ -11,20 +14,24 @@ if (!fs.existsSync(manifestPath)) {
   process.exit(1);
 }
 
-let manifest;
+const result = validateSystemJson(createRuntimeConfig());
 
-try {
-  manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
-} catch (error) {
-  console.error("[paideia] failed to parse dist/system.json");
+if (!result.ok) {
   console.error(
-    `[paideia] ${
-      error instanceof Error ? error.message : String(error)
-    }`
+    `[paideia] ${result.label} (${result.reason})`
   );
+
+  for (const diagnostic of result.diagnostics ?? []) {
+    console.error(
+      `[paideia] ${diagnostic.code} at ${diagnostic.path}`
+    );
+    console.error(`[paideia] ${diagnostic.message}`);
+  }
+
   process.exit(1);
 }
 
+const manifest = result.manifest;
 const framework = manifest.framework ?? {};
 const resource = manifest.resource ?? {};
 const runtime = manifest.runtime ?? {};

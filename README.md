@@ -189,6 +189,7 @@ PAIDEIA_PORT=4000 paideia start
 ### `paideia doctor`
 
 Validates generated runtime artifacts and runtime state.
+Reports manifest contract failures with diagnostic codes, paths, and messages.
 
 ### `paideia new post`
 

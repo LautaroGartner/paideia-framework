@@ -1,0 +1,17 @@
+{
+  "resource": {
+    "name": "Article",
+    "slug": "articles",
+    "fields": {
+      "title": {
+        "type": "string"
+      }
+    }
+  },
+  "runtime": {
+    "persistence": {
+      "adapter": "sqlite"
+    },
+    "generatedInterface": {}
+  }
+}

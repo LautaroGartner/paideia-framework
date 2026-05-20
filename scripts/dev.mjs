@@ -17,6 +17,7 @@ import {
   assertPackageCheckoutProject,
   packageRoot,
 } from "./project.mjs";
+import { validateSystemJson } from "../runtime/validate.mjs";
 
 assertPackageCheckoutProject("dev");
 
@@ -179,6 +180,17 @@ function readJsonFile(relativePath) {
   }
 }
 
+function readManifestResult() {
+  return validateSystemJson({
+    distDir: DIST_DIR,
+  });
+}
+
+function readNormalizedManifest() {
+  const result = readManifestResult();
+  return result.ok ? result.manifest : null;
+}
+
 function startDevServer() {
   const server = createServer(async (request, response) => {
     if (
@@ -222,17 +234,18 @@ function startDevServer() {
       request.method === "GET" &&
       request.url === "/__paideia/manifest"
     ) {
-      const manifest = readJsonFile("dist/system.json");
+      const result = readManifestResult();
 
-      if (!manifest) {
+      if (!result.ok) {
         sendJson(response, {
-          error: "Manifest not found",
-        }, 404);
+          error: result.reason,
+          diagnostics: result.diagnostics ?? [],
+        }, result.reason === "missing" ? 404 : 422);
 
         return;
       }
 
-      sendJson(response, manifest);
+      sendJson(response, result.manifest);
       return;
     }
 
@@ -280,7 +293,7 @@ function startDevServer() {
       request.method === "GET" &&
       request.url === "/__paideia/runtime"
     ) {
-      const manifest = readJsonFile("dist/system.json");
+      const manifest = readNormalizedManifest();
 
       sendJson(response, {
         framework: manifest?.framework ?? null,
@@ -506,7 +519,7 @@ function handleCliCommand(input) {
   }
 
   if (command === "runtime") {
-    const manifest = readJsonFile("dist/system.json");
+    const manifest = readNormalizedManifest();
     const accessibility = getAccessibilityReport();
 
     console.log("");
@@ -533,7 +546,26 @@ function handleCliCommand(input) {
   }
 
   if (command === "manifest") {
-    printFile("dist/system.json");
+    const result = readManifestResult();
+
+    console.log("");
+
+    if (!result.ok) {
+      console.log(`${result.label} (${result.reason})`);
+
+      for (const diagnostic of result.diagnostics ?? []) {
+        console.log(
+          `${diagnostic.code} at ${diagnostic.path}`
+        );
+        console.log(`  ${diagnostic.message}`);
+      }
+
+      console.log("");
+      return;
+    }
+
+    console.log(JSON.stringify(result.manifest, null, 2));
+    console.log("");
     return;
   }
 
