@@ -27,6 +27,7 @@ function printHelp() {
   console.log("  paideia build    Build production artifacts");
   console.log("  paideia start    Start the production runtime");
   console.log("  paideia doctor   Run runtime diagnostics");
+  console.log("  paideia inspect  Print runtime identity summary");
   console.log("  paideia new post Create a writing post contract");
   console.log("  paideia manifest Print generated system manifest");
   console.log("  paideia schema   Print generated SQL schema");
@@ -59,6 +60,10 @@ const commands = {
   doctor: {
     bin: "node",
     args: [resolveScript("scripts/doctor.mjs")],
+  },
+  inspect: {
+    bin: "node",
+    args: [resolveScript("scripts/inspect.mjs")],
   },
   manifest: {
     bin: "node",

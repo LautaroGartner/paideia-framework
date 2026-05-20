@@ -4,6 +4,14 @@ import path from "node:path";
 import { normalizeManifestContract } from "./normalize-manifest.mjs";
 import { validateManifestContract } from "./validate-manifest.mjs";
 
+function isObject(value) {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    !Array.isArray(value)
+  );
+}
+
 function readSystemJson(config) {
   const filePath = path.join(config.distDir, "system.json");
 
@@ -34,6 +42,10 @@ export function validateRuntimeStartup(config) {
     {
       label: "dist/system.json exists",
       path: path.join(config.distDir, "system.json"),
+    },
+    {
+      label: "dist/runtime.json exists",
+      path: path.join(config.distDir, "runtime.json"),
     },
   ];
 
@@ -121,6 +133,66 @@ export function validateSystemJson(config) {
     return {
       ok: false,
       label: "dist/system.json valid",
+      reason: error.message,
+    };
+  }
+}
+
+export function validateRuntimeJson(config) {
+  const filePath = path.join(config.distDir, "runtime.json");
+
+  if (!fs.existsSync(filePath)) {
+    return {
+      ok: false,
+      label: "dist/runtime.json valid",
+      reason: "missing",
+    };
+  }
+
+  try {
+    const parsed = JSON.parse(fs.readFileSync(filePath, "utf8"));
+
+    if (!isObject(parsed)) {
+      return {
+        ok: false,
+        label: "dist/runtime.json valid",
+        reason: "expected object",
+      };
+    }
+
+    if (typeof parsed.framework?.version !== "string") {
+      return {
+        ok: false,
+        label: "dist/runtime.json valid",
+        reason: "framework.version missing",
+      };
+    }
+
+    if (typeof parsed.build?.generatedAt !== "string") {
+      return {
+        ok: false,
+        label: "dist/runtime.json valid",
+        reason: "build.generatedAt missing",
+      };
+    }
+
+    if (typeof parsed.build?.artifactCount !== "number") {
+      return {
+        ok: false,
+        label: "dist/runtime.json valid",
+        reason: "build.artifactCount must be a number",
+      };
+    }
+
+    return {
+      ok: true,
+      label: "dist/runtime.json valid",
+      runtime: parsed,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      label: "dist/runtime.json valid",
       reason: error.message,
     };
   }

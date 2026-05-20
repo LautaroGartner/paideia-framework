@@ -24,4 +24,4 @@ function readPackageVersion(): string | null {
 }
 
 export const FRAMEWORK_VERSION =
-  readPackageVersion() ?? "v1.6.0";
+  readPackageVersion() ?? "1.7.0-alpha.1";

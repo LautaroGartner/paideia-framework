@@ -134,6 +134,10 @@ function resolveRequestPath(requestUrl) {
     return path.join(DIST_DIR, "system.json");
   }
 
+  if (url.pathname === "/runtime.json") {
+    return path.join(DIST_DIR, "runtime.json");
+  }
+
   if (url.pathname === "/schema.sql") {
     return path.join(DIST_DIR, "schema.sql");
   }
@@ -336,6 +340,7 @@ function startDevServer() {
     console.log("Generated");
     console.log("  /            → dist/index.html");
     console.log("  /system.json → dist/system.json");
+    console.log("  /runtime.json → dist/runtime.json");
     console.log("  /schema.sql  → dist/schema.sql");
     console.log("");
   });

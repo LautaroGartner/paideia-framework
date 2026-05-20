@@ -40,6 +40,7 @@ The goal is software that can explain itself.
 * generated navigation
 * `404.html`
 * `system.json`
+* `runtime.json`
 * `context.json`
 * `llms.txt`
 * runtime diagnostics
@@ -78,6 +79,7 @@ dist/
   writing/<post>/index.html
   404.html
   system.json
+  runtime.json
   context.json
   llms.txt
 ```
@@ -85,6 +87,10 @@ dist/
 ## `system.json`
 
 Machine-readable runtime contract.
+
+## `runtime.json`
+
+Runtime identity and build metadata.
 
 Includes:
 
@@ -159,6 +165,7 @@ Current CLI surface:
 paideia build
 paideia start
 paideia doctor
+paideia inspect
 paideia new post "Post title"
 paideia --version
 paideia --help
@@ -190,6 +197,10 @@ PAIDEIA_PORT=4000 paideia start
 
 Validates generated runtime artifacts and runtime state.
 Reports manifest contract failures with diagnostic codes, paths, and messages.
+
+### `paideia inspect`
+
+Prints the generated runtime identity summary.
 
 ### `paideia new post`
 
@@ -261,6 +272,7 @@ Current checks include:
 
 * generated runtime artifacts
 * `system.json`
+* `runtime.json`
 * `context.json`
 * writing runtime structure
 * generated pages

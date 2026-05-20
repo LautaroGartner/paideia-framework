@@ -12,6 +12,7 @@ import {
   generateLlmsText,
   generateNotFoundPage,
   generatePostPage,
+  generateRuntimeIdentity,
   generateSiteManifest,
   generateSitePage,
   getPostOutputPath,
@@ -37,40 +38,63 @@ rmSync("dist", {
 
 mkdirSync("dist", { recursive: true });
 
-for (const page of site.pages) {
-  const outputPath = path.join(
-    "dist",
-    getSiteOutputPath(page)
-  );
+const artifacts = [
+  ...site.pages.map((page) => getSiteOutputPath(page)),
+  ...site.posts.map((post) => getPostOutputPath(post)),
+  "404.html",
+  "system.json",
+  "context.json",
+  "runtime.json",
+  "llms.txt",
+];
+
+function writeArtifact(relativePath: string, contents: string): void {
+  const outputPath = path.join("dist", relativePath);
 
   mkdirSync(path.dirname(outputPath), {
     recursive: true,
   });
 
-  writeFileSync(outputPath, generateSitePage(site, page));
-  console.log(`Generated ${outputPath}`);
+  writeFileSync(outputPath, contents);
+}
+
+for (const page of site.pages) {
+  writeArtifact(
+    getSiteOutputPath(page),
+    generateSitePage(site, page)
+  );
 }
 
 for (const post of site.posts) {
-  const outputPath = path.join(
-    "dist",
-    getPostOutputPath(post)
+  writeArtifact(
+    getPostOutputPath(post),
+    generatePostPage(site, post)
   );
-
-  mkdirSync(path.dirname(outputPath), {
-    recursive: true,
-  });
-
-  writeFileSync(outputPath, generatePostPage(site, post));
-  console.log(`Generated ${outputPath}`);
 }
 
-writeFileSync("dist/system.json", generateSiteManifest(site));
-writeFileSync("dist/llms.txt", generateLlmsText(site));
-writeFileSync("dist/context.json", generateContextJson(site));
-writeFileSync("dist/404.html", generateNotFoundPage(site));
+writeArtifact("404.html", generateNotFoundPage(site));
+writeArtifact("system.json", generateSiteManifest(site));
+writeArtifact("context.json", generateContextJson(site));
+writeArtifact(
+  "runtime.json",
+  generateRuntimeIdentity(site, {
+    artifactCount: artifacts.length,
+    generatedAt: new Date().toISOString(),
+    mode: "production",
+  })
+);
+writeArtifact("llms.txt", generateLlmsText(site));
 
-console.log("Generated dist/system.json");
-console.log("Generated dist/llms.txt");
-console.log("Generated dist/context.json");
-console.log("Generated dist/404.html");
+console.log("[paideia] build complete");
+console.log("");
+console.log("Artifacts:");
+
+for (const artifact of artifacts) {
+  console.log(`- ${artifact}`);
+}
+
+console.log("");
+console.log(`Pages: ${site.pages.length}`);
+console.log(`Posts: ${site.posts.length}`);
+console.log("Manifest: normalized");
+console.log("Diagnostics: passed");

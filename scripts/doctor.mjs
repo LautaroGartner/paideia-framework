@@ -6,6 +6,7 @@ import { createRuntimeConfig } from "../runtime/config.mjs";
 import {
   validateActionContracts,
   validateActionEventContracts,
+  validateRuntimeJson,
   validateRuntimeStartup,
   validateSchemaSql,
   validateSystemJson,
@@ -125,6 +126,17 @@ if (actionEventContracts.ok) {
   fail(
     `${actionEventContracts.label} (${actionEventContracts.reason})`,
     "run `paideia build` to regenerate dist/system.json"
+  );
+}
+
+const runtimeJson = validateRuntimeJson(config);
+
+if (runtimeJson.ok) {
+  pass(runtimeJson.label);
+} else {
+  fail(
+    `${runtimeJson.label} (${runtimeJson.reason})`,
+    "run `paideia build` to regenerate dist/runtime.json"
   );
 }
 
