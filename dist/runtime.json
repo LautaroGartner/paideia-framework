@@ -1,11 +1,11 @@
 {
   "framework": {
     "name": "Paideia Framework",
-    "version": "1.7.0"
+    "version": "1.8.0-alpha.1"
   },
   "build": {
-    "id": "7cfb235",
-    "generatedAt": "2026-05-20T12:35:35.026Z",
+    "id": "cd36dd9",
+    "generatedAt": "2026-05-20T12:52:11.513Z",
     "mode": "production",
     "artifactCount": 9
   },
@@ -26,47 +26,47 @@
     {
       "path": "index.html",
       "kind": "page",
-      "bytes": 4791
+      "bytes": 15155
     },
     {
       "path": "writing/index.html",
       "kind": "page",
-      "bytes": 4776
+      "bytes": 8721
     },
     {
       "path": "writing/generated-systems-should-explain-themselves/index.html",
       "kind": "post",
-      "bytes": 8085
+      "bytes": 8093
     },
     {
       "path": "writing/building-paideia/index.html",
       "kind": "post",
-      "bytes": 11402
+      "bytes": 11410
     },
     {
       "path": "404.html",
       "kind": "fallback",
-      "bytes": 3275
+      "bytes": 3283
     },
     {
       "path": "system.json",
       "kind": "contract",
-      "bytes": 3354
+      "bytes": 3362
     },
     {
       "path": "context.json",
       "kind": "agent-context",
-      "bytes": 2123
+      "bytes": 2131
     },
     {
       "path": "runtime.json",
       "kind": "runtime-identity",
-      "bytes": 1547
+      "bytes": 1556
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 1299
+      "bytes": 1307
     }
   ],
   "site": {

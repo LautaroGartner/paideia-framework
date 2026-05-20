@@ -155,6 +155,172 @@ function renderPostList(posts: WritingPost[], options: {
         </section>`;
 }
 
+function renderRuntimeHome(site: SiteDefinition): string {
+  const orderedPosts = sortPosts(site.posts);
+  const latestPost = orderedPosts[0] ?? null;
+  const latestPostLink = latestPost
+    ? `<a href="${escapeHtml(postPath(latestPost))}">${escapeHtml(latestPost.title)}</a>`
+    : "No writing yet";
+
+  return `
+        <section class="hero" aria-labelledby="home-title">
+          <p class="eyebrow">Paideia Framework</p>
+          <h1 id="home-title">Generated systems. Readable by humans. Inspectable by agents.</h1>
+          <p class="hero-copy">${escapeHtml(site.description)}</p>
+        </section>
+
+        <section class="runtime-overview" aria-labelledby="runtime-title">
+          <div class="section-heading">
+            <p class="eyebrow">Live generated runtime</p>
+            <h2 id="runtime-title">This site describes itself.</h2>
+          </div>
+          <div class="runtime-grid" data-runtime-root>
+            <div class="runtime-metric">
+              <span>Framework</span>
+              <strong data-runtime-field="framework">Loading</strong>
+            </div>
+            <div class="runtime-metric">
+              <span>Build ID</span>
+              <strong data-runtime-field="buildId">Loading</strong>
+            </div>
+            <div class="runtime-metric">
+              <span>Artifacts</span>
+              <strong data-runtime-field="artifacts">Loading</strong>
+            </div>
+            <div class="runtime-metric">
+              <span>Capabilities</span>
+              <strong data-runtime-field="capabilities">Loading</strong>
+            </div>
+            <div class="runtime-metric">
+              <span>Manifest</span>
+              <strong data-runtime-field="manifest">Loading</strong>
+            </div>
+            <div class="runtime-metric">
+              <span>Diagnostics</span>
+              <strong data-runtime-field="diagnostics">Passing</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="runtime-links" aria-labelledby="surfaces-title">
+          <div class="section-heading">
+            <p class="eyebrow">Generated surfaces</p>
+            <h2 id="surfaces-title">Runtime files you can inspect.</h2>
+          </div>
+          <div class="surface-list">
+            <a href="/runtime.json"><span>runtime.json</span><small>Runtime identity, build ID, artifact inventory</small></a>
+            <a href="/system.json"><span>system.json</span><small>Generated system contract</small></a>
+            <a href="/context.json"><span>context.json</span><small>Compressed agent-readable map</small></a>
+            <a href="/llms.txt"><span>llms.txt</span><small>Plain-language agent guide</small></a>
+          </div>
+        </section>
+
+        <section class="inventory" aria-labelledby="inventory-title">
+          <div class="section-heading">
+            <p class="eyebrow">Artifact inventory</p>
+            <h2 id="inventory-title">What the build produced.</h2>
+          </div>
+          <div class="artifact-table" data-runtime-artifacts>
+            <p>Loading runtime artifact inventory from runtime.json.</p>
+          </div>
+        </section>
+
+        <section class="capability-section" aria-labelledby="capability-title">
+          <div class="section-heading">
+            <p class="eyebrow">Declared behavior</p>
+            <h2 id="capability-title">Capabilities the runtime claims.</h2>
+          </div>
+          <div class="capability-list" data-runtime-capabilities>
+            <span>Loading capabilities</span>
+          </div>
+        </section>
+
+        <section class="writing-callout" aria-labelledby="latest-title">
+          <div class="section-heading">
+            <p class="eyebrow">Latest writing</p>
+            <h2 id="latest-title">${latestPostLink}</h2>
+          </div>
+          <p>Notes on readable software, generated systems, agents, and Paideia.</p>
+        </section>`;
+}
+
+function runtimeHomeScript(): string {
+  return `<script>
+      (() => {
+        const text = (selector, value) => {
+          const element = document.querySelector(selector);
+          if (element) element.textContent = value;
+        };
+
+        const formatBytes = (value) => {
+          if (typeof value !== "number") return "unknown";
+          return value >= 1000
+            ? (value / 1000).toFixed(1) + " kB"
+            : value + " B";
+        };
+
+        const renderArtifacts = (artifacts) => {
+          const root = document.querySelector("[data-runtime-artifacts]");
+          if (!root) return;
+          root.textContent = "";
+
+          for (const artifact of artifacts) {
+            const row = document.createElement("a");
+            row.className = "artifact-row";
+            row.href = "/" + artifact.path;
+
+            const path = document.createElement("span");
+            path.textContent = artifact.path;
+
+            const kind = document.createElement("small");
+            kind.textContent = artifact.kind + " - " + formatBytes(artifact.bytes);
+
+            row.append(path, kind);
+            root.append(row);
+          }
+        };
+
+        const renderCapabilities = (capabilities) => {
+          const root = document.querySelector("[data-runtime-capabilities]");
+          if (!root) return;
+          root.textContent = "";
+
+          for (const capability of capabilities) {
+            const item = document.createElement("span");
+            item.textContent = capability;
+            root.append(item);
+          }
+        };
+
+        fetch("/runtime.json", { cache: "no-store" })
+          .then((response) => response.json())
+          .then((runtime) => {
+            const framework = runtime.framework ?? {};
+            const build = runtime.build ?? {};
+            const identity = runtime.runtime ?? {};
+            const artifacts = Array.isArray(runtime.artifacts)
+              ? runtime.artifacts
+              : [];
+            const capabilities = Array.isArray(runtime.capabilities)
+              ? runtime.capabilities
+              : [];
+
+            text("[data-runtime-field='framework']", framework.name + " v" + framework.version);
+            text("[data-runtime-field='buildId']", build.id ?? "unknown");
+            text("[data-runtime-field='artifacts']", String(artifacts.length));
+            text("[data-runtime-field='capabilities']", String(capabilities.length));
+            text("[data-runtime-field='manifest']", identity.normalizedManifest ? "normalized" : "unknown");
+            renderArtifacts(artifacts);
+            renderCapabilities(capabilities);
+          })
+          .catch(() => {
+            text("[data-runtime-field='framework']", "runtime.json unavailable");
+            text("[data-runtime-field='buildId']", "unknown");
+          });
+      })();
+    </script>`;
+}
+
 export function getSiteOutputPath(page: SitePage): string {
   return pageOutputPath(page);
 }
@@ -181,6 +347,8 @@ export function generateSitePage(
     normalizePath(page.path) === "/writing"
       ? renderPostList(site.posts)
       : "";
+  const isHome = normalizePath(page.path) === "/";
+  const runtimeHome = isHome ? renderRuntimeHome(site) : "";
   const latestWriting =
     normalizePath(page.path) === "/"
       ? renderPostList(site.posts, {
@@ -213,10 +381,13 @@ export function generateSitePage(
       body {
         margin: 0;
         min-height: 100vh;
+        background:
+          linear-gradient(180deg, rgba(255,255,255,0.74), rgba(247,246,242,0) 260px),
+          #f7f6f2;
       }
 
       .shell {
-        width: min(760px, calc(100vw - 40px));
+        width: min(1040px, calc(100vw - 40px));
         margin: 0 auto;
         padding: 42px 0 72px;
       }
@@ -252,10 +423,14 @@ export function generateSitePage(
         padding-top: 78px;
       }
 
+      main > p {
+        max-width: 620px;
+      }
+
       h1 {
         margin: 0;
         max-width: 680px;
-        font-size: clamp(2.4rem, 7vw, 4.7rem);
+        font-size: 4.4rem;
         line-height: 0.96;
         letter-spacing: 0;
       }
@@ -266,6 +441,156 @@ export function generateSitePage(
         color: #4f4a43;
         font-size: 1.15rem;
         line-height: 1.7;
+      }
+
+      .hero {
+        max-width: 860px;
+      }
+
+      .hero h1 {
+        max-width: 820px;
+      }
+
+      .hero-copy {
+        max-width: 680px;
+        font-size: 1.25rem;
+      }
+
+      .eyebrow {
+        margin: 0 0 12px;
+        color: #22604d;
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        line-height: 1.4;
+        text-transform: uppercase;
+      }
+
+      .section-heading {
+        display: grid;
+        gap: 4px;
+        margin-bottom: 18px;
+      }
+
+      .section-heading h2 {
+        margin: 0;
+        font-size: 1.35rem;
+      }
+
+      .runtime-overview,
+      .runtime-links,
+      .inventory,
+      .capability-section,
+      .writing-callout {
+        margin-top: 62px;
+      }
+
+      .runtime-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        border: 1px solid #d9d5cb;
+        background: #fffdf8;
+      }
+
+      .runtime-metric {
+        min-height: 104px;
+        padding: 18px;
+        border-right: 1px solid #d9d5cb;
+        border-bottom: 1px solid #d9d5cb;
+      }
+
+      .runtime-metric:nth-child(3n) {
+        border-right: 0;
+      }
+
+      .runtime-metric:nth-last-child(-n + 3) {
+        border-bottom: 0;
+      }
+
+      .runtime-metric span,
+      .artifact-row small,
+      .surface-list small {
+        color: #6c665d;
+        font-size: 0.86rem;
+      }
+
+      .runtime-metric strong {
+        display: block;
+        margin-top: 12px;
+        overflow-wrap: anywhere;
+        color: #151513;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 1.05rem;
+        line-height: 1.35;
+      }
+
+      .surface-list,
+      .artifact-table {
+        display: grid;
+        border: 1px solid #d9d5cb;
+        background: #fffdf8;
+      }
+
+      .surface-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .surface-list a,
+      .artifact-row {
+        display: grid;
+        gap: 8px;
+        padding: 16px 18px;
+        border-bottom: 1px solid #d9d5cb;
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .surface-list a:nth-child(odd) {
+        border-right: 1px solid #d9d5cb;
+      }
+
+      .surface-list a:nth-last-child(-n + 2) {
+        border-bottom: 0;
+      }
+
+      .surface-list span,
+      .artifact-row span {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-weight: 750;
+        overflow-wrap: anywhere;
+      }
+
+      .artifact-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+      }
+
+      .artifact-row:last-child {
+        border-bottom: 0;
+      }
+
+      .capability-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .capability-list span {
+        border: 1px solid #c7d5cf;
+        background: #eef7f3;
+        padding: 8px 10px;
+        color: #174837;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.88rem;
+      }
+
+      .writing-callout {
+        border-top: 1px solid #dedbd2;
+        padding-top: 24px;
+      }
+
+      .writing-callout h2 a {
+        color: inherit;
       }
 
       .post-list {
@@ -347,6 +672,34 @@ export function generateSitePage(
           padding-top: 54px;
         }
 
+        h1 {
+          font-size: 2.65rem;
+        }
+
+        .runtime-grid,
+        .surface-list {
+          grid-template-columns: 1fr;
+        }
+
+        .runtime-metric,
+        .runtime-metric:nth-child(3n),
+        .surface-list a:nth-child(odd) {
+          border-right: 0;
+        }
+
+        .runtime-metric:nth-last-child(-n + 3) {
+          border-bottom: 1px solid #d9d5cb;
+        }
+
+        .runtime-metric:last-child,
+        .surface-list a:last-child {
+          border-bottom: 0;
+        }
+
+        .artifact-row {
+          grid-template-columns: 1fr;
+        }
+
         footer {
           align-items: flex-start;
           flex-direction: column;
@@ -361,13 +714,14 @@ export function generateSitePage(
 ${renderNavigation(navPages)}
       </header>
       <main>
-        <h1>${escapeHtml(page.title)}</h1>
-        <p>${escapeHtml(page.body)}</p>
+${isHome ? runtimeHome : `        <h1>${escapeHtml(page.title)}</h1>
+        <p>${escapeHtml(page.body)}</p>`}
 ${latestWriting}
 ${writingList}
       </main>
       ${renderFooter()}
     </div>
+    ${isHome ? runtimeHomeScript() : ""}
   </body>
 </html>
 `;

@@ -4,8 +4,8 @@ Inspectable website and application runtime framework.
 
 Build software that humans and agents can understand.
 
-Current version: `v1.7.0`
-Runtime identity foundation
+Current version: `v1.8.0-alpha.1`
+Runtime-aware website experience
 
 ---
 
@@ -32,7 +32,7 @@ The goal is software that can explain itself.
 
 ## Current Capabilities
 
-`v1.7.0` can currently generate and serve:
+`v1.8.0-alpha.1` can currently generate and serve:
 
 * static pages
 * structured writing collections
@@ -49,6 +49,7 @@ The goal is software that can explain itself.
 * runtime diagnostics
 * writing validation
 * runtime inspection CLI
+* runtime-aware homepage
 * post creation CLI workflow
 
 Paideia now powers its own website runtime.
@@ -418,6 +419,10 @@ Authoring ergonomics foundation
 
 Runtime identity foundation
 
+## v1.8
+
+Runtime-aware website experience
+
 ## v2
 
 Useful small websites and applications
@@ -458,6 +463,10 @@ Authoring ergonomics foundation
 ## v1.7
 
 Runtime identity foundation
+
+## v1.8
+
+Runtime-aware website experience
 
 ---
 

@@ -45,7 +45,7 @@ export const site = defineSite({
       title: "Home",
       description:
         "Personal site for Lautaro Gärtner and Paideia Framework.",
-      body: "Building Paideia Framework: small software systems that can explain themselves.",
+      body: "Generated systems. Readable by humans. Inspectable by agents.",
       nav: true,
       tokenSummary:
         "Home page introducing Lautaro and Paideia Framework as a self-describing runtime experiment.",

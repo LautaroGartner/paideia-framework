@@ -59,6 +59,11 @@ function run(bin, args, options = {}) {
 
 try {
   if (fs.existsSync(TSC_BIN) && fs.existsSync(TSCONFIG_PATH)) {
+    fs.rmSync(path.join(packageRoot, "build"), {
+      force: true,
+      recursive: true,
+    });
+
     await run(TSC_BIN, [], {
       cwd: packageRoot,
     });
