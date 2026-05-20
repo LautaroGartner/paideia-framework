@@ -40,17 +40,38 @@ rmSync("dist", {
 mkdirSync("dist", { recursive: true });
 
 const artifacts = [
-  ...site.pages.map((page) => getSiteOutputPath(page)),
-  ...site.posts.map((post) => getPostOutputPath(post)),
-  "404.html",
-  "system.json",
-  "context.json",
-  "runtime.json",
-  "llms.txt",
+  ...site.pages.map((page) => ({
+    path: getSiteOutputPath(page),
+    kind: "page",
+  })),
+  ...site.posts.map((post) => ({
+    path: getPostOutputPath(post),
+    kind: "post",
+  })),
+  {
+    path: "404.html",
+    kind: "fallback",
+  },
+  {
+    path: "system.json",
+    kind: "contract",
+  },
+  {
+    path: "context.json",
+    kind: "agent-context",
+  },
+  {
+    path: "runtime.json",
+    kind: "runtime-identity",
+  },
+  {
+    path: "llms.txt",
+    kind: "agent-guide",
+  },
 ];
 
 const contentArtifacts = artifacts.filter(
-  (artifact) => artifact !== "runtime.json"
+  (artifact) => artifact.path !== "runtime.json"
 );
 
 const outputs = new Map<string, string>();
@@ -73,12 +94,49 @@ function buildId(): string {
   const hash = createHash("sha256");
 
   for (const artifact of contentArtifacts) {
-    hash.update(`${artifact}\0`);
-    hash.update(outputs.get(artifact) ?? "");
+    hash.update(`${artifact.path}\0`);
+    hash.update(outputs.get(artifact.path) ?? "");
     hash.update("\0");
   }
 
   return hash.digest("hex").slice(0, 7);
+}
+
+function byteLength(value: string): number {
+  return Buffer.byteLength(value, "utf8");
+}
+
+function artifactInventory() {
+  return artifacts.map((artifact) => ({
+    path: artifact.path,
+    kind: artifact.kind,
+    bytes: byteLength(outputs.get(artifact.path) ?? ""),
+  }));
+}
+
+function addRuntimeIdentity(): void {
+  let runtimeIdentity = "";
+
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    addArtifact("runtime.json", runtimeIdentity);
+
+    const nextRuntimeIdentity = generateRuntimeIdentity(site, {
+      artifactCount: artifacts.length,
+      artifacts: artifactInventory(),
+      buildId: buildId(),
+      generatedAt: new Date().toISOString(),
+      mode: "production",
+    });
+
+    if (byteLength(nextRuntimeIdentity) === byteLength(runtimeIdentity)) {
+      addArtifact("runtime.json", nextRuntimeIdentity);
+      return;
+    }
+
+    runtimeIdentity = nextRuntimeIdentity;
+  }
+
+  addArtifact("runtime.json", runtimeIdentity);
 }
 
 for (const page of site.pages) {
@@ -99,18 +157,10 @@ addArtifact("404.html", generateNotFoundPage(site));
 addArtifact("system.json", generateSiteManifest(site));
 addArtifact("context.json", generateContextJson(site));
 addArtifact("llms.txt", generateLlmsText(site));
-addArtifact(
-  "runtime.json",
-  generateRuntimeIdentity(site, {
-    artifactCount: artifacts.length,
-    buildId: buildId(),
-    generatedAt: new Date().toISOString(),
-    mode: "production",
-  })
-);
+addRuntimeIdentity();
 
 for (const artifact of artifacts) {
-  writeArtifact(artifact, outputs.get(artifact) ?? "");
+  writeArtifact(artifact.path, outputs.get(artifact.path) ?? "");
 }
 
 console.log("[paideia] build complete");
@@ -118,7 +168,7 @@ console.log("");
 console.log("Artifacts:");
 
 for (const artifact of artifacts) {
-  console.log(`- ${artifact}`);
+  console.log(`- ${artifact.path}`);
 }
 
 console.log("");

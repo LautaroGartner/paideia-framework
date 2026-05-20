@@ -28,6 +28,12 @@ if (!runtimeResult.ok) {
 
 const manifestResult = validateSystemJson(config);
 const runtime = runtimeResult.runtime;
+const artifactsByKind = {};
+
+for (const artifact of runtime.artifacts ?? []) {
+  artifactsByKind[artifact.kind] =
+    (artifactsByKind[artifact.kind] ?? 0) + 1;
+}
 
 console.log(`Framework: ${runtime.framework?.name ?? "unknown"}`);
 console.log(`Version: ${runtime.framework?.version ?? "unknown"}`);
@@ -35,6 +41,11 @@ console.log(`Build ID: ${runtime.build?.id ?? "unknown"}`);
 console.log(`Pages: ${runtime.site?.pages ?? 0}`);
 console.log(`Posts: ${runtime.site?.posts ?? 0}`);
 console.log(`Artifacts: ${runtime.build?.artifactCount ?? 0}`);
+console.log(
+  `Artifact kinds: ${Object.entries(artifactsByKind)
+    .map(([kind, count]) => `${kind}=${count}`)
+    .join(", ")}`
+);
 console.log(
   `Manifest: ${
     runtime.runtime?.normalizedManifest ? "normalized" : "raw"

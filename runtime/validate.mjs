@@ -195,6 +195,64 @@ export function validateRuntimeJson(config) {
       };
     }
 
+    if (!Array.isArray(parsed.artifacts)) {
+      return {
+        ok: false,
+        label: "dist/runtime.json valid",
+        reason: "artifacts must be an array",
+      };
+    }
+
+    if (parsed.build.artifactCount !== parsed.artifacts.length) {
+      return {
+        ok: false,
+        label: "dist/runtime.json valid",
+        reason: "build.artifactCount must equal artifacts.length",
+      };
+    }
+
+    for (const artifact of parsed.artifacts) {
+      if (!isObject(artifact)) {
+        return {
+          ok: false,
+          label: "dist/runtime.json valid",
+          reason: "every artifact must be an object",
+        };
+      }
+
+      if (typeof artifact.path !== "string" || artifact.path.length === 0) {
+        return {
+          ok: false,
+          label: "dist/runtime.json valid",
+          reason: "artifact.path must be a non-empty string",
+        };
+      }
+
+      if (typeof artifact.kind !== "string" || artifact.kind.length === 0) {
+        return {
+          ok: false,
+          label: "dist/runtime.json valid",
+          reason: "artifact.kind must be a non-empty string",
+        };
+      }
+
+      if (typeof artifact.bytes !== "number") {
+        return {
+          ok: false,
+          label: "dist/runtime.json valid",
+          reason: "artifact.bytes must be a number",
+        };
+      }
+
+      if (!fs.existsSync(path.join(config.distDir, artifact.path))) {
+        return {
+          ok: false,
+          label: "dist/runtime.json valid",
+          reason: `${artifact.path} listed in runtime inventory but missing`,
+        };
+      }
+    }
+
     return {
       ok: true,
       label: "dist/runtime.json valid",
