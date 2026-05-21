@@ -9,6 +9,92 @@ Runtime identity foundation
 
 ---
 
+## Quickstart
+
+Clone the repository:
+
+```bash
+git clone https://github.com/LautaroGartner/paideia-framework.git
+cd paideia-framework
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Build the site:
+
+```bash
+npm run build
+```
+
+Start the production runtime:
+
+```bash
+npm run start
+```
+
+Then open:
+
+```txt
+http://localhost:3000
+```
+
+Paideia generates explicit runtime artifacts alongside the site:
+
+```txt
+dist/
+  index.html
+  about/index.html
+  runtime.json
+  system.json
+  context.json
+  llms.txt
+```
+
+Create a new post:
+
+```bash
+node cli.mjs new post "My First Paideia Post"
+```
+
+Rebuild:
+
+```bash
+npm run build
+```
+
+Inspect the runtime:
+
+```bash
+node cli.mjs inspect
+```
+
+Run diagnostics:
+
+```bash
+node cli.mjs doctor
+```
+
+---
+
+## What Paideia Generates
+
+Paideia generates small inspectable systems.
+
+The runtime intentionally exposes machine-readable artifacts so both humans and agents can understand:
+- routes
+- capabilities
+- generated outputs
+- runtime identity
+- site structure
+
+without reverse engineering the application.
+
+---
+
 ## What Paideia Is
 
 Paideia is an experimental framework for building:
