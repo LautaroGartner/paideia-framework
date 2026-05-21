@@ -53,6 +53,71 @@ dist/
   llms.txt
 ```
 
+## Visual tour
+
+Generated homepage:
+
+![Paideia generated homepage](assets/readme/homepage.png)
+
+Docs example:
+
+![Paideia docs example](assets/readme/docs-example.png)
+
+Runtime inspect:
+
+```txt
+Paideia Runtime Inspect
+──────────────────────
+
+Project
+  Framework      Paideia Framework
+  Version        1.7.2
+  Title          Lautaro Gärtner's blog
+
+Runtime
+  Build ID       dc17859
+  Mode           production
+  Manifest       normalized
+  Diagnostics    passing
+
+Routes
+  /                                             page   Lautaro Gärtner's blog
+  /about                                        page   About
+  /framework-becomes-a-tool                     post   The Moment a Framework Becomes a Tool
+
+Artifacts
+  index.html                                    page             10.2 KB
+  runtime.json                                  runtime-identity 1.7 KB
+  system.json                                   contract         4.3 KB
+  context.json                                  agent-context    2.9 KB
+  llms.txt                                      agent-guide      1.6 KB
+
+Diagnostics
+  Manifest       normalized
+  Status         passing
+```
+
+Runtime doctor:
+
+```txt
+[paideia] running doctor
+
+✓ dist/ exists
+✓ dist/index.html exists
+✓ dist/system.json exists
+✓ dist/runtime.json exists
+✓ dist/context.json exists
+✓ dist/system.json contract valid
+✓ dist/runtime.json valid
+
+[paideia] doctor summary
+✓ passed: 14
+✗ failed: 0
+• skipped: 0
+
+[paideia] doctor passed
+```
+
 ---
 
 ## What Paideia Generates

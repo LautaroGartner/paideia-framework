@@ -170,9 +170,10 @@ try {
     0,
     `${inspected.stdout}${inspected.stderr}`
   );
-  assert.ok(inspected.stdout.includes("Framework: Paideia Framework"));
-  assert.ok(inspected.stdout.includes("Pages: 2"));
-  assert.ok(inspected.stdout.includes("Posts: 1"));
+  assert.ok(inspected.stdout.includes("Paideia Runtime Inspect"));
+  assert.ok(inspected.stdout.includes("Framework      Paideia Framework"));
+  assert.ok(inspected.stdout.includes("Pages          2"));
+  assert.ok(inspected.stdout.includes("Posts          1"));
 
   const named = run(["init", "Fancy Site_2026!"]);
 

@@ -28,35 +28,134 @@ if (!runtimeResult.ok) {
 
 const manifestResult = validateSystemJson(config);
 const runtime = runtimeResult.runtime;
-const artifactsByKind = {};
+const manifest = manifestResult.ok
+  ? manifestResult.manifest
+  : null;
 
-for (const artifact of runtime.artifacts ?? []) {
-  artifactsByKind[artifact.kind] =
-    (artifactsByKind[artifact.kind] ?? 0) + 1;
+function formatBytes(bytes) {
+  if (typeof bytes !== "number" || Number.isNaN(bytes)) {
+    return "unknown";
+  }
+
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+
+  return `${(bytes / 1024).toFixed(1)} KB`;
 }
 
-console.log(`Framework: ${runtime.framework?.name ?? "unknown"}`);
-console.log(`Version: ${runtime.framework?.version ?? "unknown"}`);
-console.log(`Build ID: ${runtime.build?.id ?? "unknown"}`);
-console.log(`Pages: ${runtime.site?.pages ?? 0}`);
-console.log(`Posts: ${runtime.site?.posts ?? 0}`);
-console.log(`Artifacts: ${runtime.build?.artifactCount ?? 0}`);
-console.log(
-  `Artifact kinds: ${Object.entries(artifactsByKind)
-    .map(([kind, count]) => `${kind}=${count}`)
-    .join(", ")}`
-);
-console.log("Capabilities:");
-
-for (const capability of runtime.capabilities ?? []) {
-  console.log(`- ${capability}`);
+function pad(value, width) {
+  return String(value).padEnd(width, " ");
 }
 
-console.log(
-  `Manifest: ${
-    runtime.runtime?.normalizedManifest ? "normalized" : "raw"
-  }`
+function section(title) {
+  console.log("");
+  console.log(title);
+}
+
+function field(label, value) {
+  console.log(`  ${pad(label, 14)} ${value}`);
+}
+
+function list(values, emptyLabel = "none") {
+  if (!values.length) {
+    console.log(`  ${emptyLabel}`);
+    return;
+  }
+
+  for (const value of values) {
+    console.log(`  ${value}`);
+  }
+}
+
+function artifactRows() {
+  return (runtime.artifacts ?? []).map((artifact) => ({
+    path: artifact.path ?? "unknown",
+    kind: artifact.kind ?? "unknown",
+    size: formatBytes(artifact.bytes),
+  }));
+}
+
+function routeRows() {
+  const pages = manifest?.site?.pages ?? [];
+  const posts = manifest?.site?.posts ?? [];
+
+  return [
+    ...pages.map((page) => ({
+      path: page.path,
+      title: page.title,
+      kind: "page",
+    })),
+    ...posts.map((post) => ({
+      path: post.path,
+      title: post.title,
+      kind: "post",
+    })),
+  ];
+}
+
+function width(rows, key, minimum) {
+  return Math.max(
+    minimum,
+    ...rows.map((row) => String(row[key] ?? "").length)
+  );
+}
+
+console.log("Paideia Runtime Inspect");
+console.log("──────────────────────");
+
+section("Project");
+field("Framework", runtime.framework?.name ?? "unknown");
+field("Version", runtime.framework?.version ?? "unknown");
+field("Title", manifest?.site?.title ?? "unknown");
+
+section("Runtime");
+field("Build ID", runtime.build?.id ?? "unknown");
+field("Mode", runtime.build?.mode ?? "unknown");
+field("Generated At", runtime.build?.generatedAt ?? "unknown");
+field(
+  "Manifest",
+  runtime.runtime?.normalizedManifest ? "normalized" : "raw"
 );
-console.log(
-  `Diagnostics: ${manifestResult.ok ? "passing" : "failing"}`
+field(
+  "Diagnostics",
+  manifestResult.ok ? "passing" : "failing"
+);
+
+section("Routes");
+const routes = routeRows();
+const routePathWidth = width(routes, "path", 24);
+
+for (const route of routes) {
+  console.log(
+    `  ${pad(route.path, routePathWidth)}  ${pad(route.kind, 6)} ${route.title ?? ""}`
+  );
+}
+
+section("Content");
+field("Pages", runtime.site?.pages ?? 0);
+field("Posts", runtime.site?.posts ?? 0);
+
+section("Artifacts");
+const artifacts = artifactRows();
+const artifactPathWidth = width(artifacts, "path", 24);
+const artifactKindWidth = width(artifacts, "kind", 10);
+
+for (const artifact of artifacts) {
+  console.log(
+    `  ${pad(artifact.path, artifactPathWidth)}  ${pad(artifact.kind, artifactKindWidth)} ${artifact.size}`
+  );
+}
+
+section("Capabilities");
+list((runtime.capabilities ?? []).map((capability) => `- ${capability}`));
+
+section("Diagnostics");
+field(
+  "Manifest",
+  runtime.runtime?.normalizedManifest ? "normalized" : "raw"
+);
+field(
+  "Status",
+  manifestResult.ok ? "passing" : "failing"
 );

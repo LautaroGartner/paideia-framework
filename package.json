@@ -6,6 +6,7 @@
     "paideia": "./cli.mjs"
   },
   "files": [
+    "assets/",
     "build/",
     "cli.mjs",
     "examples/",

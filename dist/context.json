@@ -24,6 +24,19 @@
   ],
   "posts": [
     {
+      "slug": "framework-becomes-a-tool",
+      "path": "/framework-becomes-a-tool",
+      "canonical": "https://lautarogartner.com/framework-becomes-a-tool",
+      "title": "The Moment a Framework Becomes a Tool",
+      "topics": [
+        "project notes",
+        "generated systems",
+        "developer experience"
+      ],
+      "publishedAt": "2026-05-21",
+      "tokenSummary": "Project note about Paideia crossing from framework repository to usable tool through the init command, emphasizing generated project polish, runtime trust, disciplined scope, and small understandable systems."
+    },
+    {
       "slug": "generated-systems-should-explain-themselves",
       "path": "/generated-systems-should-explain-themselves",
       "canonical": "https://lautarogartner.com/generated-systems-should-explain-themselves",
@@ -51,8 +64,8 @@
     }
   ],
   "writing": {
-    "postCount": 2,
-    "latestPost": "generated-systems-should-explain-themselves"
+    "postCount": 3,
+    "latestPost": "framework-becomes-a-tool"
   },
   "generatedBy": {
     "name": "Paideia Framework",

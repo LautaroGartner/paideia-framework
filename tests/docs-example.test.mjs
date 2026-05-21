@@ -129,9 +129,13 @@ assert.equal(
   0,
   `${inspected.stdout}${inspected.stderr}`
 );
-assert.ok(inspected.stdout.includes("Pages: 2"));
-assert.ok(inspected.stdout.includes("Posts: 2"));
-assert.ok(inspected.stdout.includes("Diagnostics: passing"));
+assert.ok(inspected.stdout.includes("Paideia Runtime Inspect"));
+assert.ok(inspected.stdout.includes("/getting-started"));
+assert.ok(inspected.stdout.includes("/runtime-artifacts"));
+assert.ok(inspected.stdout.includes("runtime.json"));
+assert.ok(inspected.stdout.includes("Pages          2"));
+assert.ok(inspected.stdout.includes("Posts          2"));
+assert.ok(inspected.stdout.includes("Status         passing"));
 
 for (const generatedPath of ["build", "dist", "node_modules"]) {
   fs.rmSync(path.join(exampleRoot, generatedPath), {

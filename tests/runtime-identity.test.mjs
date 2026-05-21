@@ -122,13 +122,18 @@ const inspect = spawnSync("node", ["cli.mjs", "inspect"], {
 });
 
 assert.equal(inspect.status, 0, inspect.stderr);
-assert.ok(inspect.stdout.includes("Framework: Paideia Framework"));
-assert.ok(inspect.stdout.includes(`Build ID: ${runtime.build.id}`));
-assert.ok(inspect.stdout.includes("Artifact kinds:"));
-assert.ok(inspect.stdout.includes("Capabilities:"));
+assert.ok(inspect.stdout.includes("Paideia Runtime Inspect"));
+assert.ok(inspect.stdout.includes("Project"));
+assert.ok(inspect.stdout.includes("Framework      Paideia Framework"));
+assert.ok(inspect.stdout.includes(`Build ID       ${runtime.build.id}`));
+assert.ok(inspect.stdout.includes("Routes"));
+assert.ok(inspect.stdout.includes("/about"));
+assert.ok(inspect.stdout.includes("Artifacts"));
+assert.ok(inspect.stdout.includes("runtime.json"));
+assert.ok(inspect.stdout.includes("Capabilities"));
 assert.ok(inspect.stdout.includes("- runtime.identity"));
-assert.ok(inspect.stdout.includes("Manifest: normalized"));
-assert.ok(inspect.stdout.includes("Diagnostics: passing"));
+assert.ok(inspect.stdout.includes("Manifest       normalized"));
+assert.ok(inspect.stdout.includes("Status         passing"));
 
 const firstBuildId = runtime.build.id;
 const rebuild = spawnSync("npm", ["run", "build"], {

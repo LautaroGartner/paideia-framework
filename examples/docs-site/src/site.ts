@@ -3,7 +3,7 @@ import { posts } from "./writing/index.js";
 export const site = {
   title: "Paideia Docs Example",
   description: "A small generated documentation site built with Paideia.",
-  author: "Paideia Framework",
+  author: "Paideia Docs Example",
   url: "https://example.com",
   language: "en",
   posts,
