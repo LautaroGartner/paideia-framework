@@ -11,28 +11,16 @@ Runtime identity foundation
 
 ## Quickstart
 
-Clone the repository:
+Create a runnable Paideia site from the framework checkout:
 
 ```bash
 git clone https://github.com/LautaroGartner/paideia-framework.git
 cd paideia-framework
-```
-
-Install dependencies:
-
-```bash
 npm install
-```
-
-Build the site:
-
-```bash
+node cli.mjs init my-site
+cd my-site
+npm install
 npm run build
-```
-
-Start the production runtime:
-
-```bash
 npm run start
 ```
 
@@ -41,6 +29,17 @@ Then open:
 ```txt
 http://localhost:3000
 ```
+
+Create a new post:
+
+```bash
+npm run new:post -- "My First Post"
+npm run build
+npm run inspect
+npm run doctor
+```
+
+## What gets generated
 
 Paideia generates explicit runtime artifacts alongside the site:
 
@@ -52,30 +51,6 @@ dist/
   system.json
   context.json
   llms.txt
-```
-
-Create a new post:
-
-```bash
-node cli.mjs new post "My First Paideia Post"
-```
-
-Rebuild:
-
-```bash
-npm run build
-```
-
-Inspect the runtime:
-
-```bash
-node cli.mjs inspect
-```
-
-Run diagnostics:
-
-```bash
-node cli.mjs doctor
 ```
 
 ---
