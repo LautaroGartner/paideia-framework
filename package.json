@@ -1,6 +1,6 @@
 {
   "name": "paideia-framework",
-  "version": "1.7.0",
+  "version": "1.7.2",
   "type": "module",
   "bin": {
     "paideia": "./cli.mjs"
@@ -23,6 +23,7 @@
     "doctor": "node cli.mjs doctor",
     "paideia": "node cli.mjs",
     "test:runtime": "node tests/runtime-identity.test.mjs",
+    "test:version": "node tests/version-consistency.test.mjs",
     "test:manifest-diagnostics": "node tests/manifest-diagnostics.test.mjs",
     "test:manifest": "node tests/manifest-contract.test.mjs",
     "test:new-post": "node tests/new-post-cli.test.mjs",
@@ -33,5 +34,9 @@
   "devDependencies": {
     "@types/node": "^25.7.0",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0"
   }
 }

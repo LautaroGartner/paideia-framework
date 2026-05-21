@@ -1,11 +1,11 @@
 {
   "framework": {
     "name": "Paideia Framework",
-    "version": "1.7.0"
+    "version": "1.7.2"
   },
   "build": {
-    "id": "7722bc6",
-    "generatedAt": "2026-05-20T22:53:05.740Z",
+    "id": "22a2121",
+    "generatedAt": "2026-05-21T19:50:26.174Z",
     "mode": "production",
     "artifactCount": 10
   },
@@ -26,32 +26,32 @@
     {
       "path": "index.html",
       "kind": "page",
-      "bytes": 7052
+      "bytes": 10082
     },
     {
       "path": "about/index.html",
       "kind": "page",
-      "bytes": 13289
+      "bytes": 16312
     },
     {
       "path": "generated-systems-should-explain-themselves/index.html",
       "kind": "post",
-      "bytes": 10354
+      "bytes": 13917
     },
     {
       "path": "building-paideia/index.html",
       "kind": "post",
-      "bytes": 13671
+      "bytes": 17234
     },
     {
       "path": "404.html",
       "kind": "fallback",
-      "bytes": 4297
+      "bytes": 9367
     },
     {
       "path": "favicon.svg",
       "kind": "asset",
-      "bytes": 339
+      "bytes": 264
     },
     {
       "path": "system.json",
@@ -66,7 +66,7 @@
     {
       "path": "runtime.json",
       "kind": "runtime-identity",
-      "bytes": 1616
+      "bytes": 1617
     },
     {
       "path": "llms.txt",

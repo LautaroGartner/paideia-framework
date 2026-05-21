@@ -2,6 +2,7 @@ node_modules/
 build/
 dist/
 .paideia/
+.vercel/
 
 .DS_Store
 *.log

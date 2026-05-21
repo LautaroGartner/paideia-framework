@@ -42,10 +42,32 @@ assert.equal(Array.isArray(context.posts), true);
 const postHtml = readText(
   "dist/building-paideia/index.html"
 );
+const homeHtml = readText("dist/index.html");
+const aboutHtml = readText("dist/about/index.html");
 
 assert.ok(postHtml.includes("Building Paideia"));
 assert.ok(postHtml.includes("@lautyxgr"));
 assert.ok(postHtml.includes("May 20, 2026"));
+assert.ok(
+  postHtml.includes("1d ago"),
+  "post page should include a build-date relative label"
+);
+assert.ok(
+  postHtml.includes('/_vercel/insights/script.js'),
+  "post page should include the Vercel Web Analytics script"
+);
+assert.ok(
+  postHtml.includes('/_vercel/speed-insights/script.js'),
+  "post page should include the Vercel Speed Insights script"
+);
+assert.ok(
+  homeHtml.includes('<a href="/about">About</a>'),
+  "home page should link to the about page"
+);
+assert.ok(
+  !aboutHtml.includes('<a href="/about">About</a>'),
+  "about page should not link to itself in the nav"
+);
 
 const system = readJson("dist/system.json");
 

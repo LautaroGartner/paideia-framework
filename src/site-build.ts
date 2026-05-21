@@ -69,7 +69,26 @@ function renderHead(options: {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>${escapeHtml(options.title)}</title>
     <meta name="description" content="${escapeHtml(options.description)}">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">${author}${canonicalLink}`;
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">${author}${canonicalLink}
+    <script>
+      (() => {
+        const localHosts = new Set(["localhost", "127.0.0.1", "::1"]);
+
+        if (localHosts.has(window.location.hostname)) {
+          return;
+        }
+
+        for (const src of [
+          "/_vercel/insights/script.js",
+          "/_vercel/speed-insights/script.js",
+        ]) {
+          const script = document.createElement("script");
+          script.defer = true;
+          script.src = src;
+          document.head.append(script);
+        }
+      })();
+    </script>`;
 }
 
 function pageOutputPath(page: SitePage): string {
@@ -99,41 +118,30 @@ function formatDate(value: string): string {
   }).format(new Date(`${value}T00:00:00Z`));
 }
 
-function relativePublishedAt(value: string): string {
-  const publishedAt = new Date(`${value}T00:00:00Z`);
-  const now = new Date();
-  const day = 24 * 60 * 60 * 1000;
-  const today = Date.UTC(
+function formatRelativeDate(publishedAt: string, now = new Date()): string {
+  const published = new Date(`${publishedAt}T00:00:00Z`);
+  const today = new Date(Date.UTC(
     now.getUTCFullYear(),
     now.getUTCMonth(),
     now.getUTCDate()
+  ));
+  const diffDays = Math.floor(
+    (today.getTime() - published.getTime()) / 86400000
   );
-  const publishedDay = Date.UTC(
-    publishedAt.getUTCFullYear(),
-    publishedAt.getUTCMonth(),
-    publishedAt.getUTCDate()
-  );
-  const days = Math.floor((today - publishedDay) / day);
 
-  if (days === 0) {
-    return "today";
-  }
+  if (diffDays <= 0) return "today";
+  if (diffDays === 1) return "1d ago";
+  if (diffDays < 30) return `${diffDays}d ago`;
 
-  if (days < 0) {
-    return "soon";
-  }
+  const diffMonths = Math.floor(diffDays / 30);
 
-  if (days < 30) {
-    return `${days}d ago`;
-  }
+  if (diffMonths === 1) return "1 month ago";
+  if (diffMonths < 12) return `${diffMonths} months ago`;
 
-  const months = Math.floor(days / 30);
+  const diffYears = Math.floor(diffMonths / 12);
 
-  if (months < 12) {
-    return `${months}mo ago`;
-  }
-
-  return `${Math.floor(months / 12)}y ago`;
+  if (diffYears === 1) return "1 year ago";
+  return `${diffYears} years ago`;
 }
 
 function renderPostTopics(post: WritingPost): string {
@@ -151,15 +159,21 @@ function renderHeader(
   currentPath: string
 ): string {
   const label = site.author ?? AUTHOR_NAME;
+  const normalizedPath = normalizePath(currentPath);
   const brand =
-    normalizePath(currentPath) === "/"
+    normalizedPath === "/"
       ? `<span class="brand">${escapeHtml(label)}</span>`
       : `<a class="brand" href="/">${escapeHtml(label)}</a>`;
+  const aboutLink =
+    normalizedPath === "/about"
+      ? ""
+      : `
+          <a href="/about">About</a>`;
 
   return `<header>
         ${brand}
         <nav aria-label="Site">
-          <a href="/about">About</a>
+          ${aboutLink}
           <a href="${escapeHtml(X_PROFILE_URL)}" rel="me">𝕏 Follow me</a>
         </nav>
       </header>`;
@@ -204,6 +218,418 @@ function renderBody(value: string): string {
     .join("\n        ");
 }
 
+function renderStyles(): string {
+  return `:root {
+        --accent: #5f6f52;
+        --bg: #fbfaf7;
+        --line: #e8e2d8;
+        --muted: #6f6a61;
+        --text: #151515;
+
+        color-scheme: light dark;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --accent: #a7b995;
+          --bg: #181815;
+          --line: #303026;
+          --muted: #9b958a;
+          --text: #eeeae2;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+      }
+
+      .shell {
+        display: flex;
+        flex-direction: column;
+        max-width: 42rem;
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 1.5rem 1.5rem 4rem;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 2.5rem;
+        padding-bottom: 8px;
+      }
+
+      header a,
+      header .brand,
+      nav a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      header a,
+      header .brand {
+        font-size: 1.125rem;
+        font-weight: 700;
+        line-height: 1.75rem;
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+      }
+
+      nav a {
+        color: var(--muted);
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.75rem;
+        font-weight: 500;
+        line-height: 1rem;
+        padding: 0.125rem 0.375rem;
+        border-radius: 0.75rem;
+      }
+
+      main {
+        padding-top: 0;
+      }
+
+      a:hover {
+        color: var(--accent);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      nav a:hover {
+        background: var(--line);
+        color: var(--text);
+        text-decoration: none;
+      }
+
+      footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-top: auto;
+        padding: 0.75rem 0 1.5rem;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.75rem;
+        line-height: 1rem;
+      }
+
+      footer a {
+        color: inherit;
+      }
+
+      footer a:hover {
+        color: var(--accent);
+      }
+
+      .generated-by {
+        color: var(--muted);
+      }
+
+      .page-title,
+      .not-found-title {
+        margin: 0;
+        max-width: 680px;
+        font-size: clamp(1.8rem, 5vw, 3rem);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .page-body p,
+      .not-found-copy {
+        max-width: 620px;
+        margin: 18px 0 0;
+        color: var(--text);
+        font-size: 1rem;
+        line-height: 1.75;
+      }
+
+      .not-found-copy {
+        line-height: 1.7;
+      }
+
+      .post-list {
+        display: grid;
+        gap: 20px;
+        margin-top: 0;
+        padding-top: 0;
+      }
+
+      .post-list > h2 {
+        margin: 0;
+        font-size: 1rem;
+        letter-spacing: 0;
+      }
+
+      .empty-state {
+        margin-top: 0;
+        font-size: 1rem;
+      }
+
+      .post-item {
+        display: grid;
+        grid-template-columns: 112px minmax(0, 1fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      time {
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.75rem;
+        white-space: nowrap;
+      }
+
+      .post-kicker {
+        margin: 0 0 5px;
+        color: var(--accent);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        line-height: 1.4;
+        text-transform: uppercase;
+      }
+
+      .post-item h2 {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 560;
+        letter-spacing: 0;
+        line-height: 1.25rem;
+      }
+
+      .post-item h2 a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .post-title-link {
+        transition: color 0.15s ease;
+      }
+
+      .post-item:hover .post-title-link {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .post-topics {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.75rem;
+        line-height: 1.5;
+      }
+
+      .page-body .agent-files {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        max-width: 620px;
+        margin: 2rem 0 2.25rem;
+        color: #6f6a61;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .page-body .agent-files a {
+        color: inherit;
+      }
+
+      .page-body .agent-files a:hover {
+        color: var(--accent);
+      }
+
+      .meta {
+        margin-top: 0;
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.75rem;
+        line-height: 1.5;
+      }
+
+      .meta a {
+        color: inherit;
+      }
+
+      .meta a:hover {
+        color: var(--accent);
+      }
+
+      .post-title {
+        margin: 0 0 0.25rem;
+        max-width: 100%;
+        font-size: 1.5rem;
+        line-height: 2rem;
+        letter-spacing: 0;
+      }
+
+      .description {
+        max-width: 100%;
+        margin: 0.5rem 0 0;
+        color: var(--muted);
+        font-size: 1rem;
+        font-style: italic;
+        line-height: 1.65;
+      }
+
+      .post-body {
+        margin-top: 0.5rem;
+      }
+
+      .post-body p {
+        max-width: 100%;
+        margin: 1.25rem 0;
+        color: var(--text);
+        font-size: 1rem;
+        line-height: 1.5;
+      }
+
+      .post-body h2,
+      .post-body h3 {
+        max-width: 100%;
+        margin: 2rem 0 1rem;
+        color: var(--text);
+        font-size: 1.25rem;
+        line-height: 1.35;
+      }
+
+      @media (max-width: 640px) {
+        .shell {
+          padding-top: 0.75rem;
+        }
+
+        header {
+          align-items: baseline;
+          gap: 14px;
+          margin-bottom: 1.25rem;
+        }
+
+        header .brand {
+          font-size: 1rem;
+          line-height: 1.5rem;
+        }
+
+        nav {
+          gap: 24px;
+        }
+
+        footer {
+          justify-content: space-between;
+          gap: 16px;
+          margin-top: auto;
+          padding: 1rem 0 0;
+          border-top: 1px solid var(--line);
+          font-size: 0.75rem;
+        }
+
+        .generated-by {
+          display: none;
+        }
+
+        .post-list {
+          gap: 24px;
+        }
+
+        .post-item {
+          grid-template-columns: 1fr;
+          gap: 6px;
+        }
+
+        .post-item h2 {
+          font-weight: 560;
+          line-height: 1.42;
+        }
+
+        .post-topics {
+          max-width: 28rem;
+        }
+
+        .post-kicker {
+          margin-bottom: 0.75rem;
+        }
+
+        .meta {
+          margin-top: 0;
+          line-height: 1.6;
+        }
+
+        .post-title {
+          margin-top: 0;
+        }
+
+        .description {
+          margin-top: 0.5rem;
+          font-size: 1rem;
+          line-height: 1.6;
+        }
+
+        .post-body {
+          margin-top: 0.5rem;
+        }
+
+        .post-body p {
+          line-height: 1.5;
+        }
+      }`;
+}
+
+function renderLayout(options: {
+  site: SiteDefinition;
+  path: string;
+  title: string;
+  description: string;
+  body: string;
+}): string {
+  return `<!doctype html>
+<html lang="${escapeHtml(siteLanguage(options.site))}">
+  <head>
+    ${renderHead({
+      site: options.site,
+      path: options.path,
+      title: options.title,
+      description: options.description,
+    })}
+    <style>
+      ${renderStyles()}
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      ${renderHeader(options.site, options.path)}
+      <main>
+${options.body}
+      </main>
+      ${renderFooter()}
+    </div>
+  </body>
+</html>
+`;
+}
+
 function renderPostList(posts: WritingPost[], options: {
   heading?: string;
   limit?: number;
@@ -233,7 +659,7 @@ function renderPostList(posts: WritingPost[], options: {
               (post) => `<article class="post-item">
             <time datetime="${escapeHtml(post.publishedAt)}">${escapeHtml(formatDate(post.publishedAt))}</time>
             <div>
-              <h2><a href="${escapeHtml(postPath(post))}">${escapeHtml(post.title)}</a></h2>
+              <h2><a class="post-title-link" href="${escapeHtml(postPath(post))}">${escapeHtml(post.title)}</a></h2>
               ${renderPostTopics(post)}
             </div>
           </article>`
@@ -244,9 +670,8 @@ function renderPostList(posts: WritingPost[], options: {
 
 export function generateFaviconSvg(): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <circle cx="32" cy="32" r="30" fill="#fbfaf7"/>
-  <circle cx="32" cy="32" r="29" fill="none" stroke="#e8e2d8" stroke-width="2"/>
-  <text x="32" y="40" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="700" fill="#5f6f52">LG</text>
+  <rect width="64" height="64" rx="14" fill="#050505"/>
+  <text x="32" y="40" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="23" font-weight="700" fill="#ffffff">LG</text>
 </svg>
 `;
 }
@@ -274,744 +699,53 @@ export function generateSitePage(
   const isAbout = normalizePath(page.path) === "/about";
   const pageBody = isHome
     ? ""
-    : `<h1>${escapeHtml(page.title)}</h1>
-        ${renderBody(page.body)}
-        ${isAbout ? renderAgentFileLinks() : ""}`;
+    : `        <h1 class="page-title">${escapeHtml(page.title)}</h1>
+        <div class="page-body">
+          ${renderBody(page.body)}
+          ${isAbout ? renderAgentFileLinks() : ""}
+        </div>`;
   const postList =
     normalizePath(page.path) === "/"
       ? renderPostList(site.posts)
       : "";
 
-  return `<!doctype html>
-<html lang="${escapeHtml(siteLanguage(site))}">
-  <head>
-    ${renderHead({
-      site,
-      path: page.path,
-      title,
-      description,
-    })}
-    <style>
-      :root {
-        --accent: #5f6f52;
-        --bg: #fbfaf7;
-        --line: #e8e2d8;
-        --muted: #6f6a61;
-        --text: #151515;
-
-        color-scheme: light dark;
-        font-family:
-          ui-sans-serif,
-          system-ui,
-          -apple-system,
-          BlinkMacSystemFont,
-          "Segoe UI",
-          sans-serif;
-
-        background: var(--bg);
-        color: var(--text);
-      }
-
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --accent: #a7b995;
-          --bg: #181815;
-          --line: #303026;
-          --muted: #9b958a;
-          --text: #eeeae2;
-        }
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-      }
-
-      .shell {
-        width: min(760px, calc(100vw - 40px));
-        margin: 0 auto;
-        padding: 1.5rem 0 4rem;
-      }
-
-      header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 2.5rem;
-        padding-bottom: 10px;
-      }
-
-      header a,
-      header .brand {
-        color: inherit;
-        font-size: 0.9rem;
-        font-weight: 600;
-        text-decoration: none;
-      }
-
-      nav {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 14px;
-      }
-
-      nav a {
-        color: var(--muted);
-        font-weight: 500;
-      }
-
-      main {
-        padding-top: 0;
-      }
-
-      h1 {
-        margin: 0;
-        max-width: 680px;
-        font-size: clamp(1.8rem, 5vw, 3rem);
-        line-height: 1;
-        letter-spacing: 0;
-      }
-
-      p {
-        max-width: 620px;
-        margin: 18px 0 0;
-        color: var(--text);
-        font-size: 1rem;
-        line-height: 1.75;
-      }
-
-      .post-list {
-        display: grid;
-        gap: 24px;
-        margin-top: 0;
-      }
-
-      .post-list > h2 {
-        margin: 0;
-        font-size: 1rem;
-        letter-spacing: 0;
-      }
-
-      .empty-state {
-        margin-top: 0;
-        font-size: 1rem;
-      }
-
-      .post-item {
-        display: grid;
-        grid-template-columns: 112px minmax(0, 1fr);
-        gap: 18px;
-        align-items: start;
-      }
-
-      time {
-        color: var(--muted);
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 0.78rem;
-        white-space: nowrap;
-      }
-
-      .post-kicker {
-        margin: 0 0 5px;
-        color: var(--accent);
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 0.72rem;
-        letter-spacing: 0.08em;
-        line-height: 1.4;
-        text-transform: uppercase;
-      }
-
-      h2 {
-        margin: 0;
-        font-size: 0.98rem;
-        font-weight: 560;
-        letter-spacing: 0;
-        line-height: 1.45;
-      }
-
-      h2 a {
-        color: inherit;
-        text-decoration: none;
-      }
-
-      a:hover {
-        color: var(--accent);
-        text-decoration: underline;
-        text-underline-offset: 3px;
-      }
-
-      .post-topics {
-        margin: 5px 0 0;
-        color: var(--muted);
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 0.78rem;
-        line-height: 1.5;
-      }
-
-      .agent-files {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        color: var(--muted);
-        font-size: 0.9rem;
-      }
-
-      .agent-files a {
-        color: inherit;
-      }
-
-      footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-        flex-wrap: wrap;
-        margin-top: 5.5rem;
-        padding-top: 1rem;
-        border-top: 1px solid var(--line);
-        color: var(--muted);
-        font-size: 0.78rem;
-      }
-
-      footer a {
-        color: inherit;
-      }
-
-      .generated-by {
-        color: var(--muted);
-      }
-
-      @media (max-width: 640px) {
-        .shell {
-          width: min(100vw - 3rem, 42rem);
-          padding-top: 1.5rem;
-        }
-
-        header {
-          align-items: baseline;
-          gap: 14px;
-          margin-bottom: 2.5rem;
-        }
-
-        header a,
-        header .brand {
-          font-size: 1rem;
-        }
-
-        nav {
-          gap: 24px;
-        }
-
-        nav a {
-          font-size: 0.9rem;
-        }
-
-        main {
-          padding-top: 0;
-        }
-
-        .post-list {
-          gap: 24px;
-        }
-
-        .post-item {
-          grid-template-columns: 1fr;
-          gap: 6px;
-        }
-
-        h2 {
-          font-size: 0.96rem;
-          font-weight: 560;
-          line-height: 1.42;
-        }
-
-        .post-topics {
-          max-width: 28rem;
-          font-size: 0.76rem;
-        }
-
-        footer {
-          justify-content: space-between;
-          gap: 16px;
-          margin-top: 96px;
-          border-top: 0;
-          padding-top: 0;
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-          font-size: 0.78rem;
-        }
-
-        .generated-by {
-          display: none;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="shell">
-      ${renderHeader(site, page.path)}
-      <main>
-        ${pageBody}
-${postList}
-      </main>
-      ${renderFooter()}
-    </div>
-  </body>
-</html>
-`;
+  return renderLayout({
+    site,
+    path: page.path,
+    title,
+    description,
+    body: `${pageBody}
+${postList}`,
+  });
 }
 
 export function generatePostPage(
   site: SiteDefinition,
   post: WritingPost
 ): string {
-  return `<!doctype html>
-<html lang="${escapeHtml(siteLanguage(site))}">
-  <head>
-    ${renderHead({
-      site,
-      path: postPath(post),
-      title: `${post.title} - ${AUTHOR_NAME}`,
-      description: post.description,
-    })}
-    <style>
-      :root {
-        --accent: #5f6f52;
-        --bg: #fbfaf7;
-        --line: #e8e2d8;
-        --muted: #6f6a61;
-        --text: #151515;
-
-        color-scheme: light dark;
-        font-family:
-          ui-sans-serif,
-          system-ui,
-          -apple-system,
-          BlinkMacSystemFont,
-          "Segoe UI",
-          sans-serif;
-
-        background: var(--bg);
-        color: var(--text);
-      }
-
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --accent: #a7b995;
-          --bg: #181815;
-          --line: #303026;
-          --muted: #9b958a;
-          --text: #eeeae2;
-        }
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-      }
-
-      .shell {
-        width: min(760px, calc(100vw - 40px));
-        margin: 0 auto;
-        padding: 1.5rem 0 4rem;
-      }
-
-      header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 2.5rem;
-        padding-bottom: 10px;
-      }
-
-      header a,
-      header .brand,
-      nav a {
-        color: inherit;
-        font-size: 0.9rem;
-        font-weight: 600;
-        text-decoration: none;
-      }
-
-      nav {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 14px;
-      }
-
-      nav a {
-        color: var(--muted);
-        font-weight: 500;
-      }
-
-      main {
-        padding-top: 0;
-      }
-
-      .meta {
-        margin-top: 1rem;
-        color: var(--muted);
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 0.76rem;
-        line-height: 1.5;
-      }
-
-      .meta a {
-        color: inherit;
-      }
-
-      .post-kicker {
-        margin: 0 0 0.75rem;
-        color: var(--accent);
-        font-size: 0.73rem;
-        font-weight: 650;
-        letter-spacing: 0.08em;
-        line-height: 1.4;
-        text-transform: uppercase;
-      }
-
-      h1 {
-        margin: 0;
-        max-width: 680px;
-        font-size: clamp(1.7rem, 5.5vw, 2.8rem);
-        line-height: 1.04;
-        letter-spacing: 0;
-      }
-
-      .description {
-        max-width: 620px;
-        margin: 1rem 0 0;
-        color: var(--muted);
-        font-size: 1.02rem;
-        font-style: italic;
-        line-height: 1.65;
-      }
-
-      .post-body {
-        margin-top: 2.75rem;
-      }
-
-      .post-body p {
-        max-width: 640px;
-        margin: 0 0 24px;
-        color: var(--text);
-        font-size: 1.03rem;
-        line-height: 1.8;
-      }
-
-      a:hover {
-        color: var(--accent);
-        text-decoration: underline;
-        text-underline-offset: 3px;
-      }
-
-      footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-        flex-wrap: wrap;
-        margin-top: 5.5rem;
-        padding-top: 1rem;
-        border-top: 1px solid var(--line);
-        color: var(--muted);
-        font-size: 0.78rem;
-      }
-
-      footer a {
-        color: inherit;
-      }
-
-      .generated-by {
-        color: var(--muted);
-      }
-
-      @media (max-width: 640px) {
-        .shell {
-          width: min(100vw - 3rem, 42rem);
-          padding-top: 1.5rem;
-        }
-
-        header {
-          align-items: baseline;
-          gap: 14px;
-          margin-bottom: 2.5rem;
-        }
-
-        header a,
-        header .brand {
-          font-size: 1rem;
-        }
-
-        nav {
-          gap: 24px;
-        }
-
-        nav a {
-          font-size: 0.9rem;
-        }
-
-        main {
-          padding-top: 0;
-        }
-
-        .post-kicker {
-          margin-bottom: 0.75rem;
-        }
-
-        .meta {
-          margin-top: 1rem;
-          font-size: 0.74rem;
-          line-height: 1.6;
-        }
-
-        h1 {
-          margin-top: 0;
-          font-size: clamp(1.7rem, 7vw, 2.2rem);
-          line-height: 1.05;
-        }
-
-        .description {
-          margin-top: 1rem;
-          font-size: 1rem;
-          line-height: 1.6;
-        }
-
-        .post-body {
-          margin-top: 2.5rem;
-        }
-
-        .post-body p {
-          font-size: 1rem;
-          line-height: 1.72;
-        }
-
-        footer {
-          justify-content: space-between;
-          gap: 16px;
-          margin-top: 96px;
-          border-top: 0;
-          padding-top: 0;
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-          font-size: 0.78rem;
-        }
-
-        .generated-by {
-          display: none;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="shell">
-      ${renderHeader(site, postPath(post))}
-      <main>
-        <h1>${escapeHtml(post.title)}</h1>
-        <div class="meta"><a href="${escapeHtml(X_PROFILE_URL)}" rel="me">${escapeHtml(AUTHOR_USERNAME)}</a> | <time datetime="${escapeHtml(post.publishedAt)}">${escapeHtml(formatDate(post.publishedAt))}</time> | ${escapeHtml(relativePublishedAt(post.publishedAt))}</div>
+  return renderLayout({
+    site,
+    path: postPath(post),
+    title: `${post.title} - ${AUTHOR_NAME}`,
+    description: post.description,
+    body: `        <h1 class="post-title">${escapeHtml(post.title)}</h1>
+        <div class="meta"><a href="${escapeHtml(X_PROFILE_URL)}" rel="me">${escapeHtml(AUTHOR_USERNAME)}</a> | <time datetime="${escapeHtml(post.publishedAt)}">${escapeHtml(formatDate(post.publishedAt))}</time> | ${escapeHtml(formatRelativeDate(post.publishedAt))}</div>
         <p class="description">${escapeHtml(post.description)}</p>
         <div class="post-body">
           ${renderBody(post.body)}
-        </div>
-      </main>
-      ${renderFooter()}
-    </div>
-  </body>
-</html>
-`;
+        </div>`,
+  });
 }
 
 export function generateNotFoundPage(site: SiteDefinition): string {
-  return `<!doctype html>
-<html lang="${escapeHtml(siteLanguage(site))}">
-  <head>
-    ${renderHead({
-      site,
-      path: "/404",
-      title: `Page not found - ${site.title}`,
-      description: "The requested page could not be found.",
-    })}
-    <style>
-      :root {
-        --accent: #5f6f52;
-        --bg: #fbfaf7;
-        --line: #e8e2d8;
-        --muted: #6f6a61;
-        --text: #151515;
-
-        color-scheme: light dark;
-        font-family:
-          ui-sans-serif,
-          system-ui,
-          -apple-system,
-          BlinkMacSystemFont,
-          "Segoe UI",
-          sans-serif;
-
-        background: var(--bg);
-        color: var(--text);
-      }
-
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --accent: #a7b995;
-          --bg: #181815;
-          --line: #303026;
-          --muted: #9b958a;
-          --text: #eeeae2;
-        }
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        min-height: 100vh;
-      }
-
-      .shell {
-        width: min(760px, calc(100vw - 40px));
-        margin: 0 auto;
-        padding: 1.5rem 0 4rem;
-      }
-
-      header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 20px;
-        margin-bottom: 2.5rem;
-        padding-bottom: 10px;
-      }
-
-      header a,
-      header .brand,
-      nav a {
-        color: inherit;
-        font-size: 0.9rem;
-        font-weight: 600;
-        text-decoration: none;
-      }
-
-      nav {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 14px;
-      }
-
-      nav a {
-        color: var(--muted);
-        font-weight: 500;
-      }
-
-      main {
-        padding-top: 0;
-      }
-
-      h1 {
-        margin: 0;
-        max-width: 680px;
-        font-size: clamp(1.8rem, 5vw, 3rem);
-        line-height: 1;
-        letter-spacing: 0;
-      }
-
-      p {
-        max-width: 620px;
-        margin: 18px 0 0;
-        color: var(--text);
-        font-size: 1rem;
-        line-height: 1.7;
-      }
-
-      footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-        flex-wrap: wrap;
-        margin-top: 5.5rem;
-        padding-top: 1rem;
-        border-top: 1px solid var(--line);
-        color: var(--muted);
-        font-size: 0.78rem;
-      }
-
-      footer a {
-        color: inherit;
-      }
-
-      .generated-by {
-        color: var(--muted);
-      }
-
-      @media (max-width: 640px) {
-        .shell {
-          width: min(100vw - 3rem, 42rem);
-          padding-top: 1.5rem;
-        }
-
-        header {
-          align-items: baseline;
-          gap: 14px;
-          margin-bottom: 2.5rem;
-        }
-
-        header a,
-        header .brand {
-          font-size: 1rem;
-        }
-
-        nav {
-          gap: 24px;
-        }
-
-        nav a {
-          font-size: 0.9rem;
-        }
-
-        main {
-          padding-top: 0;
-        }
-
-        footer {
-          justify-content: space-between;
-          gap: 16px;
-          margin-top: 96px;
-          border-top: 0;
-          padding-top: 0;
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-          font-size: 0.78rem;
-        }
-
-        .generated-by {
-          display: none;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="shell">
-      ${renderHeader(site, "/404")}
-      <main>
-        <h1>Page not found</h1>
-        <p>The page you are looking for does not exist yet.</p>
-      </main>
-      ${renderFooter()}
-    </div>
-  </body>
-</html>
-`;
+  return renderLayout({
+    site,
+    path: "/404",
+    title: `Page not found - ${site.title}`,
+    description: "The requested page could not be found.",
+    body: `        <h1 class="not-found-title">Page not found</h1>
+        <p class="not-found-copy">The page you are looking for does not exist yet.</p>`,
+  });
 }
 
 export function generateSiteManifest(site: SiteDefinition): string {

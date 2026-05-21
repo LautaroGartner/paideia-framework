@@ -4,7 +4,7 @@ Inspectable website and application runtime framework.
 
 Build software that humans and agents can understand.
 
-Current version: `v1.7.0`
+Current version: `v1.7.2`
 Runtime identity foundation
 
 ---
@@ -32,7 +32,7 @@ The goal is software that can explain itself.
 
 ## Current Capabilities
 
-`v1.7.0` can currently generate and serve:
+`v1.7.2` can currently generate and serve:
 
 * static pages
 * structured writing collections
@@ -79,8 +79,8 @@ Generated outputs currently include:
 ```txt
 dist/
   index.html
-  writing/index.html
-  writing/<post>/index.html
+  about/index.html
+  <post>/index.html
   404.html
   system.json
   runtime.json
@@ -159,6 +159,11 @@ export const site = defineSite({
       path: "/",
       title: "Home",
       body: "Building Paideia Framework in public.",
+    },
+    {
+      path: "/about",
+      title: "About",
+      body: "About Paideia and this site.",
     },
   ],
 });
@@ -278,7 +283,7 @@ Example:
 {
   "status": "ok",
   "framework": "paideia",
-  "version": "1.7.0",
+  "version": "1.7.2",
   "runtime": "production",
   "dist": "ready"
 }
@@ -340,6 +345,7 @@ npm run test:writing
 npm run test:site
 npm run test:manifest
 npm run test:manifest-diagnostics
+npm run test:version
 npm run test:runtime
 npm run test:install-smoke
 ```

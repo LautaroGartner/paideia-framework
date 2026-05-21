@@ -8,6 +8,25 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <meta name="author" content="Lautaro Gärtner">
     <link rel="canonical" href="https://lautarogartner.com/generated-systems-should-explain-themselves">
+    <script>
+      (() => {
+        const localHosts = new Set(["localhost", "127.0.0.1", "::1"]);
+
+        if (localHosts.has(window.location.hostname)) {
+          return;
+        }
+
+        for (const src of [
+          "/_vercel/insights/script.js",
+          "/_vercel/speed-insights/script.js",
+        ]) {
+          const script = document.createElement("script");
+          script.defer = true;
+          script.src = src;
+          document.head.append(script);
+        }
+      })();
+    </script>
     <style>
       :root {
         --accent: #5f6f52;
@@ -49,9 +68,12 @@
       }
 
       .shell {
-        width: min(760px, calc(100vw - 40px));
+        display: flex;
+        flex-direction: column;
+        max-width: 42rem;
+        min-height: 100vh;
         margin: 0 auto;
-        padding: 1.5rem 0 4rem;
+        padding: 1.5rem 1.5rem 4rem;
       }
 
       header {
@@ -60,82 +82,42 @@
         align-items: center;
         gap: 20px;
         margin-bottom: 2.5rem;
-        padding-bottom: 10px;
+        padding-bottom: 8px;
       }
 
       header a,
       header .brand,
       nav a {
         color: inherit;
-        font-size: 0.9rem;
-        font-weight: 600;
         text-decoration: none;
+      }
+
+      header a,
+      header .brand {
+        font-size: 1.125rem;
+        font-weight: 700;
+        line-height: 1.75rem;
       }
 
       nav {
         display: flex;
         flex-wrap: wrap;
-        gap: 14px;
+        gap: 0.25rem;
       }
 
       nav a {
         color: var(--muted);
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.75rem;
         font-weight: 500;
+        line-height: 1rem;
+        padding: 0.125rem 0.375rem;
+        border-radius: 0.75rem;
       }
 
       main {
         padding-top: 0;
-      }
-
-      .meta {
-        margin-top: 1rem;
-        color: var(--muted);
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 0.76rem;
-        line-height: 1.5;
-      }
-
-      .meta a {
-        color: inherit;
-      }
-
-      .post-kicker {
-        margin: 0 0 0.75rem;
-        color: var(--accent);
-        font-size: 0.73rem;
-        font-weight: 650;
-        letter-spacing: 0.08em;
-        line-height: 1.4;
-        text-transform: uppercase;
-      }
-
-      h1 {
-        margin: 0;
-        max-width: 680px;
-        font-size: clamp(1.7rem, 5.5vw, 2.8rem);
-        line-height: 1.04;
-        letter-spacing: 0;
-      }
-
-      .description {
-        max-width: 620px;
-        margin: 1rem 0 0;
-        color: var(--muted);
-        font-size: 1.02rem;
-        font-style: italic;
-        line-height: 1.65;
-      }
-
-      .post-body {
-        margin-top: 2.75rem;
-      }
-
-      .post-body p {
-        max-width: 640px;
-        margin: 0 0 24px;
-        color: var(--text);
-        font-size: 1.03rem;
-        line-height: 1.8;
       }
 
       a:hover {
@@ -144,54 +126,255 @@
         text-underline-offset: 3px;
       }
 
+      nav a:hover {
+        background: var(--line);
+        color: var(--text);
+        text-decoration: none;
+      }
+
       footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: 16px;
         flex-wrap: wrap;
-        margin-top: 5.5rem;
-        padding-top: 1rem;
+        margin-top: auto;
+        padding: 0.75rem 0 1.5rem;
         border-top: 1px solid var(--line);
         color: var(--muted);
-        font-size: 0.78rem;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.75rem;
+        line-height: 1rem;
       }
 
       footer a {
         color: inherit;
       }
 
+      footer a:hover {
+        color: var(--accent);
+      }
+
       .generated-by {
         color: var(--muted);
       }
 
+      .page-title,
+      .not-found-title {
+        margin: 0;
+        max-width: 680px;
+        font-size: clamp(1.8rem, 5vw, 3rem);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .page-body p,
+      .not-found-copy {
+        max-width: 620px;
+        margin: 18px 0 0;
+        color: var(--text);
+        font-size: 1rem;
+        line-height: 1.75;
+      }
+
+      .not-found-copy {
+        line-height: 1.7;
+      }
+
+      .post-list {
+        display: grid;
+        gap: 20px;
+        margin-top: 0;
+        padding-top: 0;
+      }
+
+      .post-list > h2 {
+        margin: 0;
+        font-size: 1rem;
+        letter-spacing: 0;
+      }
+
+      .empty-state {
+        margin-top: 0;
+        font-size: 1rem;
+      }
+
+      .post-item {
+        display: grid;
+        grid-template-columns: 112px minmax(0, 1fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      time {
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.75rem;
+        white-space: nowrap;
+      }
+
+      .post-kicker {
+        margin: 0 0 5px;
+        color: var(--accent);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        line-height: 1.4;
+        text-transform: uppercase;
+      }
+
+      .post-item h2 {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 560;
+        letter-spacing: 0;
+        line-height: 1.25rem;
+      }
+
+      .post-item h2 a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .post-title-link {
+        transition: color 0.15s ease;
+      }
+
+      .post-item:hover .post-title-link {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .post-topics {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.75rem;
+        line-height: 1.5;
+      }
+
+      .page-body .agent-files {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        max-width: 620px;
+        margin: 2rem 0 2.25rem;
+        color: #6f6a61;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .page-body .agent-files a {
+        color: inherit;
+      }
+
+      .page-body .agent-files a:hover {
+        color: var(--accent);
+      }
+
+      .meta {
+        margin-top: 0;
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.75rem;
+        line-height: 1.5;
+      }
+
+      .meta a {
+        color: inherit;
+      }
+
+      .meta a:hover {
+        color: var(--accent);
+      }
+
+      .post-title {
+        margin: 0 0 0.25rem;
+        max-width: 100%;
+        font-size: 1.5rem;
+        line-height: 2rem;
+        letter-spacing: 0;
+      }
+
+      .description {
+        max-width: 100%;
+        margin: 0.5rem 0 0;
+        color: var(--muted);
+        font-size: 1rem;
+        font-style: italic;
+        line-height: 1.65;
+      }
+
+      .post-body {
+        margin-top: 0.5rem;
+      }
+
+      .post-body p {
+        max-width: 100%;
+        margin: 1.25rem 0;
+        color: var(--text);
+        font-size: 1rem;
+        line-height: 1.5;
+      }
+
+      .post-body h2,
+      .post-body h3 {
+        max-width: 100%;
+        margin: 2rem 0 1rem;
+        color: var(--text);
+        font-size: 1.25rem;
+        line-height: 1.35;
+      }
+
       @media (max-width: 640px) {
         .shell {
-          width: min(100vw - 3rem, 42rem);
-          padding-top: 1.5rem;
+          padding-top: 0.75rem;
         }
 
         header {
           align-items: baseline;
           gap: 14px;
-          margin-bottom: 2.5rem;
+          margin-bottom: 1.25rem;
         }
 
-        header a,
         header .brand {
           font-size: 1rem;
+          line-height: 1.5rem;
         }
 
         nav {
           gap: 24px;
         }
 
-        nav a {
-          font-size: 0.9rem;
+        footer {
+          justify-content: space-between;
+          gap: 16px;
+          margin-top: auto;
+          padding: 1rem 0 0;
+          border-top: 1px solid var(--line);
+          font-size: 0.75rem;
         }
 
-        main {
-          padding-top: 0;
+        .generated-by {
+          display: none;
+        }
+
+        .post-list {
+          gap: 24px;
+        }
+
+        .post-item {
+          grid-template-columns: 1fr;
+          gap: 6px;
+        }
+
+        .post-item h2 {
+          font-weight: 560;
+          line-height: 1.42;
+        }
+
+        .post-topics {
+          max-width: 28rem;
         }
 
         .post-kicker {
@@ -199,44 +382,26 @@
         }
 
         .meta {
-          margin-top: 1rem;
-          font-size: 0.74rem;
+          margin-top: 0;
           line-height: 1.6;
         }
 
-        h1 {
+        .post-title {
           margin-top: 0;
-          font-size: clamp(1.7rem, 7vw, 2.2rem);
-          line-height: 1.05;
         }
 
         .description {
-          margin-top: 1rem;
+          margin-top: 0.5rem;
           font-size: 1rem;
           line-height: 1.6;
         }
 
         .post-body {
-          margin-top: 2.5rem;
+          margin-top: 0.5rem;
         }
 
         .post-body p {
-          font-size: 1rem;
-          line-height: 1.72;
-        }
-
-        footer {
-          justify-content: space-between;
-          gap: 16px;
-          margin-top: 96px;
-          border-top: 0;
-          padding-top: 0;
-          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-          font-size: 0.78rem;
-        }
-
-        .generated-by {
-          display: none;
+          line-height: 1.5;
         }
       }
     </style>
@@ -246,13 +411,14 @@
       <header>
         <a class="brand" href="/">Lautaro Gärtner</a>
         <nav aria-label="Site">
+          
           <a href="/about">About</a>
           <a href="https://x.com/lautyxgr" rel="me">𝕏 Follow me</a>
         </nav>
       </header>
       <main>
-        <h1>Why Generated Systems Should Explain Themselves</h1>
-        <div class="meta"><a href="https://x.com/lautyxgr" rel="me">@lautyxgr</a> | <time datetime="2026-05-20">May 20, 2026</time> | today</div>
+        <h1 class="post-title">Why Generated Systems Should Explain Themselves</h1>
+        <div class="meta"><a href="https://x.com/lautyxgr" rel="me">@lautyxgr</a> | <time datetime="2026-05-20">May 20, 2026</time> | 1d ago</div>
         <p class="description">Why generated software should expose its shape, contracts, capabilities, and security-relevant runtime facts.</p>
         <div class="post-body">
           <p>Generated software has a trust problem.</p>
@@ -285,7 +451,7 @@
         </span>
         
         <span class="generated-by">
-          Generated by Paideia Framework v1.7.0.
+          Generated by Paideia Framework v1.7.2.
         </span>
         <a href="https://github.com/LautaroGartner/paideia-framework">Source</a>
       </footer>
