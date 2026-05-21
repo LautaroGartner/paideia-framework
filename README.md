@@ -4,7 +4,7 @@ Inspectable website and application runtime framework.
 
 Build software that humans and agents can understand.
 
-Current version: `v1.7.2`
+Current version: `v1.8.0`
 Runtime identity foundation
 
 ---
@@ -71,7 +71,7 @@ Paideia Runtime Inspect
 
 Project
   Framework      Paideia Framework
-  Version        1.7.2
+  Version        1.8.0
   Title          Lautaro Gärtner's blog
 
 Runtime
@@ -409,7 +409,7 @@ Example:
 {
   "status": "ok",
   "framework": "paideia",
-  "version": "1.7.2",
+  "version": "1.8.0",
   "runtime": "production",
   "dist": "ready"
 }
@@ -533,22 +533,6 @@ That is an important threshold.
 ---
 
 # Roadmap
-
-## v1.4
-
-Manifest-first runtime foundation
-
-## v1.5
-
-Website runtime foundation
-
-## v1.6
-
-Authoring ergonomics foundation
-
-## v1.7
-
-Runtime identity foundation
 
 ## v2
 

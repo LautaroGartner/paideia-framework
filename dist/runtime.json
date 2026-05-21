@@ -1,11 +1,11 @@
 {
   "framework": {
     "name": "Paideia Framework",
-    "version": "1.7.2"
+    "version": "1.8.0"
   },
   "build": {
-    "id": "dc17859",
-    "generatedAt": "2026-05-21T20:56:12.736Z",
+    "id": "d4a2e79",
+    "generatedAt": "2026-05-21T21:27:37.377Z",
     "mode": "production",
     "artifactCount": 11
   },
