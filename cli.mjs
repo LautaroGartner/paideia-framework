@@ -24,6 +24,7 @@ function printHelp() {
   console.log("");
   console.log("Commands:");
   console.log("  paideia dev      Start the development runtime");
+  console.log("  paideia init     Create a new Paideia project");
   console.log("  paideia build    Build production artifacts");
   console.log("  paideia start    Start the production runtime");
   console.log("  paideia doctor   Run runtime diagnostics");
@@ -45,6 +46,10 @@ const commands = {
     env: {
       PAIDEIA_MODE: "development",
     },
+  },
+  init: {
+    bin: "node",
+    args: [resolveScript("scripts/init.mjs"), ...args],
   },
   build: {
     bin: "node",

@@ -5,9 +5,11 @@ import {
 } from "fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
+import process from "node:process";
+import { pathToFileURL } from "node:url";
 
 import { validateWritingPosts } from "../runtime/validate-writing.mjs";
-import { site } from "./site.js";
+import type { SiteDefinition } from "./site.js";
 import {
   generateContextJson,
   generateFaviconSvg,
@@ -21,6 +23,25 @@ import {
   getSiteOutputPath,
 } from "./site-build.js";
 
+async function loadSite(): Promise<SiteDefinition> {
+  const siteEntry =
+    process.env.PAIDEIA_SITE_ENTRY ?? "./site.js";
+  const siteModule = await import(
+    siteEntry.startsWith(".")
+      ? siteEntry
+      : pathToFileURL(siteEntry).href
+  );
+
+  if (!siteModule.site) {
+    throw new Error(
+      `site export not found in ${siteEntry}`
+    );
+  }
+
+  return siteModule.site as SiteDefinition;
+}
+
+const site = await loadSite();
 const writingValidation = validateWritingPosts(site.posts);
 
 for (const item of writingValidation.diagnostics) {

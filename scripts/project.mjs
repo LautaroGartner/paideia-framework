@@ -26,6 +26,10 @@ export function isPackageCheckoutProject(
   );
 }
 
+export function isPaideiaProject(projectRoot = appRoot) {
+  return fs.existsSync(path.join(projectRoot, "src", "site.ts"));
+}
+
 export function assertPackageCheckoutProject(command) {
   if (isPackageCheckoutProject()) {
     return;
@@ -39,7 +43,7 @@ export function assertPackageCheckoutProject(command) {
     "[paideia] run this command from the Paideia checkout for now"
   );
   console.error(
-    "[paideia] external project scaffolding will be handled by `paideia new` later"
+    "[paideia] run `paideia init <name>` to create a Paideia project"
   );
 
   process.exit(1);
