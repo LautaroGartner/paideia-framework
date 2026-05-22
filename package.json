@@ -28,6 +28,7 @@
     "test:manifest-diagnostics": "node tests/manifest-diagnostics.test.mjs",
     "test:manifest": "node tests/manifest-contract.test.mjs",
     "test:docs-example": "node tests/docs-example.test.mjs",
+    "test:agentify": "node tests/agentify.test.mjs",
     "test:init": "node tests/init-project.test.mjs",
     "test:new-post": "node tests/new-post-cli.test.mjs",
     "test:site": "node tests/site-runtime.test.mjs",
