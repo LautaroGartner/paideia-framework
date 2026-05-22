@@ -16,6 +16,7 @@ function readJson(path) {
 
 const packageJson = readJson("package.json");
 const packageLock = readJson("package-lock.json");
+const readme = readText("README.md");
 const versionSource = readText("src/version.ts");
 
 assert.match(
@@ -39,6 +40,27 @@ assert.equal(
 assert.ok(
   versionSource.includes(`readPackageVersion() ?? "${packageJson.version}"`),
   "src/version.ts fallback should match package.json"
+);
+
+assert.ok(
+  readme.includes(`Current version: \`v${packageJson.version}\``),
+  "README.md current version should match package.json"
+);
+
+assert.ok(
+  readme.includes(`\n  "version": "${packageJson.version}",\n`),
+  "README.md health endpoint example should match package.json"
+);
+
+const readmeReleaseVersions = Array.from(
+  readme.matchAll(/\bv\d+\.\d+\.\d+\b/g),
+  (match) => match[0]
+);
+
+assert.deepEqual(
+  [...new Set(readmeReleaseVersions)],
+  [`v${packageJson.version}`],
+  "README.md release version references should match package.json"
 );
 
 for (const artifactPath of ["dist/runtime.json", "dist/system.json"]) {

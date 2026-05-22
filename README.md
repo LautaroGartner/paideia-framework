@@ -1,8 +1,8 @@
 # Paideia Framework
 
-Inspectable website and application runtime framework.
+Generated websites and applications that explain what was built.
 
-Build software that humans and agents can understand.
+Paideia generates small websites and applications with files that describe their routes, artifacts, capabilities, diagnostics, and runtime identity.
 
 Current version: `v1.8.0`
 Runtime identity foundation
@@ -41,12 +41,15 @@ npm run doctor
 
 ## What gets generated
 
-Paideia generates explicit runtime artifacts alongside the site:
+Paideia writes normal website files plus a small set of explanation files:
 
 ```txt
 dist/
   index.html
   about/index.html
+  <post>/index.html
+  404.html
+  favicon.svg
   runtime.json
   system.json
   context.json
@@ -122,9 +125,9 @@ Runtime doctor:
 
 ## What Paideia Generates
 
-Paideia generates small inspectable systems.
+Paideia generates small inspectable websites and applications.
 
-The runtime intentionally exposes machine-readable artifacts so both humans and agents can understand:
+The generated output includes files that help humans and agents understand:
 - routes
 - capabilities
 - generated outputs
@@ -158,13 +161,14 @@ The goal is software that can explain itself.
 
 ## Current Capabilities
 
-`v1.7.2` can currently generate and serve:
+`v1.8.0` can currently generate, inspect, and serve:
 
 * static pages
 * structured writing collections
 * individual post pages
 * generated navigation
 * `404.html`
+* `favicon.svg`
 * `system.json`
 * `runtime.json`
 * `context.json`
@@ -173,9 +177,12 @@ The goal is software that can explain itself.
 * generated artifact inventory
 * runtime capability declarations
 * runtime diagnostics
+* manifest contract validation and normalization
 * writing validation
+* project scaffolding with `paideia init`
 * runtime inspection CLI
 * post creation CLI workflow
+* manifest, schema, and Markdown explanation CLI output
 
 Paideia now powers its own website runtime.
 
@@ -208,6 +215,7 @@ dist/
   about/index.html
   <post>/index.html
   404.html
+  favicon.svg
   system.json
   runtime.json
   context.json
@@ -319,16 +327,35 @@ minimal software systems, and explicit contracts.
 Current CLI surface:
 
 ```bash
+paideia dev
+paideia init <project-name>
 paideia build
 paideia start
 paideia doctor
 paideia inspect
 paideia new post "Post title"
+paideia manifest
+paideia schema
+paideia explain
 paideia --version
 paideia --help
 ```
 
 ## Commands
+
+### `paideia dev`
+
+Starts the development runtime for a Paideia project checkout.
+
+### `paideia init`
+
+Creates a new Paideia project:
+
+```bash
+paideia init my-site
+```
+
+The generated project includes site and writing contracts, local scripts for build/start/doctor/inspect/new posts, and a starter README.
 
 ### `paideia build`
 
@@ -372,6 +399,18 @@ Generates:
 ```txt
 src/writing/my-post.ts
 ```
+
+### `paideia manifest`
+
+Validates and prints the generated `dist/system.json` manifest.
+
+### `paideia schema`
+
+Prints the generated `dist/schema.sql` file when the project produces one.
+
+### `paideia explain`
+
+Validates the generated manifest and prints a Markdown explanation of the generated system.
 
 ---
 
@@ -483,7 +522,9 @@ npm run test:install-smoke
 Current dependency shape:
 
 ```txt
-runtime dependencies: 0
+runtime dependencies:
+- @vercel/analytics
+- @vercel/speed-insights
 dev dependencies:
 - typescript
 - @types/node
