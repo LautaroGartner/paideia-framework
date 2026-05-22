@@ -9,6 +9,8 @@ import { fileURLToPath } from "node:url";
 const PACKAGE_ROOT = path.dirname(
   path.dirname(fileURLToPath(import.meta.url))
 );
+const DEFAULT_MAX_PAGES = 10;
+const DEFAULT_USER_AGENT = "agentify/0.2";
 
 function readPackageVersion() {
   try {
@@ -28,6 +30,12 @@ function readPackageVersion() {
 
 function decodeHtmlEntities(value) {
   return value
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) =>
+      String.fromCodePoint(Number.parseInt(hex, 16))
+    )
+    .replace(/&#(\d+);/g, (_, decimal) =>
+      String.fromCodePoint(Number.parseInt(decimal, 10))
+    )
     .replaceAll("&amp;", "&")
     .replaceAll("&lt;", "<")
     .replaceAll("&gt;", ">")
@@ -78,6 +86,23 @@ function extractDescription(html) {
   return "";
 }
 
+function extractHeadings(html) {
+  const matches = html.matchAll(/<h[1-6]\b[^>]*>([\s\S]*?)<\/h[1-6]>/gi);
+  const headings = [];
+
+  for (const match of matches) {
+    const heading = normalizeWhitespace(
+      decodeHtmlEntities(stripTags(match[1]))
+    );
+
+    if (heading) {
+      headings.push(heading);
+    }
+  }
+
+  return headings;
+}
+
 function routeFromUrl(url) {
   const pathname = url.pathname.replace(/\/+/g, "/");
   const normalized = pathname.endsWith("/") && pathname !== "/"
@@ -89,7 +114,7 @@ function routeFromUrl(url) {
 
 function extractInternalRoutes(html, sourceUrl) {
   const source = new URL(sourceUrl);
-  const routes = new Set(["/"]);
+  const routes = new Set([routeFromUrl(source)]);
   const anchorTags = html.match(/<a\b[^>]*>/gi) ?? [];
 
   for (const tag of anchorTags) {
@@ -121,6 +146,26 @@ function extractInternalRoutes(html, sourceUrl) {
   return Array.from(routes).sort();
 }
 
+function pageMetadata(pathname, html, source) {
+  return {
+    path: pathname,
+    url: new URL(pathname, source).href,
+    title: extractTitle(html),
+    description: extractDescription(html),
+    headings: extractHeadings(html),
+  };
+}
+
+function normalizeMaxPages(value) {
+  const numberValue = Number(value);
+
+  if (!Number.isFinite(numberValue) || numberValue < 1) {
+    return DEFAULT_MAX_PAGES;
+  }
+
+  return Math.min(Math.floor(numberValue), DEFAULT_MAX_PAGES);
+}
+
 function byteLength(value) {
   return Buffer.byteLength(value, "utf8");
 }
@@ -138,11 +183,11 @@ function buildIdFor(outputs) {
   return hash.digest("hex").slice(0, 7);
 }
 
-function createLlmsText({ sourceUrl, title, description, routes }) {
+function createLlmsText({ sourceUrl, title, description, routes, maxPages }) {
   const lines = [
     `# ${title || sourceUrl}`,
     "",
-    "This agent bundle was generated from a public website homepage.",
+    "This agent bundle was generated from a public website.",
     "",
     "## Source",
     "",
@@ -154,7 +199,11 @@ function createLlmsText({ sourceUrl, title, description, routes }) {
     "",
     "## Routes",
     "",
-    ...routes.map((route) => `- ${route}`),
+    ...routes.map((route) => {
+      const label = route.title ? `: ${route.title}` : "";
+
+      return `- ${route.path}${label}`;
+    }),
     "",
     "## Files",
     "",
@@ -165,26 +214,34 @@ function createLlmsText({ sourceUrl, title, description, routes }) {
     "",
     "## Limits",
     "",
-    "This v0.1 prototype fetches one homepage and extracts same-origin links from that page only.",
+    `This v0.2 prototype fetches the homepage and up to ${maxPages} same-origin pages linked from it. It does not crawl recursively beyond the homepage link set.`,
   ];
 
   return `${lines.join("\n")}\n`;
 }
 
-function createBundle({ sourceUrl, html, fetchedAt }) {
+function createBundle({
+  sourceUrl,
+  fetchedAt,
+  maxPages,
+  pages,
+  userAgent,
+  diagnostics: crawlDiagnostics = [],
+}) {
   const parsedUrl = new URL(sourceUrl);
-  const title = extractTitle(html);
-  const description = extractDescription(html);
-  const routes = extractInternalRoutes(html, parsedUrl.href);
+  const homepage = pages[0];
+  const title = homepage?.title ?? "";
+  const description = homepage?.description ?? "";
   const version = readPackageVersion();
   const capabilities = [
     "site.fetch",
     "routes.discover",
+    "routes.metadata",
     "agent.context",
     "agent.guide",
     "runtime.identity",
   ];
-  const diagnostics = [];
+  const diagnostics = [...crawlDiagnostics];
 
   if (!title) {
     diagnostics.push({
@@ -207,13 +264,22 @@ function createBundle({ sourceUrl, html, fetchedAt }) {
       url: parsedUrl.href,
       origin: parsedUrl.origin,
     },
+    crawl: {
+      maxDepth: 1,
+      maxPages,
+      fetchedPages: pages.length,
+      sameOriginOnly: true,
+      userAgent,
+    },
     site: {
       title,
       description,
     },
-    routes: routes.map((route) => ({
-      path: route,
-      source: route === "/" ? "homepage" : "homepage-link",
+    routes: pages.map((page) => ({
+      path: page.path,
+      title: page.title,
+      description: page.description,
+      headings: page.headings,
     })),
     suggestedReadingOrder: [
       "llms.txt",
@@ -236,17 +302,26 @@ function createBundle({ sourceUrl, html, fetchedAt }) {
       title,
       description,
     },
-    routes,
+    routes: pages.map((page) => ({
+      path: page.path,
+      url: page.url,
+      title: page.title,
+      description: page.description,
+      headings: page.headings,
+    })),
     crawl: {
       maxDepth: 1,
-      fetchedPages: 1,
+      maxPages,
+      fetchedPages: pages.length,
       sameOriginOnly: true,
+      userAgent,
     },
     capabilities,
     diagnostics,
     caveats: [
-      "Only the homepage was fetched.",
-      "Routes were discovered from same-origin anchor href values.",
+      "Only the homepage and same-origin pages linked from it were fetched.",
+      "Routes were discovered from homepage anchor href values.",
+      "No recursive crawl beyond depth 1 was performed.",
       "No private backend behavior was inferred.",
     ],
   };
@@ -255,7 +330,8 @@ function createBundle({ sourceUrl, html, fetchedAt }) {
     sourceUrl: parsedUrl.href,
     title,
     description,
-    routes,
+    routes: pages,
+    maxPages,
   });
 
   const partialOutputs = {
@@ -318,15 +394,15 @@ function createBundle({ sourceUrl, html, fetchedAt }) {
   return {
     diagnostics,
     outputs,
-    routes,
+    routes: pages,
     title,
   };
 }
 
-async function fetchHomepage(url) {
+async function fetchHtml(url, userAgent) {
   const response = await fetch(url, {
     headers: {
-      "user-agent": "agentify/0.1",
+      "user-agent": userAgent,
     },
   });
 
@@ -343,6 +419,44 @@ async function fetchHomepage(url) {
   return response.text();
 }
 
+async function crawlRoutes(sourceUrl, options) {
+  const source = new URL(sourceUrl);
+  const maxPages = normalizeMaxPages(options.maxPages);
+  const userAgent = options.userAgent ?? DEFAULT_USER_AGENT;
+  const fetcher = options.fetcher ?? ((url) => fetchHtml(url, userAgent));
+  const homepageHtml = options.html ?? await fetcher(source.href);
+  const homepageRoute = routeFromUrl(source);
+  const homepage = pageMetadata(homepageRoute, homepageHtml, source);
+  const discoveredRoutes = extractInternalRoutes(homepageHtml, source.href)
+    .filter((route) => route !== homepage.path);
+  const queue = [homepage.path, ...discoveredRoutes].slice(0, maxPages);
+  const pages = [homepage];
+  const diagnostics = [];
+
+  for (const route of queue.slice(1)) {
+    const url = new URL(route, source);
+
+    try {
+      const html = await fetcher(url.href);
+      pages.push(pageMetadata(route, html, source));
+    } catch (error) {
+      diagnostics.push({
+        severity: "warning",
+        code: "route.fetch_failed",
+        path: route,
+        message: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+
+  return {
+    diagnostics,
+    maxPages,
+    pages,
+    userAgent,
+  };
+}
+
 function writeBundle(outputDir, outputs) {
   fs.mkdirSync(outputDir, {
     recursive: true,
@@ -357,11 +471,14 @@ export async function agentify(url, options = {}) {
   const sourceUrl = new URL(url).href;
   const outputDir = options.outputDir ?? path.join(process.cwd(), "agent");
   const fetchedAt = options.fetchedAt ?? new Date().toISOString();
-  const html = options.html ?? await fetchHomepage(sourceUrl);
+  const crawled = await crawlRoutes(sourceUrl, options);
   const bundle = createBundle({
     sourceUrl,
-    html,
     fetchedAt,
+    maxPages: crawled.maxPages,
+    pages: crawled.pages,
+    userAgent: crawled.userAgent,
+    diagnostics: crawled.diagnostics,
   });
 
   writeBundle(outputDir, bundle.outputs);
@@ -372,16 +489,58 @@ export async function agentify(url, options = {}) {
   };
 }
 
+function parseArgs(argv) {
+  const options = {
+    maxPages: DEFAULT_MAX_PAGES,
+    outputDir: path.join(process.cwd(), "agent"),
+    userAgent: DEFAULT_USER_AGENT,
+  };
+  let url = "";
+
+  for (let index = 0; index < argv.length; index += 1) {
+    const value = argv[index];
+
+    if (value === "--out") {
+      options.outputDir = path.resolve(argv[index + 1] ?? "");
+      index += 1;
+      continue;
+    }
+
+    if (value === "--max-pages") {
+      options.maxPages = normalizeMaxPages(argv[index + 1]);
+      index += 1;
+      continue;
+    }
+
+    if (value === "--user-agent") {
+      options.userAgent = argv[index + 1] || DEFAULT_USER_AGENT;
+      index += 1;
+      continue;
+    }
+
+    if (!url) {
+      url = value;
+    }
+  }
+
+  return {
+    options,
+    url,
+  };
+}
+
 async function main() {
-  const url = process.argv[2];
+  const { options, url } = parseArgs(process.argv.slice(2));
 
   if (!url) {
-    console.error("[agentify] usage: node scripts/agentify.mjs <url>");
+    console.error(
+      "[agentify] usage: node scripts/agentify.mjs <url> [--out agent] [--max-pages 10] [--user-agent agentify/0.2]"
+    );
     process.exit(1);
   }
 
   try {
-    const result = await agentify(url);
+    const result = await agentify(url, options);
     const warnings = result.diagnostics.filter(
       (item) => item.severity === "warning"
     ).length;
@@ -389,7 +548,7 @@ async function main() {
       (item) => item.severity === "error"
     ).length;
 
-    console.log(`[agentify] fetched ${result.routes.length} routes`);
+    console.log(`[agentify] fetched ${result.routes.length} pages`);
 
     for (const name of [
       "system.json",
@@ -397,7 +556,9 @@ async function main() {
       "context.json",
       "llms.txt",
     ]) {
-      console.log(`[agentify] wrote agent/${name}`);
+      console.log(
+        `[agentify] wrote ${path.join(result.outputDir, name)}`
+      );
     }
 
     console.log(

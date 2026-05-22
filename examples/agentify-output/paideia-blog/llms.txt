@@ -1,0 +1,30 @@
+# Lautaro Gärtner's blog
+
+This agent bundle was generated from a public website.
+
+## Source
+
+https://lautarogartner.com/
+
+## Description
+
+Personal site for Lautaro Gärtner and Paideia Framework.
+
+## Routes
+
+- /: Lautaro Gärtner's blog
+- /about: About - Lautaro Gärtner
+- /building-paideia: Building Paideia: Software That Explains Itself - Lautaro Gärtner
+- /framework-becomes-a-tool: The Moment a Framework Becomes a Tool - Lautaro Gärtner
+- /generated-systems-should-explain-themselves: Why Generated Systems Should Explain Themselves - Lautaro Gärtner
+
+## Files
+
+- system.json: discovered site contract
+- runtime.json: generation identity and artifact inventory
+- context.json: compact route and metadata summary
+- llms.txt: plain-language entrypoint
+
+## Limits
+
+This v0.2 prototype fetches the homepage and up to 10 same-origin pages linked from it. It does not crawl recursively beyond the homepage link set.

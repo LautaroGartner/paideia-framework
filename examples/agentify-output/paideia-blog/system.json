@@ -1,0 +1,85 @@
+{
+  "generator": {
+    "name": "agentify",
+    "version": "1.8.0"
+  },
+  "source": {
+    "url": "https://lautarogartner.com/",
+    "origin": "https://lautarogartner.com"
+  },
+  "site": {
+    "title": "Lautaro Gärtner's blog",
+    "description": "Personal site for Lautaro Gärtner and Paideia Framework."
+  },
+  "routes": [
+    {
+      "path": "/",
+      "url": "https://lautarogartner.com/",
+      "title": "Lautaro Gärtner's blog",
+      "description": "Personal site for Lautaro Gärtner and Paideia Framework.",
+      "headings": [
+        "The Moment a Framework Becomes a Tool",
+        "Why Generated Systems Should Explain Themselves",
+        "Building Paideia: Software That Explains Itself"
+      ]
+    },
+    {
+      "path": "/about",
+      "url": "https://lautarogartner.com/about",
+      "title": "About - Lautaro Gärtner",
+      "description": "About Lautaro Gärtner, Paideia, and this site.",
+      "headings": [
+        "About"
+      ]
+    },
+    {
+      "path": "/building-paideia",
+      "url": "https://lautarogartner.com/building-paideia",
+      "title": "Building Paideia: Software That Explains Itself - Lautaro Gärtner",
+      "description": "Why I am building Paideia as a small framework for readable, inspectable, self-describing software systems.",
+      "headings": [
+        "Building Paideia: Software That Explains Itself"
+      ]
+    },
+    {
+      "path": "/framework-becomes-a-tool",
+      "url": "https://lautarogartner.com/framework-becomes-a-tool",
+      "title": "The Moment a Framework Becomes a Tool - Lautaro Gärtner",
+      "description": "On the shift from an interesting framework repository to a tool that can generate runnable, inspectable systems.",
+      "headings": [
+        "The Moment a Framework Becomes a Tool"
+      ]
+    },
+    {
+      "path": "/generated-systems-should-explain-themselves",
+      "url": "https://lautarogartner.com/generated-systems-should-explain-themselves",
+      "title": "Why Generated Systems Should Explain Themselves - Lautaro Gärtner",
+      "description": "Why generated software should expose its shape, contracts, capabilities, and security-relevant runtime facts.",
+      "headings": [
+        "Why Generated Systems Should Explain Themselves"
+      ]
+    }
+  ],
+  "crawl": {
+    "maxDepth": 1,
+    "maxPages": 10,
+    "fetchedPages": 5,
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.2 demo"
+  },
+  "capabilities": [
+    "site.fetch",
+    "routes.discover",
+    "routes.metadata",
+    "agent.context",
+    "agent.guide",
+    "runtime.identity"
+  ],
+  "diagnostics": [],
+  "caveats": [
+    "Only the homepage and same-origin pages linked from it were fetched.",
+    "Routes were discovered from homepage anchor href values.",
+    "No recursive crawl beyond depth 1 was performed.",
+    "No private backend behavior was inferred."
+  ]
+}
