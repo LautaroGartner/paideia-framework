@@ -278,6 +278,37 @@ Human + agent guidance entrypoint.
 
 ---
 
+## Experimental: agentify
+
+`agentify` is experimental and currently lives inside the Paideia repo.
+It crawls a site and generates agent-readable runtime artifacts for an existing website.
+
+Example:
+
+```bash
+node scripts/agentify.mjs https://example.com --out agent --max-pages 5
+```
+
+Outputs:
+
+```txt
+agent/
+  system.json
+  runtime.json
+  context.json
+  llms.txt
+```
+
+The prototype currently performs a depth-1 same-origin crawl, extracts route metadata, records crawl receipts, and keeps partial failures visible instead of hiding them.
+
+Demo output:
+
+```txt
+examples/agentify-output/paideia-blog/
+```
+
+---
+
 # Website Runtime
 
 The current runtime generates a minimal static website from explicit contracts.
