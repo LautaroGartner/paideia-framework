@@ -307,6 +307,14 @@ Demo output:
 examples/agentify-output/paideia-blog/
 ```
 
+Visual viewer:
+
+```txt
+examples/agentify-viewer/
+```
+
+![agentify visual artifact viewer](assets/readme/agentify-viewer.png)
+
 ---
 
 # Website Runtime
