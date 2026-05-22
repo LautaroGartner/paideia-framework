@@ -69,7 +69,7 @@
     "failed": 0,
     "failures": [],
     "sameOriginOnly": true,
-    "userAgent": "agentify/0.3 demo",
+    "userAgent": "agentify/0.4 demo",
     "robots": {
       "status": "fetched",
       "url": "https://lautarogartner.com/robots.txt",
@@ -77,12 +77,12 @@
     }
   },
   "capabilities": [
-    "site.fetch",
-    "routes.discover",
-    "routes.metadata",
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
     "agent.context",
     "agent.guide",
-    "runtime.identity"
+    "crawl.receipts"
   ],
   "diagnostics": [],
   "caveats": [

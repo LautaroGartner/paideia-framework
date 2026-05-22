@@ -1,4 +1,8 @@
 {
+  "generatedAt": "2026-05-22T00:00:00.000Z",
+  "sourceUrl": "https://lautarogartner.com/",
+  "routeCount": 5,
+  "failedRouteCount": 0,
   "source": {
     "url": "https://lautarogartner.com/",
     "origin": "https://lautarogartner.com"
@@ -12,7 +16,7 @@
     "failed": 0,
     "failures": [],
     "sameOriginOnly": true,
-    "userAgent": "agentify/0.3 demo",
+    "userAgent": "agentify/0.4 demo",
     "robots": {
       "status": "fetched",
       "url": "https://lautarogartner.com/robots.txt",
@@ -23,6 +27,38 @@
     "title": "Lautaro Gärtner's blog",
     "description": "Personal site for Lautaro Gärtner and Paideia Framework."
   },
+  "routeSummaries": [
+    {
+      "path": "/",
+      "title": "Lautaro Gärtner's blog",
+      "description": "Personal site for Lautaro Gärtner and Paideia Framework.",
+      "headingCount": 3
+    },
+    {
+      "path": "/about",
+      "title": "About - Lautaro Gärtner",
+      "description": "About Lautaro Gärtner, Paideia, and this site.",
+      "headingCount": 1
+    },
+    {
+      "path": "/building-paideia",
+      "title": "Building Paideia: Software That Explains Itself - Lautaro Gärtner",
+      "description": "Why I am building Paideia as a small framework for readable, inspectable, self-describing software systems.",
+      "headingCount": 1
+    },
+    {
+      "path": "/framework-becomes-a-tool",
+      "title": "The Moment a Framework Becomes a Tool - Lautaro Gärtner",
+      "description": "On the shift from an interesting framework repository to a tool that can generate runnable, inspectable systems.",
+      "headingCount": 1
+    },
+    {
+      "path": "/generated-systems-should-explain-themselves",
+      "title": "Why Generated Systems Should Explain Themselves - Lautaro Gärtner",
+      "description": "Why generated software should expose its shape, contracts, capabilities, and security-relevant runtime facts.",
+      "headingCount": 1
+    }
+  ],
   "routes": [
     {
       "path": "/",
