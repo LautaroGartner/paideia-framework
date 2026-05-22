@@ -4,12 +4,12 @@
     "version": "1.8.0"
   },
   "generatedAt": "2026-05-22T00:00:00.000Z",
-  "buildId": "7793c96",
+  "buildId": "10fe024",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 2135
+      "bytes": 2376
     },
     {
       "path": "llms.txt",
@@ -19,12 +19,12 @@
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 2841
+      "bytes": 3082
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 768
+      "bytes": 1156
     }
   ],
   "capabilities": [
@@ -35,8 +35,24 @@
     "agent.guide",
     "runtime.identity"
   ],
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 10,
+    "timeoutMs": 10000,
+    "fetched": 5,
+    "failed": 0,
+    "failures": [],
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.3 demo",
+    "robots": {
+      "status": "fetched",
+      "url": "https://lautarogartner.com/robots.txt",
+      "note": "robots.txt was provided by the caller."
+    }
+  },
   "diagnostics": {
-    "status": "passing",
+    "status": "complete",
     "warnings": 0,
     "errors": 0
   }

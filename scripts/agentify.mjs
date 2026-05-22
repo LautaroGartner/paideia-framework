@@ -10,7 +10,18 @@ const PACKAGE_ROOT = path.dirname(
   path.dirname(fileURLToPath(import.meta.url))
 );
 const DEFAULT_MAX_PAGES = 10;
-const DEFAULT_USER_AGENT = "agentify/0.2";
+const DEFAULT_TIMEOUT_MS = 10000;
+const DEFAULT_USER_AGENT = "agentify/0.3";
+
+class AgentifyFetchError extends Error {
+  constructor(message, details = {}) {
+    super(message);
+    this.name = "AgentifyFetchError";
+    this.status = details.status ?? null;
+    this.statusText = details.statusText ?? "";
+    this.url = details.url ?? "";
+  }
+}
 
 function readPackageVersion() {
   try {
@@ -166,6 +177,31 @@ function normalizeMaxPages(value) {
   return Math.min(Math.floor(numberValue), DEFAULT_MAX_PAGES);
 }
 
+function normalizeTimeoutMs(value) {
+  const numberValue = Number(value);
+
+  if (!Number.isFinite(numberValue) || numberValue < 1) {
+    return DEFAULT_TIMEOUT_MS;
+  }
+
+  return Math.floor(numberValue);
+}
+
+function failureFromError(url, error) {
+  const status = typeof error?.status === "number"
+    ? error.status
+    : null;
+  const message = error instanceof Error
+    ? error.message
+    : String(error);
+
+  return {
+    url,
+    status,
+    message,
+  };
+}
+
 function byteLength(value) {
   return Buffer.byteLength(value, "utf8");
 }
@@ -183,7 +219,18 @@ function buildIdFor(outputs) {
   return hash.digest("hex").slice(0, 7);
 }
 
-function createLlmsText({ sourceUrl, title, description, routes, maxPages }) {
+function crawlStatus(failures) {
+  return failures.length > 0 ? "partial" : "complete";
+}
+
+function createLlmsText({
+  sourceUrl,
+  title,
+  description,
+  routes,
+  maxPages,
+  failures,
+}) {
   const lines = [
     `# ${title || sourceUrl}`,
     "",
@@ -214,8 +261,20 @@ function createLlmsText({ sourceUrl, title, description, routes, maxPages }) {
     "",
     "## Limits",
     "",
-    `This v0.2 prototype fetches the homepage and up to ${maxPages} same-origin pages linked from it. It does not crawl recursively beyond the homepage link set.`,
+    `This v0.3 prototype fetches the homepage and up to ${maxPages} same-origin pages linked from it. It does not crawl recursively beyond the homepage link set.`,
   ];
+
+  if (failures.length > 0) {
+    lines.push("");
+    lines.push("## Crawl Failures");
+    lines.push("");
+
+    for (const failure of failures) {
+      const status = failure.status ? `HTTP ${failure.status}` : "failed";
+
+      lines.push(`- ${failure.url}: ${status} (${failure.message})`);
+    }
+  }
 
   return `${lines.join("\n")}\n`;
 }
@@ -225,6 +284,9 @@ function createBundle({
   fetchedAt,
   maxPages,
   pages,
+  failures,
+  robots,
+  timeoutMs,
   userAgent,
   diagnostics: crawlDiagnostics = [],
 }) {
@@ -265,11 +327,16 @@ function createBundle({
       origin: parsedUrl.origin,
     },
     crawl: {
+      status: crawlStatus(failures),
       maxDepth: 1,
       maxPages,
-      fetchedPages: pages.length,
+      timeoutMs,
+      fetched: pages.length,
+      failed: failures.length,
+      failures,
       sameOriginOnly: true,
       userAgent,
+      robots,
     },
     site: {
       title,
@@ -310,11 +377,16 @@ function createBundle({
       headings: page.headings,
     })),
     crawl: {
+      status: crawlStatus(failures),
       maxDepth: 1,
       maxPages,
-      fetchedPages: pages.length,
+      timeoutMs,
+      fetched: pages.length,
+      failed: failures.length,
+      failures,
       sameOriginOnly: true,
       userAgent,
+      robots,
     },
     capabilities,
     diagnostics,
@@ -332,6 +404,7 @@ function createBundle({
     description,
     routes: pages,
     maxPages,
+    failures,
   });
 
   const partialOutputs = {
@@ -349,10 +422,22 @@ function createBundle({
     buildId: buildIdFor(partialOutputs),
     artifacts: [],
     capabilities,
+    crawl: {
+      status: crawlStatus(failures),
+      maxDepth: 1,
+      maxPages,
+      timeoutMs,
+      fetched: pages.length,
+      failed: failures.length,
+      failures,
+      sameOriginOnly: true,
+      userAgent,
+      robots,
+    },
     diagnostics: {
       status: diagnostics.some((item) => item.severity === "error")
         ? "failing"
-        : "passing",
+        : crawlStatus(failures),
       warnings: diagnostics.filter((item) => item.severity === "warning").length,
       errors: diagnostics.filter((item) => item.severity === "error").length,
     },
@@ -399,60 +484,205 @@ function createBundle({
   };
 }
 
-async function fetchHtml(url, userAgent) {
-  const response = await fetch(url, {
-    headers: {
-      "user-agent": userAgent,
-    },
-  });
+async function fetchText(url, userAgent, timeoutMs) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, timeoutMs);
 
-  const contentType = response.headers.get("content-type") ?? "";
+  try {
+    const response = await fetch(url, {
+      headers: {
+        "user-agent": userAgent,
+      },
+      signal: controller.signal,
+    });
 
-  if (!response.ok) {
-    throw new Error(`fetch failed with HTTP ${response.status}`);
+    if (!response.ok) {
+      throw new AgentifyFetchError(
+        response.statusText || `HTTP ${response.status}`,
+        {
+          status: response.status,
+          statusText: response.statusText,
+          url,
+        }
+      );
+    }
+
+    return {
+      contentType: response.headers.get("content-type") ?? "",
+      text: await response.text(),
+    };
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      throw new AgentifyFetchError(
+        `fetch timed out after ${timeoutMs}ms`,
+        {
+          url,
+        }
+      );
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function fetchHtml(url, userAgent, timeoutMs) {
+  const response = await fetchText(url, userAgent, timeoutMs);
+
+  if (!response.contentType.includes("text/html")) {
+    throw new AgentifyFetchError(
+      `expected HTML response, received ${response.contentType}`,
+      {
+        url,
+      }
+    );
   }
 
-  if (!contentType.includes("text/html")) {
-    throw new Error(`expected HTML response, received ${contentType}`);
+  return response.text;
+}
+
+async function fetchRobots(source, options) {
+  if (typeof options.robotsTxt === "string") {
+    return {
+      status: "fetched",
+      url: new URL("/robots.txt", source).href,
+      note: "robots.txt was provided by the caller.",
+    };
   }
 
-  return response.text();
+  if (options.skipRobots) {
+    return {
+      status: "skipped",
+      url: new URL("/robots.txt", source).href,
+      note: "robots.txt fetch skipped.",
+    };
+  }
+
+  const url = new URL("/robots.txt", source).href;
+
+  try {
+    const textFetcher = options.textFetcher ??
+      ((targetUrl) => fetchText(
+        targetUrl,
+        options.userAgent ?? DEFAULT_USER_AGENT,
+        normalizeTimeoutMs(options.timeoutMs)
+      ));
+    const result = await textFetcher(url);
+    const text = typeof result === "string" ? result : result.text;
+
+    return {
+      status: "fetched",
+      url,
+      bytes: byteLength(text ?? ""),
+      note: "robots.txt was fetched for awareness only; v0.3 does not enforce directives yet.",
+    };
+  } catch (error) {
+    return {
+      status: "unavailable",
+      url,
+      failure: failureFromError(url, error),
+      note: "robots.txt could not be fetched; v0.3 records this but does not enforce directives.",
+    };
+  }
 }
 
 async function crawlRoutes(sourceUrl, options) {
   const source = new URL(sourceUrl);
   const maxPages = normalizeMaxPages(options.maxPages);
+  const timeoutMs = normalizeTimeoutMs(options.timeoutMs);
   const userAgent = options.userAgent ?? DEFAULT_USER_AGENT;
-  const fetcher = options.fetcher ?? ((url) => fetchHtml(url, userAgent));
-  const homepageHtml = options.html ?? await fetcher(source.href);
+  const verbose = Boolean(options.verbose);
+  const fetcher = options.fetcher ??
+    ((url) => fetchHtml(url, userAgent, timeoutMs));
+  const robots = await fetchRobots(source, {
+    ...options,
+    timeoutMs,
+    userAgent,
+  });
+  const pages = [];
+  const failures = [];
+  const diagnostics = [];
   const homepageRoute = routeFromUrl(source);
+
+  let homepageHtml = options.html ?? "";
+
+  if (!homepageHtml) {
+    try {
+      if (verbose) {
+        console.log(`[agentify] fetch ${source.href}`);
+      }
+
+      homepageHtml = await fetcher(source.href);
+    } catch (error) {
+      const failure = failureFromError(source.href, error);
+
+      failures.push(failure);
+      diagnostics.push({
+        severity: "warning",
+        code: "route.fetch_failed",
+        path: homepageRoute,
+        status: failure.status,
+        message: failure.message,
+      });
+
+      return {
+        diagnostics,
+        failures,
+        maxPages,
+        pages,
+        robots,
+        timeoutMs,
+        userAgent,
+      };
+    }
+  }
+
   const homepage = pageMetadata(homepageRoute, homepageHtml, source);
+  pages.push(homepage);
   const discoveredRoutes = extractInternalRoutes(homepageHtml, source.href)
     .filter((route) => route !== homepage.path);
   const queue = [homepage.path, ...discoveredRoutes].slice(0, maxPages);
-  const pages = [homepage];
-  const diagnostics = [];
 
   for (const route of queue.slice(1)) {
     const url = new URL(route, source);
 
     try {
+      if (verbose) {
+        console.log(`[agentify] fetch ${url.href}`);
+      }
+
       const html = await fetcher(url.href);
       pages.push(pageMetadata(route, html, source));
     } catch (error) {
+      const failure = failureFromError(url.href, error);
+
+      failures.push(failure);
       diagnostics.push({
         severity: "warning",
         code: "route.fetch_failed",
         path: route,
-        message: error instanceof Error ? error.message : String(error),
+        status: failure.status,
+        message: failure.message,
       });
+
+      if (verbose) {
+        const status = failure.status ? ` HTTP ${failure.status}` : "";
+
+        console.log(`[agentify] failed ${url.href}${status}`);
+      }
     }
   }
 
   return {
     diagnostics,
+    failures,
     maxPages,
     pages,
+    robots,
+    timeoutMs,
     userAgent,
   };
 }
@@ -477,6 +707,9 @@ export async function agentify(url, options = {}) {
     fetchedAt,
     maxPages: crawled.maxPages,
     pages: crawled.pages,
+    failures: crawled.failures,
+    robots: crawled.robots,
+    timeoutMs: crawled.timeoutMs,
     userAgent: crawled.userAgent,
     diagnostics: crawled.diagnostics,
   });
@@ -493,7 +726,9 @@ function parseArgs(argv) {
   const options = {
     maxPages: DEFAULT_MAX_PAGES,
     outputDir: path.join(process.cwd(), "agent"),
+    timeoutMs: DEFAULT_TIMEOUT_MS,
     userAgent: DEFAULT_USER_AGENT,
+    verbose: false,
   };
   let url = "";
 
@@ -518,6 +753,11 @@ function parseArgs(argv) {
       continue;
     }
 
+    if (value === "--verbose") {
+      options.verbose = true;
+      continue;
+    }
+
     if (!url) {
       url = value;
     }
@@ -534,7 +774,7 @@ async function main() {
 
   if (!url) {
     console.error(
-      "[agentify] usage: node scripts/agentify.mjs <url> [--out agent] [--max-pages 10] [--user-agent agentify/0.2]"
+      "[agentify] usage: node scripts/agentify.mjs <url> [--out agent] [--max-pages 10] [--user-agent agentify/0.3] [--verbose]"
     );
     process.exit(1);
   }

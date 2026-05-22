@@ -22,6 +22,7 @@ const pages = new Map([
     <h1>Home</h1>
     <a href="/about">About</a>
     <a href="/docs/">Docs</a>
+    <a href="/rate-limited">Rate limited</a>
     <a href="https://external.example/ignored">External</a>
     <a href="#fragment">Fragment</a>
   </body>
@@ -64,13 +65,16 @@ try {
       const html = pages.get(route);
 
       if (!html) {
-        throw new Error(`missing fixture for ${route}`);
+        const error = new Error("Too Many Requests");
+        error.status = 429;
+        throw error;
       }
 
       return html;
     },
     maxPages: 10,
     outputDir: path.join(testRoot, "agent"),
+    robotsTxt: "User-agent: *\nAllow: /\n",
     userAgent: "agentify-test/1.0",
   });
 
@@ -111,7 +115,12 @@ try {
   );
   assert.equal(system.crawl.maxDepth, 1);
   assert.equal(system.crawl.maxPages, 10);
-  assert.equal(system.crawl.fetchedPages, 3);
+  assert.equal(system.crawl.status, "partial");
+  assert.equal(system.crawl.fetched, 3);
+  assert.equal(system.crawl.failed, 1);
+  assert.equal(system.crawl.failures[0].status, 429);
+  assert.ok(system.crawl.failures[0].url.endsWith("/rate-limited"));
+  assert.equal(system.crawl.robots.status, "fetched");
   assert.equal(system.crawl.userAgent, "agentify-test/1.0");
   assert.ok(system.capabilities.includes("routes.discover"));
   assert.ok(system.capabilities.includes("routes.metadata"));
@@ -129,7 +138,13 @@ try {
   });
 
   assert.equal(runtime.generator.name, "agentify");
-  assert.equal(runtime.diagnostics.status, "passing");
+  assert.equal(runtime.diagnostics.status, "partial");
+  assert.equal(runtime.crawl.status, "partial");
+  assert.equal(runtime.crawl.fetched, 3);
+  assert.equal(runtime.crawl.failed, 1);
+  assert.equal(runtime.crawl.failures[0].status, 429);
+  assert.equal(runtime.crawl.sameOriginOnly, true);
+  assert.equal(runtime.crawl.userAgent, "agentify-test/1.0");
   assert.deepEqual(
     runtime.artifacts.map((artifact) => artifact.path).sort(),
     ["context.json", "llms.txt", "runtime.json", "system.json"]
@@ -150,6 +165,8 @@ try {
 
   assert.ok(llms.includes("# Example Site"));
   assert.ok(llms.includes("- /about"));
+  assert.ok(llms.includes("## Crawl Failures"));
+  assert.ok(llms.includes("HTTP 429"));
   assert.ok(!llms.includes("external.example"));
 } finally {
   fs.rmSync(testRoot, {

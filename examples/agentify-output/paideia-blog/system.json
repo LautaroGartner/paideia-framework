@@ -61,11 +61,20 @@
     }
   ],
   "crawl": {
+    "status": "complete",
     "maxDepth": 1,
     "maxPages": 10,
-    "fetchedPages": 5,
+    "timeoutMs": 10000,
+    "fetched": 5,
+    "failed": 0,
+    "failures": [],
     "sameOriginOnly": true,
-    "userAgent": "agentify/0.2 demo"
+    "userAgent": "agentify/0.3 demo",
+    "robots": {
+      "status": "fetched",
+      "url": "https://lautarogartner.com/robots.txt",
+      "note": "robots.txt was provided by the caller."
+    }
   },
   "capabilities": [
     "site.fetch",
