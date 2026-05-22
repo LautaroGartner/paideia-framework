@@ -1,0 +1,91 @@
+{
+  "generator": {
+    "name": "agentify",
+    "version": "0.5.0"
+  },
+  "renderer": "static-html",
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "source": {
+    "url": "https://notes.example/",
+    "origin": "https://notes.example"
+  },
+  "site": {
+    "title": "Field Notes",
+    "description": "Quiet notes about durable software systems."
+  },
+  "routes": [
+    {
+      "path": "/",
+      "url": "https://notes.example/",
+      "title": "Field Notes",
+      "description": "Quiet notes about durable software systems.",
+      "headings": [
+        "Field Notes"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
+    },
+    {
+      "path": "/about",
+      "url": "https://notes.example/about",
+      "title": "About Field Notes",
+      "description": "Who writes Field Notes and why the site exists.",
+      "headings": [
+        "About",
+        "Purpose"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
+    },
+    {
+      "path": "/notes/runtime-receipts",
+      "url": "https://notes.example/notes/runtime-receipts",
+      "title": "Runtime Receipts",
+      "description": "Why software should expose what happened.",
+      "headings": [
+        "Runtime Receipts",
+        "What happened",
+        "What failed"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
+    }
+  ],
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 10,
+    "timeoutMs": 10000,
+    "fetched": 3,
+    "failed": 0,
+    "failures": [],
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.5 demo",
+    "robots": {
+      "status": "fetched",
+      "url": "https://notes.example/robots.txt",
+      "note": "robots.txt was provided by the caller."
+    }
+  },
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "diagnostics": [],
+  "caveats": [
+    "Only the homepage and same-origin pages linked from it were fetched.",
+    "Routes were discovered from homepage anchor href values.",
+    "No recursive crawl beyond depth 1 was performed.",
+    "JavaScript was not executed.",
+    "No private backend behavior was inferred."
+  ]
+}

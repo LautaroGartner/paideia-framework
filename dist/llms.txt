@@ -24,6 +24,7 @@ Language: en
 
 ## Writing
 
+- The Agent-Readable Web: /agent-readable-web - Essay arguing that websites need small, honest runtime receipts for routes, crawl status, warnings, artifacts, and limits so humans and agents can inspect systems without guessing.
 - The Moment a Framework Becomes a Tool: /framework-becomes-a-tool - Project note about Paideia crossing from framework repository to usable tool through the init command, emphasizing generated project polish, runtime trust, disciplined scope, and small understandable systems.
 - Why Generated Systems Should Explain Themselves: /generated-systems-should-explain-themselves - Developer-facing essay explaining why generated systems should expose runtime identity, artifact inventories, capabilities, diagnostics, and security-relevant facts.
 - Building Paideia: Software That Explains Itself: /building-paideia - Long-form positioning essay about building Paideia as a small framework for self-describing generated systems with runtime identity, artifact inventory, deterministic build IDs, capabilities, diagnostics, and inspectability.

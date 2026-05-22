@@ -1,7 +1,14 @@
 {
   "generator": {
     "name": "agentify",
-    "version": "1.8.0"
+    "version": "0.5.0"
+  },
+  "renderer": "static-html",
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
   },
   "source": {
     "url": "https://lautarogartner.com/",
@@ -21,7 +28,9 @@
         "The Moment a Framework Becomes a Tool",
         "Why Generated Systems Should Explain Themselves",
         "Building Paideia: Software That Explains Itself"
-      ]
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
     },
     {
       "path": "/about",
@@ -30,7 +39,9 @@
       "description": "About Lautaro Gärtner, Paideia, and this site.",
       "headings": [
         "About"
-      ]
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
     },
     {
       "path": "/building-paideia",
@@ -39,7 +50,9 @@
       "description": "Why I am building Paideia as a small framework for readable, inspectable, self-describing software systems.",
       "headings": [
         "Building Paideia: Software That Explains Itself"
-      ]
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
     },
     {
       "path": "/framework-becomes-a-tool",
@@ -48,7 +61,9 @@
       "description": "On the shift from an interesting framework repository to a tool that can generate runnable, inspectable systems.",
       "headings": [
         "The Moment a Framework Becomes a Tool"
-      ]
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
     },
     {
       "path": "/generated-systems-should-explain-themselves",
@@ -57,7 +72,9 @@
       "description": "Why generated software should expose its shape, contracts, capabilities, and security-relevant runtime facts.",
       "headings": [
         "Why Generated Systems Should Explain Themselves"
-      ]
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
     }
   ],
   "crawl": {
@@ -69,7 +86,7 @@
     "failed": 0,
     "failures": [],
     "sameOriginOnly": true,
-    "userAgent": "agentify/0.4 demo",
+    "userAgent": "agentify/0.5 demo",
     "robots": {
       "status": "fetched",
       "url": "https://lautarogartner.com/robots.txt",
@@ -89,6 +106,7 @@
     "Only the homepage and same-origin pages linked from it were fetched.",
     "Routes were discovered from homepage anchor href values.",
     "No recursive crawl beyond depth 1 was performed.",
+    "JavaScript was not executed.",
     "No private backend behavior was inferred."
   ]
 }

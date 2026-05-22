@@ -24,6 +24,8 @@ Describes the discovered or generated system.
 Required fields:
 
 * `generator`: object with `name` and `version`
+* `renderer`: renderer identity such as `static-html` when known
+* `limitations`: explicit limitation receipt when known
 * `source`: object with `url` and `origin`
 * `site`: object with `title` and `description`
 * `routes`: array of route objects
@@ -57,6 +59,8 @@ Required fields:
 
 * `generator`: object with `name` and `version`
 * `generatedAt`: ISO timestamp
+* `renderer`: renderer identity such as `static-html` when known
+* `limitations`: explicit limitation receipt when known
 * `buildId`: deterministic or stable fingerprint when possible
 * `artifacts`: generated artifact inventory
 * `capabilities`: array of strings
@@ -115,6 +119,8 @@ Required fields:
 
 * `generatedAt`
 * `sourceUrl`
+* `renderer`
+* `limitations`
 * `routeCount`
 * `failedRouteCount`
 * `site`
@@ -168,6 +174,37 @@ crawl.receipts
 ```
 
 Capability names should be short, concrete, and testable.
+
+## Limitation Receipts
+
+Purpose:
+
+Records what the generator or crawler intentionally did not do.
+
+Current agentify fields:
+
+* `javascriptNotExecuted`: JavaScript was not run while reading the site
+* `recursiveCrawl`: recursive crawling beyond depth 1 was not performed
+* `privateBehaviorInferred`: private backend behavior was not inferred
+* `robotsEnforced`: robots.txt directives were not enforced
+
+Semantics:
+
+Limitation receipts should be explicit booleans, not buried in prose. A static crawl can still be useful, but the artifact must say what kind of crawl it was.
+
+## Warning Codes
+
+Current agentify warning codes:
+
+```txt
+missing.title
+missing.description
+js.required
+crawl.partial
+route.fetch_failed
+```
+
+Warning codes should stay compact and stable enough for humans and agents to filter, compare, and explain.
 
 ## Design Constraint
 

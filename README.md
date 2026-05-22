@@ -299,12 +299,15 @@ agent/
   llms.txt
 ```
 
-The prototype currently performs a depth-1 same-origin crawl, extracts route metadata, records crawl receipts, and keeps partial failures visible instead of hiding them.
+The prototype currently performs a depth-1 same-origin static HTML crawl, extracts route metadata, records crawl receipts, and keeps partial failures visible instead of hiding them. It declares its renderer as `static-html`, does not execute JavaScript, and records those limits in the generated artifacts.
 
 Demo output:
 
 ```txt
 examples/agentify-output/paideia-blog/
+examples/agentify-output/static-content-site/
+examples/agentify-output/marketing-site/
+examples/agentify-output/js-heavy-spa/
 ```
 
 Visual viewer:

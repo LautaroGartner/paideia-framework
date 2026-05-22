@@ -326,6 +326,29 @@
         line-height: 1.35;
       }
 
+      .post-body ul {
+        margin: 1rem 0 1.5rem;
+        padding-left: 1.25rem;
+      }
+
+      .post-body li {
+        margin: 0.45rem 0;
+        line-height: 1.55;
+      }
+
+      .post-body pre {
+        max-width: 100%;
+        margin: 1.25rem 0;
+        padding: 1rem;
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--line) 42%, transparent);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.86rem;
+        line-height: 1.6;
+      }
+
       @media (max-width: 640px) {
         .shell {
           padding-top: 0.75rem;
@@ -418,51 +441,30 @@
       </header>
       <main>
         <h1 class="post-title">The Moment a Framework Becomes a Tool</h1>
-        <div class="meta"><a href="https://x.com/lautyxgr" rel="me">@lautyxgr</a> | <time datetime="2026-05-21">May 21, 2026</time> | today</div>
+        <div class="meta"><a href="https://x.com/lautyxgr" rel="me">@lautyxgr</a> | <time datetime="2026-05-21">May 21, 2026</time> | 1d ago</div>
         <p class="description">On the shift from an interesting framework repository to a tool that can generate runnable, inspectable systems.</p>
         <div class="post-body">
-          <p>There is a quiet threshold in a framework project where the question changes.</p>
-        <p>At first, the question is: is this real?</p>
-        <p>That is not a cynical question. It is the correct one. A framework can have good ideas, a clean philosophy, a few working examples, and still not be real in the way software needs to be real. It can be a repository with potential. It can be an essay with source files attached. It can be a pile of experiments arranged in a promising shape.</p>
-        <p>But until someone can start from nothing and create a working system, the project still lives mostly inside its own repo.</p>
+          <p>There is a quiet threshold in a framework project where the question changes. At first, the question is: is this real?</p>
+        <p>That is not a cynical question. It is the correct one. A framework can have good ideas, a clean philosophy, a few working examples, and still not be real in the way software needs to be real. It can be a repository with potential. It can be an essay with source files attached. It can be a pile of experiments arranged in a promising shape. But until someone can start from nothing and create a working system, the project still lives mostly inside its own repo.</p>
         <p>Paideia crossed one small version of that threshold when it learned how to initialize a project.</p>
         <p>The command is modest:</p>
-        <p>```bash paideia init my-site ```</p>
-        <p>It does not look dramatic. It creates a folder, writes a few files, gives the project a site definition, adds a first post, and sets up scripts for build, start, doctor, inspect, and new posts. Then the generated project can install dependencies, build itself, run a production server, expose runtime artifacts, and inspect its own output.</p>
-        <p>That is a small feature.</p>
-        <p>It is also a category change.</p>
-        <p>Before init, Paideia was an interesting framework repo. You could clone it, read it, build the included site, inspect the generated artifacts, and understand the shape of the experiment. That was useful, but it kept the user inside the framework&#039;s house. The first experience was still: come into this repository and look around.</p>
-        <p>After init, the first experience can become: make your own thing.</p>
-        <p>That matters more than the amount of code involved.</p>
-        <p>Software tools are partly technical objects and partly psychological objects. A tool does not only need capability. It needs an entry point that makes the user feel oriented. It needs to say, in a few steps: here is where you are, here is what exists, here is how to change it, here is how to check it, here is how to run it.</p>
-        <p>The init flow is the beginning of that promise.</p>
+        <pre><code>paideia init my-site</code></pre>
+        <p>It does not look dramatic. It creates a folder, writes a few files, gives the project a site definition, adds a first post, and sets up scripts for build, start, doctor, inspect, and new posts. Then the generated project can install dependencies, build itself, run a production server, expose runtime artifacts, and inspect its own output. That is a small feature, but it is also a category change.</p>
+        <p>Before init, Paideia was an interesting framework repo. You could clone it, read it, build the included site, inspect the generated artifacts, and understand the shape of the experiment. That was useful, but it kept the user inside the framework&#039;s house. The first experience was still: come into this repository and look around. After init, the first experience can become: make your own thing. That matters more than the amount of code involved.</p>
+        <p>Software tools are partly technical objects and partly psychological objects. A tool does not only need capability. It needs an entry point that makes the user feel oriented. It needs to say, in a few steps: here is where you are, here is what exists, here is how to change it, here is how to check it, here is how to run it. The init flow is the beginning of that promise.</p>
         <p>A generated Paideia project is intentionally small. It has a homepage, an about page, one writing post, a site contract, and a README. It builds to ordinary files in dist. Alongside those pages it emits runtime.json, system.json, context.json, and llms.txt. Those files are not decorative. They are the part of the system that says what was generated, what capabilities exist, what the runtime identity is, and how a human or agent can inspect the output.</p>
-        <p>This is the important distinction:</p>
-        <p>Paideia is not trying to generate Paideia-branded clones.</p>
-        <p>It is trying to generate systems that can stand on their own.</p>
+        <p>This is the important distinction: Paideia is not trying to generate Paideia-branded clones. It is trying to generate systems that can stand on their own.</p>
         <p>That means the generated project should feel like the user&#039;s project, not like a copy of framework internals. The package name should be clean. The README should explain the local workflow. The site title, author, description, and URL should be obvious placeholders to edit. The scripts should be minimal and predictable. The runtime artifacts should belong to the generated system.</p>
-        <p>The framework can still be visible. It should be visible. Generated with Paideia Framework is an honest sentence. But the center of gravity has to move from the framework to the thing the user is making.</p>
-        <p>That is why polish matters here.</p>
-        <p>It is tempting, after an init command works, to jump immediately toward bigger features: databases, authentication, admin dashboards, plugins, forms, deployments, integrations. Those are all interesting. They are also dangerous too early. A framework can become impressive before it becomes trustworthy. It can accumulate surfaces before the first surface feels good.</p>
-        <p>Paideia needs the opposite discipline.</p>
-        <p>The small path should be excellent before the large path exists.</p>
+        <p>The framework can still be visible. It should be visible. Generated with Paideia Framework is an honest sentence. But the center of gravity has to move from the framework to the thing the user is making. That is why polish matters here.</p>
+        <p>It is tempting, after an init command works, to jump immediately toward bigger features: databases, authentication, admin dashboards, plugins, forms, deployments, integrations. Those are all interesting. They are also dangerous too early. A framework can become impressive before it becomes trustworthy. It can accumulate surfaces before the first surface feels good. Paideia needs the opposite discipline: the small path should be excellent before the large path exists.</p>
         <p>Can a stranger create a project in a few minutes? Can they tell where posts live? Can they build the site? Can they run doctor? Can they inspect the runtime? Can they open dist and understand the artifacts? Can they change the title without reading framework source? Can an agent orient itself from context.json and llms.txt without guessing?</p>
-        <p>Those questions are not glamorous. They are the foundation.</p>
-        <p>The verification surface is starting to reflect that. There are tests for init, scaffold shape, generated posts, site runtime, runtime identity, manifest contracts, manifest diagnostics, install smoke, and doctor. There is also a direct smoke path for generated projects: install, build, inspect, start, and hit the health endpoint.</p>
-        <p>That is how trust begins.</p>
-        <p>Not with a claim that the framework is production-ready. Not with a big roadmap. Trust begins when the tool can repeatedly create something small, understandable, and checkable.</p>
-        <p>This also clarifies what Paideia is becoming.</p>
-        <p>The early language around the project was about AI-native software, runtime identity, and generated systems explaining themselves. Those ideas still matter. But the practical center is getting sharper:</p>
-        <p>small understandable systems.</p>
+        <p>Those questions are not glamorous. They are the foundation. The verification surface is starting to reflect that. There are tests for init, scaffold shape, generated posts, site runtime, runtime identity, manifest contracts, manifest diagnostics, install smoke, and doctor. There is also a direct smoke path for generated projects: install, build, inspect, start, and hit the health endpoint.</p>
+        <p>That is how trust begins: not with a claim that the framework is production-ready, and not with a big roadmap, but when the tool can repeatedly create something small, understandable, and checkable. This also clarifies what Paideia is becoming.</p>
+        <p>The early language around the project was about AI-native software, runtime identity, and generated systems explaining themselves. Those ideas still matter. But the practical center is getting sharper: small understandable systems.</p>
         <p>That phrase is less flashy, which is good. It is more concrete. It gives the project a test. If Paideia adds a feature, does it help create a small system that can be understood? If it emits an artifact, does that artifact make the system easier to inspect? If it adds a command, does the command reduce confusion? If it generates a project, does that project feel owned by the user?</p>
-        <p>The init flow is not the end of that work.</p>
-        <p>It is the first real doorway.</p>
+        <p>The init flow is not the end of that work. It is the first real doorway.</p>
         <p>Now the next useful test is not another abstraction. It is another system. Something that is not this blog. A docs portal, a notes site, a changelog, a tiny CRM, an inventory tracker. The blog validated publishing. A second app will validate whether the architecture can hold a different shape without becoming vague.</p>
-        <p>That is the stage Paideia is entering now.</p>
-        <p>Not &quot;is this real?&quot;</p>
-        <p>Not yet &quot;how much can it do?&quot;</p>
-        <p>The better question is:</p>
-        <p>how sharp can the scope remain while becoming useful?</p>
+        <p>That is the stage Paideia is entering now. Not &quot;is this real?&quot; and not yet &quot;how much can it do?&quot; The better question is: how sharp can the scope remain while becoming useful?</p>
         <p>That is a healthier question. It asks the project to grow without swelling. It asks every feature to earn its place. It keeps the center small enough to inspect.</p>
         <p>Paideia should become useful the same way its generated systems should behave: plainly, deliberately, and with enough self-knowledge to be safely handled.</p>
         </div>

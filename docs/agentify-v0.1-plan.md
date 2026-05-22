@@ -37,6 +37,10 @@ The current prototype can:
 * record crawl status as `complete` or `partial`
 * keep 403, 429, 500, timeout, and other fetch failures visible in crawl receipts
 * fetch or record `robots.txt` awareness without enforcing directives yet
+* declare its own `agentify` version (`0.5.0`) separately from Paideia
+* declare the renderer as `static-html`
+* record static crawl limitations such as `javascriptNotExecuted`, `recursiveCrawl`, `privateBehaviorInferred`, and `robotsEnforced`
+* emit warning codes such as `missing.title`, `missing.description`, `js.required`, and `crawl.partial`
 * write visible demo output under `examples/agentify-output/`
 
 Default limits are intentionally small:
@@ -54,7 +58,7 @@ output directory: agent/
 node scripts/agentify.mjs https://example.com
 node scripts/agentify.mjs https://example.com --out agent
 node scripts/agentify.mjs https://example.com --max-pages 5
-node scripts/agentify.mjs https://example.com --user-agent "agentify/0.4"
+node scripts/agentify.mjs https://example.com --user-agent "agentify/0.5"
 node scripts/agentify.mjs https://example.com --verbose
 ```
 
@@ -67,10 +71,13 @@ node scripts/agentify.mjs https://example.com --verbose
 * route metadata
 * crawl limits and caveats
 * capabilities such as `site.crawled`, `routes.discovered`, `metadata.extracted`, and `crawl.receipts`
+* renderer and limitation receipts
 
 `runtime.json`:
 
 * agentify version
+* renderer identity
+* limitation receipts
 * generated timestamp
 * build ID
 * artifact inventory
@@ -82,6 +89,8 @@ node scripts/agentify.mjs https://example.com --verbose
 
 * generated timestamp
 * source URL
+* renderer identity
+* limitation receipts
 * route count
 * failed route count
 * site title and description
@@ -95,6 +104,8 @@ node scripts/agentify.mjs https://example.com --verbose
 * route list
 * crawl status
 * generated-by note
+* renderer and static crawl limits
+* warning codes when readability is limited
 * failure note when the crawl is partial
 
 ## Non-goals
@@ -116,9 +127,12 @@ Checked-in demo output lives at:
 
 ```txt
 examples/agentify-output/paideia-blog/
+examples/agentify-output/static-content-site/
+examples/agentify-output/marketing-site/
+examples/agentify-output/js-heavy-spa/
 ```
 
-That demo is generated from local built Paideia blog HTML so it remains deterministic even when the live site rate-limits crawler requests.
+The Paideia blog demo is generated from local built Paideia blog HTML so it remains deterministic even when the live site rate-limits crawler requests. The other demos are small fixtures that show a static content site, a partial marketing-site crawl, and a JavaScript-heavy app shell.
 
 ## Open questions
 

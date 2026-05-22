@@ -45,6 +45,21 @@
     ],
     "posts": [
       {
+        "slug": "agent-readable-web",
+        "path": "/agent-readable-web",
+        "canonical": "https://lautarogartner.com/agent-readable-web",
+        "title": "The Agent-Readable Web",
+        "topics": [
+          "agent-readable web",
+          "runtime receipts",
+          "inspectable software"
+        ],
+        "description": "Why websites may need small, honest runtime receipts for routes, crawl status, artifacts, and limits.",
+        "publishedAt": "2026-05-22",
+        "tokenSummary": "Essay arguing that websites need small, honest runtime receipts for routes, crawl status, warnings, artifacts, and limits so humans and agents can inspect systems without guessing.",
+        "output": "agent-readable-web/index.html"
+      },
+      {
         "slug": "framework-becomes-a-tool",
         "path": "/framework-becomes-a-tool",
         "canonical": "https://lautarogartner.com/framework-becomes-a-tool",

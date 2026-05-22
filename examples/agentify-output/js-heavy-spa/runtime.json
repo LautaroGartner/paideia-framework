@@ -11,27 +11,27 @@
     "privateBehaviorInferred": false,
     "robotsEnforced": false
   },
-  "buildId": "116c712",
+  "buildId": "7a519a0",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 4581
+      "bytes": 1441
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 1100
+      "bytes": 772
     },
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 3646
+      "bytes": 1957
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 1379
+      "bytes": 1972
     }
   ],
   "capabilities": [
@@ -47,22 +47,45 @@
     "maxDepth": 1,
     "maxPages": 10,
     "timeoutMs": 10000,
-    "fetched": 5,
+    "fetched": 1,
     "failed": 0,
     "failures": [],
     "sameOriginOnly": true,
     "userAgent": "agentify/0.5 demo",
     "robots": {
       "status": "fetched",
-      "url": "https://lautarogartner.com/robots.txt",
+      "url": "https://x.example/robots.txt",
       "note": "robots.txt was provided by the caller."
     }
   },
   "diagnostics": {
     "status": "complete",
-    "warnings": 0,
+    "warnings": 3,
     "errors": 0,
-    "codes": [],
-    "items": []
+    "codes": [
+      "js.required",
+      "missing.description",
+      "missing.title"
+    ],
+    "items": [
+      {
+        "severity": "warning",
+        "code": "missing.title",
+        "path": "/",
+        "message": "Homepage did not include a title."
+      },
+      {
+        "severity": "warning",
+        "code": "missing.description",
+        "path": "/",
+        "message": "Homepage did not include a meta description."
+      },
+      {
+        "severity": "warning",
+        "code": "js.required",
+        "path": "/",
+        "message": "Homepage appears to require JavaScript for meaningful static content."
+      }
+    ]
   }
 }

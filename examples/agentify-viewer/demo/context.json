@@ -1,8 +1,20 @@
 {
-  "generatedAt": "2026-05-22T00:00:00.000Z",
+  "generatedAt": "2026-05-22T12:00:00.000Z",
   "sourceUrl": "https://lautarogartner.com/",
+  "generator": {
+    "name": "agentify",
+    "version": "0.5.0"
+  },
+  "renderer": "static-html",
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
   "routeCount": 5,
   "failedRouteCount": 0,
+  "warningCodes": [],
   "source": {
     "url": "https://lautarogartner.com/",
     "origin": "https://lautarogartner.com"
@@ -16,7 +28,7 @@
     "failed": 0,
     "failures": [],
     "sameOriginOnly": true,
-    "userAgent": "agentify/0.4 demo",
+    "userAgent": "agentify/0.5 demo",
     "robots": {
       "status": "fetched",
       "url": "https://lautarogartner.com/robots.txt",
@@ -32,31 +44,36 @@
       "path": "/",
       "title": "Lautaro Gärtner's blog",
       "description": "Personal site for Lautaro Gärtner and Paideia Framework.",
-      "headingCount": 3
+      "headingCount": 3,
+      "javascriptRequired": false
     },
     {
       "path": "/about",
       "title": "About - Lautaro Gärtner",
       "description": "About Lautaro Gärtner, Paideia, and this site.",
-      "headingCount": 1
+      "headingCount": 1,
+      "javascriptRequired": false
     },
     {
       "path": "/building-paideia",
       "title": "Building Paideia: Software That Explains Itself - Lautaro Gärtner",
       "description": "Why I am building Paideia as a small framework for readable, inspectable, self-describing software systems.",
-      "headingCount": 1
+      "headingCount": 1,
+      "javascriptRequired": false
     },
     {
       "path": "/framework-becomes-a-tool",
       "title": "The Moment a Framework Becomes a Tool - Lautaro Gärtner",
       "description": "On the shift from an interesting framework repository to a tool that can generate runnable, inspectable systems.",
-      "headingCount": 1
+      "headingCount": 1,
+      "javascriptRequired": false
     },
     {
       "path": "/generated-systems-should-explain-themselves",
       "title": "Why Generated Systems Should Explain Themselves - Lautaro Gärtner",
       "description": "Why generated software should expose its shape, contracts, capabilities, and security-relevant runtime facts.",
-      "headingCount": 1
+      "headingCount": 1,
+      "javascriptRequired": false
     }
   ],
   "routes": [
@@ -68,7 +85,9 @@
         "The Moment a Framework Becomes a Tool",
         "Why Generated Systems Should Explain Themselves",
         "Building Paideia: Software That Explains Itself"
-      ]
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
     },
     {
       "path": "/about",
@@ -76,7 +95,9 @@
       "description": "About Lautaro Gärtner, Paideia, and this site.",
       "headings": [
         "About"
-      ]
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
     },
     {
       "path": "/building-paideia",
@@ -84,7 +105,9 @@
       "description": "Why I am building Paideia as a small framework for readable, inspectable, self-describing software systems.",
       "headings": [
         "Building Paideia: Software That Explains Itself"
-      ]
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
     },
     {
       "path": "/framework-becomes-a-tool",
@@ -92,7 +115,9 @@
       "description": "On the shift from an interesting framework repository to a tool that can generate runnable, inspectable systems.",
       "headings": [
         "The Moment a Framework Becomes a Tool"
-      ]
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
     },
     {
       "path": "/generated-systems-should-explain-themselves",
@@ -100,7 +125,9 @@
       "description": "Why generated software should expose its shape, contracts, capabilities, and security-relevant runtime facts.",
       "headings": [
         "Why Generated Systems Should Explain Themselves"
-      ]
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
     }
   ],
   "suggestedReadingOrder": [

@@ -49,6 +49,7 @@ function renderSummary(runtime, context) {
   const sourceUrl = context.sourceUrl ?? context.source?.url ?? "./demo/context.json";
 
   setText("crawl-status", crawl.status ?? "unknown");
+  setText("crawl-renderer", runtime.renderer ?? context.renderer ?? "unknown");
   setText("crawl-fetched", crawl.fetched ?? context.routeCount ?? 0);
   setText("crawl-failed", crawl.failed ?? context.failedRouteCount ?? 0);
   setText("route-count", context.routeCount ?? context.routes?.length ?? 0);
@@ -140,6 +141,36 @@ function renderCapabilities(system, runtime) {
   );
 }
 
+function renderReceipts(runtime, context) {
+  const limitations = runtime.limitations ?? context.limitations ?? {};
+  const warningCodes = runtime.diagnostics?.codes ?? context.warningCodes ?? [];
+  const entries = [
+    ...Object.entries(limitations).map(([key, value]) => (
+      `${key}: ${value}`
+    )),
+    ...warningCodes.map((code) => `warning: ${code}`),
+  ];
+  const list = byId("receipts-list");
+
+  if (entries.length === 0) {
+    const item = document.createElement("span");
+    item.className = "capability";
+    item.textContent = "no warning codes";
+    list.replaceChildren(item);
+    return;
+  }
+
+  list.replaceChildren(
+    ...entries.map((entry) => {
+      const item = document.createElement("span");
+      item.className = "capability";
+      item.textContent = entry;
+
+      return item;
+    })
+  );
+}
+
 function showArtifact(name) {
   const artifact = state.artifacts[name];
 
@@ -171,6 +202,7 @@ async function main() {
     renderRoutes(state.artifacts.context.value);
     renderFailures(state.artifacts.runtime.value);
     renderCapabilities(state.artifacts.system.value, state.artifacts.runtime.value);
+    renderReceipts(state.artifacts.runtime.value, state.artifacts.context.value);
     showArtifact("runtime");
   } catch (error) {
     byId("artifact-preview").textContent =

@@ -1,0 +1,110 @@
+{
+  "generator": {
+    "name": "agentify",
+    "version": "0.5.0"
+  },
+  "renderer": "static-html",
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "source": {
+    "url": "https://launch.example/",
+    "origin": "https://launch.example"
+  },
+  "site": {
+    "title": "Northstar Studio",
+    "description": "A product studio for small teams shipping inspectable websites."
+  },
+  "routes": [
+    {
+      "path": "/",
+      "url": "https://launch.example/",
+      "title": "Northstar Studio",
+      "description": "A product studio for small teams shipping inspectable websites.",
+      "headings": [
+        "Northstar Studio"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
+    },
+    {
+      "path": "/customers",
+      "url": "https://launch.example/customers",
+      "title": "Customers",
+      "description": "Teams using Northstar Studio to explain their products clearly.",
+      "headings": [
+        "Customers",
+        "Case studies"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
+    },
+    {
+      "path": "/pricing",
+      "url": "https://launch.example/pricing",
+      "title": "Pricing",
+      "description": "Simple plans for teams that need practical launch support.",
+      "headings": [
+        "Pricing",
+        "Starter",
+        "Team"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false
+    }
+  ],
+  "crawl": {
+    "status": "partial",
+    "maxDepth": 1,
+    "maxPages": 10,
+    "timeoutMs": 10000,
+    "fetched": 3,
+    "failed": 1,
+    "failures": [
+      {
+        "url": "https://launch.example/demo",
+        "status": 403,
+        "message": "Forbidden"
+      }
+    ],
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.5 demo",
+    "robots": {
+      "status": "fetched",
+      "url": "https://launch.example/robots.txt",
+      "note": "robots.txt was provided by the caller."
+    }
+  },
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "route.fetch_failed",
+      "path": "/demo",
+      "status": 403,
+      "message": "Forbidden"
+    },
+    {
+      "severity": "warning",
+      "code": "crawl.partial",
+      "message": "One or more discovered routes failed to fetch."
+    }
+  ],
+  "caveats": [
+    "Only the homepage and same-origin pages linked from it were fetched.",
+    "Routes were discovered from homepage anchor href values.",
+    "No recursive crawl beyond depth 1 was performed.",
+    "JavaScript was not executed.",
+    "No private backend behavior was inferred."
+  ]
+}

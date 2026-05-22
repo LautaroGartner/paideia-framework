@@ -24,6 +24,19 @@
   ],
   "posts": [
     {
+      "slug": "agent-readable-web",
+      "path": "/agent-readable-web",
+      "canonical": "https://lautarogartner.com/agent-readable-web",
+      "title": "The Agent-Readable Web",
+      "topics": [
+        "agent-readable web",
+        "runtime receipts",
+        "inspectable software"
+      ],
+      "publishedAt": "2026-05-22",
+      "tokenSummary": "Essay arguing that websites need small, honest runtime receipts for routes, crawl status, warnings, artifacts, and limits so humans and agents can inspect systems without guessing."
+    },
+    {
       "slug": "framework-becomes-a-tool",
       "path": "/framework-becomes-a-tool",
       "canonical": "https://lautarogartner.com/framework-becomes-a-tool",
@@ -64,8 +77,8 @@
     }
   ],
   "writing": {
-    "postCount": 3,
-    "latestPost": "framework-becomes-a-tool"
+    "postCount": 4,
+    "latestPost": "agent-readable-web"
   },
   "generatedBy": {
     "name": "Paideia Framework",

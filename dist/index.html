@@ -326,6 +326,29 @@
         line-height: 1.35;
       }
 
+      .post-body ul {
+        margin: 1rem 0 1.5rem;
+        padding-left: 1.25rem;
+      }
+
+      .post-body li {
+        margin: 0.45rem 0;
+        line-height: 1.55;
+      }
+
+      .post-body pre {
+        max-width: 100%;
+        margin: 1.25rem 0;
+        padding: 1rem;
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--line) 42%, transparent);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.86rem;
+        line-height: 1.6;
+      }
+
       @media (max-width: 640px) {
         .shell {
           padding-top: 0.75rem;
@@ -421,6 +444,13 @@
 
         <section class="post-list" aria-label="Writing">
           
+          <article class="post-item">
+            <time datetime="2026-05-22">May 22, 2026</time>
+            <div>
+              <h2><a class="post-title-link" href="/agent-readable-web">The Agent-Readable Web</a></h2>
+              <p class="post-topics">agent-readable web / runtime receipts / inspectable software</p>
+            </div>
+          </article>
           <article class="post-item">
             <time datetime="2026-05-21">May 21, 2026</time>
             <div>

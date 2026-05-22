@@ -6,12 +6,17 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
-const PACKAGE_ROOT = path.dirname(
-  path.dirname(fileURLToPath(import.meta.url))
-);
+const AGENTIFY_VERSION = "0.5.0";
 const DEFAULT_MAX_PAGES = 10;
 const DEFAULT_TIMEOUT_MS = 10000;
-const DEFAULT_USER_AGENT = "agentify/0.4";
+const DEFAULT_USER_AGENT = "agentify/0.5";
+const RENDERER = "static-html";
+const LIMITATIONS = {
+  javascriptNotExecuted: true,
+  recursiveCrawl: false,
+  privateBehaviorInferred: false,
+  robotsEnforced: false,
+};
 
 class AgentifyFetchError extends Error {
   constructor(message, details = {}) {
@@ -20,22 +25,6 @@ class AgentifyFetchError extends Error {
     this.status = details.status ?? null;
     this.statusText = details.statusText ?? "";
     this.url = details.url ?? "";
-  }
-}
-
-function readPackageVersion() {
-  try {
-    const raw = fs.readFileSync(
-      path.join(PACKAGE_ROOT, "package.json"),
-      "utf8"
-    );
-    const packageJson = JSON.parse(raw);
-
-    return typeof packageJson.version === "string"
-      ? packageJson.version
-      : "0.0.0";
-  } catch {
-    return "0.0.0";
   }
 }
 
@@ -114,6 +103,42 @@ function extractHeadings(html) {
   return headings;
 }
 
+function scriptCount(html) {
+  return (html.match(/<script\b/gi) ?? []).length;
+}
+
+function extractVisibleText(html) {
+  return normalizeWhitespace(
+    decodeHtmlEntities(
+      stripTags(
+        html
+          .replace(/<script\b[\s\S]*?<\/script>/gi, " ")
+          .replace(/<style\b[\s\S]*?<\/style>/gi, " ")
+      )
+    )
+  );
+}
+
+function detectJavascriptRequired(html, metadata) {
+  if (scriptCount(html) === 0) {
+    return false;
+  }
+
+  const visibleText = extractVisibleText(html);
+  const hasAppShell = /\bid\s*=\s*["'](?:__next|app|root|svelte)["']/i
+    .test(html);
+  const hasJavascriptNotice =
+    /<noscript\b[\s\S]*?(javascript|enable scripts|requires js|requires javascript)/i
+      .test(html);
+  const hasSparseMetadata = !metadata.title &&
+    !metadata.description &&
+    metadata.headings.length === 0;
+
+  return hasJavascriptNotice ||
+    (hasAppShell && visibleText.length < 240) ||
+    (hasSparseMetadata && visibleText.length < 160);
+}
+
 function routeFromUrl(url) {
   const pathname = url.pathname.replace(/\/+/g, "/");
   const normalized = pathname.endsWith("/") && pathname !== "/"
@@ -158,12 +183,18 @@ function extractInternalRoutes(html, sourceUrl) {
 }
 
 function pageMetadata(pathname, html, source) {
-  return {
+  const metadata = {
     path: pathname,
     url: new URL(pathname, source).href,
     title: extractTitle(html),
     description: extractDescription(html),
     headings: extractHeadings(html),
+  };
+
+  return {
+    ...metadata,
+    renderer: RENDERER,
+    javascriptRequired: detectJavascriptRequired(html, metadata),
   };
 }
 
@@ -229,7 +260,46 @@ function compactRouteSummary(page) {
     title: page.title,
     description: page.description,
     headingCount: page.headings.length,
+    javascriptRequired: page.javascriptRequired,
   };
+}
+
+function pageDiagnostics(page, isHomepage = false) {
+  const diagnostics = [];
+  const label = isHomepage ? "Homepage" : `Route ${page.path}`;
+
+  if (!page.title) {
+    diagnostics.push({
+      severity: "warning",
+      code: "missing.title",
+      path: page.path,
+      message: `${label} did not include a title.`,
+    });
+  }
+
+  if (!page.description) {
+    diagnostics.push({
+      severity: "warning",
+      code: "missing.description",
+      path: page.path,
+      message: `${label} did not include a meta description.`,
+    });
+  }
+
+  if (page.javascriptRequired) {
+    diagnostics.push({
+      severity: "warning",
+      code: "js.required",
+      path: page.path,
+      message: `${label} appears to require JavaScript for meaningful static content.`,
+    });
+  }
+
+  return diagnostics;
+}
+
+function diagnosticCodes(diagnostics) {
+  return Array.from(new Set(diagnostics.map((item) => item.code))).sort();
 }
 
 function createLlmsText({
@@ -240,8 +310,10 @@ function createLlmsText({
   maxPages,
   failures,
   fetchedAt,
+  diagnostics,
 }) {
   const status = crawlStatus(failures);
+  const codes = diagnosticCodes(diagnostics);
   const lines = [
     `# ${title || sourceUrl}`,
     "",
@@ -261,6 +333,7 @@ function createLlmsText({
     `Generated at: ${fetchedAt}`,
     `Routes fetched: ${routes.length}`,
     `Routes failed: ${failures.length}`,
+    `Renderer: ${RENDERER}`,
     "",
     "## Routes",
     "",
@@ -279,8 +352,19 @@ function createLlmsText({
     "",
     "## Limits",
     "",
-    `This v0.4 prototype fetches the homepage and up to ${maxPages} same-origin pages linked from it. It does not crawl recursively beyond the homepage link set.`,
+    `This v0.5 prototype uses the ${RENDERER} renderer: it fetches HTML, does not execute JavaScript, and crawls up to ${maxPages} same-origin pages linked from the homepage.`,
+    "Robots.txt is fetched for awareness only and is not enforced yet.",
   ];
+
+  if (codes.length > 0) {
+    lines.push("");
+    lines.push("## Warning Codes");
+    lines.push("");
+
+    for (const code of codes) {
+      lines.push(`- ${code}`);
+    }
+  }
 
   if (failures.length > 0) {
     lines.push("");
@@ -312,7 +396,7 @@ function createBundle({
   const homepage = pages[0];
   const title = homepage?.title ?? "";
   const description = homepage?.description ?? "";
-  const version = readPackageVersion();
+  const version = AGENTIFY_VERSION;
   const capabilities = [
     "site.crawled",
     "routes.discovered",
@@ -323,27 +407,30 @@ function createBundle({
   ];
   const diagnostics = [...crawlDiagnostics];
 
-  if (!title) {
+  if (failures.length > 0) {
     diagnostics.push({
       severity: "warning",
-      code: "missing.title",
-      message: "Homepage did not include a title.",
+      code: "crawl.partial",
+      message: "One or more discovered routes failed to fetch.",
     });
   }
 
-  if (!description) {
-    diagnostics.push({
-      severity: "warning",
-      code: "missing.description",
-      message: "Homepage did not include a meta description.",
-    });
+  for (const [index, page] of pages.entries()) {
+    diagnostics.push(...pageDiagnostics(page, index === 0));
   }
 
   const context = {
     generatedAt: fetchedAt,
     sourceUrl: parsedUrl.href,
+    generator: {
+      name: "agentify",
+      version,
+    },
+    renderer: RENDERER,
+    limitations: LIMITATIONS,
     routeCount: pages.length,
     failedRouteCount: failures.length,
+    warningCodes: diagnosticCodes(diagnostics),
     source: {
       url: parsedUrl.href,
       origin: parsedUrl.origin,
@@ -370,6 +457,8 @@ function createBundle({
       title: page.title,
       description: page.description,
       headings: page.headings,
+      renderer: page.renderer,
+      javascriptRequired: page.javascriptRequired,
     })),
     suggestedReadingOrder: [
       "llms.txt",
@@ -384,6 +473,8 @@ function createBundle({
       name: "agentify",
       version,
     },
+    renderer: RENDERER,
+    limitations: LIMITATIONS,
     source: {
       url: parsedUrl.href,
       origin: parsedUrl.origin,
@@ -398,6 +489,8 @@ function createBundle({
       title: page.title,
       description: page.description,
       headings: page.headings,
+      renderer: page.renderer,
+      javascriptRequired: page.javascriptRequired,
     })),
     crawl: {
       status: crawlStatus(failures),
@@ -417,6 +510,7 @@ function createBundle({
       "Only the homepage and same-origin pages linked from it were fetched.",
       "Routes were discovered from homepage anchor href values.",
       "No recursive crawl beyond depth 1 was performed.",
+      "JavaScript was not executed.",
       "No private backend behavior was inferred.",
     ],
   };
@@ -429,6 +523,7 @@ function createBundle({
     maxPages,
     failures,
     fetchedAt,
+    diagnostics,
   });
 
   const partialOutputs = {
@@ -443,6 +538,8 @@ function createBundle({
       version,
     },
     generatedAt: fetchedAt,
+    renderer: RENDERER,
+    limitations: LIMITATIONS,
     buildId: buildIdFor(partialOutputs),
     artifacts: [],
     capabilities,
@@ -464,6 +561,8 @@ function createBundle({
         : crawlStatus(failures),
       warnings: diagnostics.filter((item) => item.severity === "warning").length,
       errors: diagnostics.filter((item) => item.severity === "error").length,
+      codes: diagnosticCodes(diagnostics),
+      items: diagnostics,
     },
   };
 
@@ -601,14 +700,14 @@ async function fetchRobots(source, options) {
       status: "fetched",
       url,
       bytes: byteLength(text ?? ""),
-      note: "robots.txt was fetched for awareness only; v0.4 does not enforce directives yet.",
+      note: "robots.txt was fetched for awareness only; v0.5 does not enforce directives yet.",
     };
   } catch (error) {
     return {
       status: "unavailable",
       url,
       failure: failureFromError(url, error),
-      note: "robots.txt could not be fetched; v0.4 records this but does not enforce directives.",
+      note: "robots.txt could not be fetched; v0.5 records this but does not enforce directives.",
     };
   }
 }
@@ -798,7 +897,7 @@ async function main() {
 
   if (!url) {
     console.error(
-      "[agentify] usage: node scripts/agentify.mjs <url> [--out agent] [--max-pages 10] [--user-agent agentify/0.4] [--verbose]"
+      "[agentify] usage: node scripts/agentify.mjs <url> [--out agent] [--max-pages 10] [--user-agent agentify/0.5] [--verbose]"
     );
     process.exit(1);
   }

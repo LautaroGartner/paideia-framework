@@ -208,14 +208,51 @@ function renderAgentFileLinks(): string {
 }
 
 function renderBody(value: string): string {
-  return value
-    .trim()
-    .split(/\n{2,}/)
-    .map(
-      (paragraph) =>
-        `<p>${escapeHtml(paragraph.replace(/\s*\n\s*/g, " "))}</p>`
-    )
-    .join("\n        ");
+  const blocks = value.trim().split(/\n{2,}/);
+  const rendered = [];
+
+  for (let index = 0; index < blocks.length; index += 1) {
+    const block = blocks[index].trim();
+
+    if (!block) {
+      continue;
+    }
+
+    if (block.startsWith("```")) {
+      const code = block
+        .replace(/^```[a-z]*\n?/i, "")
+        .replace(/\n?```$/, "");
+
+      rendered.push(`<pre><code>${escapeHtml(code)}</code></pre>`);
+      continue;
+    }
+
+    if (block.startsWith("## ")) {
+      rendered.push(`<h2>${escapeHtml(block.slice(3).trim())}</h2>`);
+      continue;
+    }
+
+    if (block.startsWith("### ")) {
+      rendered.push(`<h3>${escapeHtml(block.slice(4).trim())}</h3>`);
+      continue;
+    }
+
+    if (block.split("\n").every((line) => line.trim().startsWith("* "))) {
+      const items = block
+        .split("\n")
+        .map((line) => `<li>${escapeHtml(line.trim().slice(2))}</li>`)
+        .join("");
+
+      rendered.push(`<ul>${items}</ul>`);
+      continue;
+    }
+
+    rendered.push(
+      `<p>${escapeHtml(block.replace(/\s*\n\s*/g, " "))}</p>`
+    );
+  }
+
+  return rendered.join("\n        ");
 }
 
 function renderStyles(): string {
@@ -515,6 +552,29 @@ function renderStyles(): string {
         color: var(--text);
         font-size: 1.25rem;
         line-height: 1.35;
+      }
+
+      .post-body ul {
+        margin: 1rem 0 1.5rem;
+        padding-left: 1.25rem;
+      }
+
+      .post-body li {
+        margin: 0.45rem 0;
+        line-height: 1.55;
+      }
+
+      .post-body pre {
+        max-width: 100%;
+        margin: 1.25rem 0;
+        padding: 1rem;
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--line) 42%, transparent);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.86rem;
+        line-height: 1.6;
       }
 
       @media (max-width: 640px) {

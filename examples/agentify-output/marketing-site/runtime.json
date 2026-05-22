@@ -11,27 +11,27 @@
     "privateBehaviorInferred": false,
     "robotsEnforced": false
   },
-  "buildId": "116c712",
+  "buildId": "87661fb",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 4581
+      "bytes": 2851
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 1100
+      "bytes": 935
     },
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 3646
+      "bytes": 2784
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 1379
+      "bytes": 1866
     }
   ],
   "capabilities": [
@@ -43,26 +43,48 @@
     "crawl.receipts"
   ],
   "crawl": {
-    "status": "complete",
+    "status": "partial",
     "maxDepth": 1,
     "maxPages": 10,
     "timeoutMs": 10000,
-    "fetched": 5,
-    "failed": 0,
-    "failures": [],
+    "fetched": 3,
+    "failed": 1,
+    "failures": [
+      {
+        "url": "https://launch.example/demo",
+        "status": 403,
+        "message": "Forbidden"
+      }
+    ],
     "sameOriginOnly": true,
     "userAgent": "agentify/0.5 demo",
     "robots": {
       "status": "fetched",
-      "url": "https://lautarogartner.com/robots.txt",
+      "url": "https://launch.example/robots.txt",
       "note": "robots.txt was provided by the caller."
     }
   },
   "diagnostics": {
-    "status": "complete",
-    "warnings": 0,
+    "status": "partial",
+    "warnings": 2,
     "errors": 0,
-    "codes": [],
-    "items": []
+    "codes": [
+      "crawl.partial",
+      "route.fetch_failed"
+    ],
+    "items": [
+      {
+        "severity": "warning",
+        "code": "route.fetch_failed",
+        "path": "/demo",
+        "status": 403,
+        "message": "Forbidden"
+      },
+      {
+        "severity": "warning",
+        "code": "crawl.partial",
+        "message": "One or more discovered routes failed to fetch."
+      }
+    ]
   }
 }

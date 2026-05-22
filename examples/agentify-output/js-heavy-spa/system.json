@@ -1,0 +1,83 @@
+{
+  "generator": {
+    "name": "agentify",
+    "version": "0.5.0"
+  },
+  "renderer": "static-html",
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "source": {
+    "url": "https://x.example/",
+    "origin": "https://x.example"
+  },
+  "site": {
+    "title": "",
+    "description": ""
+  },
+  "routes": [
+    {
+      "path": "/",
+      "url": "https://x.example/",
+      "title": "",
+      "description": "",
+      "headings": [],
+      "renderer": "static-html",
+      "javascriptRequired": true
+    }
+  ],
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 10,
+    "timeoutMs": 10000,
+    "fetched": 1,
+    "failed": 0,
+    "failures": [],
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.5 demo",
+    "robots": {
+      "status": "fetched",
+      "url": "https://x.example/robots.txt",
+      "note": "robots.txt was provided by the caller."
+    }
+  },
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "code": "missing.title",
+      "path": "/",
+      "message": "Homepage did not include a title."
+    },
+    {
+      "severity": "warning",
+      "code": "missing.description",
+      "path": "/",
+      "message": "Homepage did not include a meta description."
+    },
+    {
+      "severity": "warning",
+      "code": "js.required",
+      "path": "/",
+      "message": "Homepage appears to require JavaScript for meaningful static content."
+    }
+  ],
+  "caveats": [
+    "Only the homepage and same-origin pages linked from it were fetched.",
+    "Routes were discovered from homepage anchor href values.",
+    "No recursive crawl beyond depth 1 was performed.",
+    "JavaScript was not executed.",
+    "No private backend behavior was inferred."
+  ]
+}

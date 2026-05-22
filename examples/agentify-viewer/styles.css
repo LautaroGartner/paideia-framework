@@ -89,7 +89,7 @@ h2 {
 
 .summary-band {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 1px;
   margin: 26px 0;
   overflow: hidden;
@@ -115,7 +115,7 @@ h2 {
   display: block;
   margin-top: 10px;
   color: var(--ink);
-  font-size: 2rem;
+  font-size: 1.8rem;
   line-height: 1;
   overflow-wrap: anywhere;
 }

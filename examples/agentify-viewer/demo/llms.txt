@@ -13,9 +13,10 @@ https://lautarogartner.com/
 ## Crawl Status
 
 Status: complete
-Generated at: 2026-05-22T00:00:00.000Z
+Generated at: 2026-05-22T12:00:00.000Z
 Routes fetched: 5
 Routes failed: 0
+Renderer: static-html
 
 ## Routes
 
@@ -34,4 +35,5 @@ Routes failed: 0
 
 ## Limits
 
-This v0.4 prototype fetches the homepage and up to 10 same-origin pages linked from it. It does not crawl recursively beyond the homepage link set.
+This v0.5 prototype uses the static-html renderer: it fetches HTML, does not execute JavaScript, and crawls up to 10 same-origin pages linked from the homepage.
+Robots.txt is fetched for awareness only and is not enforced yet.
