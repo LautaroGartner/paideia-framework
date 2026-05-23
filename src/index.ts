@@ -16,8 +16,10 @@ import {
   generateLlmsText,
   generateNotFoundPage,
   generatePostPage,
+  generateRobotsTxt,
   generateRuntimeIdentity,
   generateSiteManifestWithCapabilities,
+  generateSitemapXml,
   generateSitePage,
   getPostOutputPath,
   getSiteOutputPath,
@@ -91,6 +93,14 @@ const artifacts = [
   {
     path: "favicon.svg",
     kind: "asset",
+  },
+  {
+    path: "robots.txt",
+    kind: "seo",
+  },
+  {
+    path: "sitemap.xml",
+    kind: "seo",
   },
   {
     path: "system.json",
@@ -202,6 +212,8 @@ addArtifact(
 );
 addArtifact("context.json", generateContextJson(site));
 addArtifact("llms.txt", generateLlmsText(site));
+addArtifact("robots.txt", generateRobotsTxt(site));
+addArtifact("sitemap.xml", generateSitemapXml(site));
 addRuntimeIdentity();
 
 for (const artifact of artifacts) {

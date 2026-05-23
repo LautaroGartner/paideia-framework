@@ -863,6 +863,8 @@ export function generateSiteManifestWithCapabilities(
         "favicon.svg",
         "pages",
         "posts",
+        "robots.txt",
+        "sitemap.xml",
         "system.json",
         "runtime.json",
         "llms.txt",
@@ -1010,4 +1012,55 @@ export function generateContextJson(site: SiteDefinition): string {
   };
 
   return JSON.stringify(context, null, 2);
+}
+
+export function generateRobotsTxt(site: SiteDefinition): string {
+  const sitemapUrl = site.url
+    ? `${site.url.replace(/\/+$/g, "")}/sitemap.xml`
+    : null;
+
+  let content = `User-agent: *
+Allow: /`;
+
+  if (sitemapUrl) {
+    content += `\n\nSitemap: ${sitemapUrl}`;
+  }
+
+  return content;
+}
+
+export function generateSitemapXml(site: SiteDefinition): string {
+  if (!site.url) {
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+</urlset>`;
+  }
+
+  const baseUrl = site.url.replace(/\/+$/g, "");
+  const orderedPosts = sortPosts(site.posts);
+  const urls: string[] = [];
+
+  for (const page of site.pages) {
+    const canonical = canonicalUrl(site, page.path);
+    if (canonical) {
+      urls.push(`  <url>
+    <loc>${escapeHtml(canonical)}</loc>
+  </url>`);
+    }
+  }
+
+  for (const post of orderedPosts) {
+    const canonical = canonicalUrl(site, postPath(post));
+    if (canonical) {
+      urls.push(`  <url>
+    <loc>${escapeHtml(canonical)}</loc>
+    <lastmod>${escapeHtml(post.publishedAt)}</lastmod>
+  </url>`);
+    }
+  }
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.join("\n")}
+</urlset>`;
 }
