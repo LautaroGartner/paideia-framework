@@ -112,9 +112,18 @@ const cliPath = path.join(
     : "paideia"
 );
 
-function run(args) {
+const agentifyPath = path.join(
+  appRoot,
+  "node_modules",
+  ".bin",
+  process.platform === "win32"
+    ? "agentify.cmd"
+    : "agentify"
+);
+
+function runBin(binPath, name, args) {
   const result = spawnSync(
-    cliPath,
+    binPath,
     args,
     {
       cwd: appRoot,
@@ -123,10 +132,18 @@ function run(args) {
   );
 
   return {
-    command: `paideia ${args.join(" ")}`,
+    command: `${name} ${args.join(" ")}`,
     status: result.status ?? 1,
     output: `${result.stdout}${result.stderr}`,
   };
+}
+
+function run(args) {
+  return runBin(cliPath, "paideia", args);
+}
+
+function runAgentify(args) {
+  return runBin(agentifyPath, "agentify", args);
 }
 
 function assert(condition, message, result) {
@@ -158,6 +175,31 @@ assert(
   help.output.includes("Paideia CLI"),
   "--help should print CLI help",
   help
+);
+
+const agentifyVersion = runAgentify(["--version"]);
+assert(
+  agentifyVersion.status === 0,
+  "agentify --version should succeed",
+  agentifyVersion
+);
+assert(
+  agentifyVersion.output.trim() === "0.5.0",
+  "agentify --version should print the agentify version",
+  agentifyVersion
+);
+
+const agentifyHelp = runAgentify(["--help"]);
+assert(
+  agentifyHelp.status === 0,
+  "agentify --help should succeed",
+  agentifyHelp
+);
+assert(
+  agentifyHelp.output.includes("Usage:") &&
+    agentifyHelp.output.includes("agentify <url>"),
+  "agentify --help should print CLI help",
+  agentifyHelp
 );
 
 const doctor = run(["doctor"]);

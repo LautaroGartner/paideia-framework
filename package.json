@@ -3,7 +3,8 @@
   "version": "1.8.0",
   "type": "module",
   "bin": {
-    "paideia": "./cli.mjs"
+    "paideia": "./cli.mjs",
+    "agentify": "./scripts/agentify.mjs"
   },
   "files": [
     "assets/",

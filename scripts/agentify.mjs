@@ -892,13 +892,38 @@ function parseArgs(argv) {
   };
 }
 
+function printHelp() {
+  console.log(`agentify ${AGENTIFY_VERSION}
+
+Usage:
+  agentify <url> [--out agent] [--max-pages 10] [--user-agent agentify/0.5] [--verbose]
+
+Options:
+  --out <dir>          Write artifacts to this directory
+  --max-pages <count>  Maximum same-origin pages to fetch
+  --user-agent <ua>    User agent to send while fetching
+  --verbose            Print each fetch attempt
+  --version            Show agentify version
+  --help               Show this help`);
+}
+
 async function main() {
-  const { options, url } = parseArgs(process.argv.slice(2));
+  const argv = process.argv.slice(2);
+
+  if (argv.includes("--help") || argv.includes("-h")) {
+    printHelp();
+    return;
+  }
+
+  if (argv.includes("--version") || argv.includes("-v")) {
+    console.log(AGENTIFY_VERSION);
+    return;
+  }
+
+  const { options, url } = parseArgs(argv);
 
   if (!url) {
-    console.error(
-      "[agentify] usage: node scripts/agentify.mjs <url> [--out agent] [--max-pages 10] [--user-agent agentify/0.5] [--verbose]"
-    );
+    printHelp();
     process.exit(1);
   }
 
@@ -938,7 +963,8 @@ async function main() {
 }
 
 const isCli = process.argv[1]
-  ? fileURLToPath(import.meta.url) === path.resolve(process.argv[1])
+  ? fs.realpathSync(fileURLToPath(import.meta.url)) ===
+      fs.realpathSync(path.resolve(process.argv[1]))
   : false;
 
 if (isCli) {

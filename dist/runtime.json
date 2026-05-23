@@ -4,8 +4,8 @@
     "version": "1.8.0"
   },
   "build": {
-    "id": "6a296eb",
-    "generatedAt": "2026-05-22T21:19:39.895Z",
+    "id": "eb42698",
+    "generatedAt": "2026-05-23T14:44:49.232Z",
     "mode": "production",
     "artifactCount": 12
   },
@@ -36,7 +36,7 @@
     {
       "path": "agent-readable-web/index.html",
       "kind": "post",
-      "bytes": 23619
+      "bytes": 23620
     },
     {
       "path": "framework-becomes-a-tool/index.html",
