@@ -151,6 +151,7 @@ try {
 
   assert.equal(system.site.title, "Example Site");
   assert.equal(system.site.description, "A tiny site for agentify.");
+  assert.equal(system.artifactSchemaVersion, "0.1");
   assert.equal(system.generatedAt, "2026-05-22T00:00:00.000Z");
   assert.equal(system.sourceUrl, "https://example.test/");
   assert.equal(system.routeCount, system.routes.length);
@@ -185,6 +186,7 @@ try {
   assert.ok(system.warnings.some((item) => item.code === "js.required"));
 
   assert.equal(context.generatedAt, "2026-05-22T00:00:00.000Z");
+  assert.equal(context.artifactSchemaVersion, "0.1");
   assert.equal(context.sourceUrl, "https://example.test/");
   assert.equal(context.generator.version, "0.6.0-alpha.1");
   assert.equal(context.renderer, "static-html");
@@ -224,6 +226,7 @@ try {
 
   assert.equal(runtime.generator.name, "agentify");
   assert.equal(runtime.generator.version, "0.6.0-alpha.1");
+  assert.equal(runtime.artifactSchemaVersion, "0.1");
   assert.equal(runtime.generatedAt, "2026-05-22T00:00:00.000Z");
   assert.equal(runtime.sourceUrl, "https://example.test/");
   assert.equal(runtime.routeCount, context.routeCount);

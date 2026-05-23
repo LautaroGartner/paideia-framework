@@ -142,5 +142,6 @@
     "errors": 0,
     "codes": []
   },
-  "warnings": []
+  "warnings": [],
+  "artifactSchemaVersion": "0.1"
 }

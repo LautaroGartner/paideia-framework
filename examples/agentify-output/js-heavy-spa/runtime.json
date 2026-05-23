@@ -11,12 +11,12 @@
     "privateBehaviorInferred": false,
     "robotsEnforced": false
   },
-  "buildId": "722bf13",
+  "buildId": "8f03455",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 2520
+      "bytes": 2554
     },
     {
       "path": "llms.txt",
@@ -26,12 +26,12 @@
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 2606
+      "bytes": 2640
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 2363
+      "bytes": 2397
     }
   ],
   "capabilities": [
@@ -106,5 +106,6 @@
       "path": "*",
       "message": "One or more discovered routes failed to fetch."
     }
-  ]
+  ],
+  "artifactSchemaVersion": "0.1"
 }

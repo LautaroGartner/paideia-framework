@@ -11,12 +11,12 @@
     "privateBehaviorInferred": false,
     "robotsEnforced": false
   },
-  "buildId": "54223a3",
+  "buildId": "e5e7f7d",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 2729
+      "bytes": 2763
     },
     {
       "path": "llms.txt",
@@ -26,12 +26,12 @@
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 2567
+      "bytes": 2601
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 1467
+      "bytes": 1501
     }
   ],
   "capabilities": [
@@ -67,5 +67,6 @@
   "sourceUrl": "https://notes.example/",
   "routeCount": 3,
   "failedRouteCount": 0,
-  "warnings": []
+  "warnings": [],
+  "artifactSchemaVersion": "0.1"
 }

@@ -7,6 +7,7 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 
 export const AGENTIFY_VERSION = "0.6.0-alpha.1";
+const ARTIFACT_SCHEMA_VERSION = "0.1";
 const DEFAULT_MAX_PAGES = 10;
 const DEFAULT_TIMEOUT_MS = 10000;
 const DEFAULT_USER_AGENT = "agentify/0.6";
@@ -451,6 +452,7 @@ function createBundle({
   const warnings = normalizedWarnings(diagnostics);
   const diagnosticsStatus = diagnosticsSummary(diagnostics, failures);
   const context = {
+    artifactSchemaVersion: ARTIFACT_SCHEMA_VERSION,
     generatedAt: fetchedAt,
     sourceUrl: parsedUrl.href,
     generator: {
@@ -501,6 +503,7 @@ function createBundle({
   };
 
   const system = {
+    artifactSchemaVersion: ARTIFACT_SCHEMA_VERSION,
     generator: {
       name: "agentify",
       version,
@@ -570,6 +573,7 @@ function createBundle({
   };
 
   let runtime = {
+    artifactSchemaVersion: ARTIFACT_SCHEMA_VERSION,
     generator: {
       name: "agentify",
       version,

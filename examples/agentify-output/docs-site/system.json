@@ -118,5 +118,6 @@
   "sourceUrl": "https://lautarogartner.com/",
   "routeCount": 5,
   "failedRouteCount": 0,
-  "warnings": []
+  "warnings": [],
+  "artifactSchemaVersion": "0.1"
 }

@@ -218,6 +218,9 @@ try {
     );
 
     assert.equal(system.generator.name, "agentify");
+    assert.equal(system.artifactSchemaVersion, "0.1");
+    assert.equal(context.artifactSchemaVersion, "0.1");
+    assert.equal(runtime.artifactSchemaVersion, "0.1");
     assert.equal(runtime.generator.version, "0.6.0-alpha.1");
     assert.equal(context.routeCount, 2);
     assert.equal(runtime.crawl.status, "complete");

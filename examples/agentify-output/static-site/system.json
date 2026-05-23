@@ -97,5 +97,6 @@
   "sourceUrl": "https://notes.example/",
   "routeCount": 3,
   "failedRouteCount": 0,
-  "warnings": []
+  "warnings": [],
+  "artifactSchemaVersion": "0.1"
 }

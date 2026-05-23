@@ -24,6 +24,7 @@ Describes the discovered or generated system.
 Required fields:
 
 * `generator`: object with `name` and `version`
+* `artifactSchemaVersion`: artifact schema version string
 * `generatedAt`: ISO timestamp
 * `sourceUrl`: canonical URL that was crawled
 * `renderer`: renderer identity such as `static-html` when known
@@ -59,6 +60,7 @@ Records generation or crawl identity.
 Required fields:
 
 * `generator`: object with `name` and `version`
+* `artifactSchemaVersion`: artifact schema version string
 * `generatedAt`: ISO timestamp
 * `sourceUrl`: canonical URL that was crawled
 * `renderer`: renderer identity such as `static-html` when known
@@ -137,6 +139,7 @@ Gives agents a compact map of the site.
 Required fields:
 
 * `generatedAt`
+* `artifactSchemaVersion`
 * `sourceUrl`
 * `renderer`
 * `limitations`
