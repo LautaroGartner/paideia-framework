@@ -5,10 +5,17 @@ Generate agent-readable runtime artifacts for a website.
 **Status:** Alpha. Schema and outputs may change. Not for production use yet.
 
 ```bash
-npx agentify https://example.com
+npx @lautarogartner/agentify https://example.com
 ```
 
-Install from the Paideia repository while the package is incubating:
+Install from npm:
+
+```bash
+npm install -g @lautarogartner/agentify
+agentify https://example.com
+```
+
+Or from the Paideia repository (during incubation):
 
 ```bash
 npm install -g github:LautaroGartner/paideia-framework
