@@ -161,7 +161,7 @@ The goal is software that can explain itself.
 
 ## Current Capabilities
 
-`v1.8.0` can currently generate, inspect, and serve:
+`v1.8.1` can currently generate, inspect, and serve:
 
 * static pages
 * structured writing collections
@@ -280,17 +280,21 @@ Human + agent guidance entrypoint.
 
 ## Experimental: agentify
 
-`agentify` is experimental and currently lives inside the Paideia repo.
-It crawls a site and generates agent-readable runtime artifacts for an existing website.
+`agentify` is a tool that crawls a website and generates agent-readable runtime artifacts for existing sites.
 
-`agentify` is incubating as a package candidate in [`packages/agentify`](packages/agentify/README.md).
-The root package still exposes the CLI while the package boundary stabilizes.
+**Status:** Alpha. Schema and outputs may change.
 
-Example:
+Install from npm:
 
 ```bash
-npm install -g github:LautaroGartner/paideia-framework
+npm install -g @lautarogartner/agentify
 agentify https://example.com --out ./agent --max-pages 10
+```
+
+Or use with `npx`:
+
+```bash
+npx @lautarogartner/agentify https://example.com
 ```
 
 CLI reference:
@@ -300,13 +304,14 @@ agentify --help
 agentify --version
 ```
 
-From a local checkout:
+From a local checkout (during development):
 
 ```bash
-node scripts/agentify.mjs https://example.com --out agent --max-pages 5
+cd packages/agentify
+node bin/agentify.mjs https://example.com --out agent --max-pages 5
 ```
 
-Package boundary check:
+Package publication check:
 
 ```bash
 cd packages/agentify
