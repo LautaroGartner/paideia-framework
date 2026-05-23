@@ -5,7 +5,7 @@ This directory contains an example agent-readable bundle for `https://lautarogar
 It was generated from the local built Paideia blog artifacts with:
 
 ```bash
-node scripts/agentify.mjs https://lautarogartner.com --out examples/agentify-output/docs-site --max-pages 10 --user-agent "agentify/0.5 demo"
+node scripts/agentify.mjs https://lautarogartner.com --out examples/agentify-output/docs-site --max-pages 10 --user-agent "agentify/0.6 demo"
 ```
 
 The checked-in demo uses local HTML fixtures from `dist/` so the example is deterministic and does not depend on live crawl rate limits.

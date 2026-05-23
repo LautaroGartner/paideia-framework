@@ -33,5 +33,5 @@ Renderer: static-html
 
 ## Limits
 
-This v0.5 prototype uses the static-html renderer: it fetches HTML, does not execute JavaScript, and crawls up to 10 same-origin pages linked from the homepage.
+This prototype uses the static-html renderer: it fetches HTML, does not execute JavaScript, and crawls up to 10 same-origin pages linked from the homepage.
 Robots.txt is fetched for awareness only and is not enforced yet.

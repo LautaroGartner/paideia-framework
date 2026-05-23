@@ -37,7 +37,7 @@ The current prototype can:
 * record crawl status as `complete` or `partial`
 * keep 403, 429, 500, timeout, and other fetch failures visible in crawl receipts
 * fetch or record `robots.txt` awareness without enforcing directives yet
-* declare its own `agentify` version (`0.5.0`) separately from Paideia
+* declare its own `agentify` version (`0.6.0-alpha.1`) separately from Paideia
 * declare the renderer as `static-html`
 * record static crawl limitations such as `javascriptNotExecuted`, `recursiveCrawl`, `privateBehaviorInferred`, and `robotsEnforced`
 * emit warning codes such as `missing.title`, `missing.description`, `js.required`, and `crawl.partial`
@@ -58,7 +58,7 @@ output directory: agent/
 node scripts/agentify.mjs https://example.com
 node scripts/agentify.mjs https://example.com --out agent
 node scripts/agentify.mjs https://example.com --max-pages 5
-node scripts/agentify.mjs https://example.com --user-agent "agentify/0.5"
+node scripts/agentify.mjs https://example.com --user-agent "agentify/0.6"
 node scripts/agentify.mjs https://example.com --verbose
 ```
 

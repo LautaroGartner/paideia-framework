@@ -1,0 +1,22 @@
+{
+  "name": "agentify",
+  "version": "0.6.0-alpha.1",
+  "type": "module",
+  "bin": {
+    "agentify": "./bin/agentify.mjs"
+  },
+  "license": "MIT",
+  "description": "Generate agent-readable runtime artifacts for websites.",
+  "keywords": [
+    "agents",
+    "llms",
+    "llms.txt",
+    "crawler",
+    "runtime-artifacts",
+    "agent-readable"
+  ],
+  "files": [
+    "bin/",
+    "README.md"
+  ]
+}

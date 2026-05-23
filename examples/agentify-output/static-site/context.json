@@ -3,7 +3,7 @@
   "sourceUrl": "https://notes.example/",
   "generator": {
     "name": "agentify",
-    "version": "0.5.0"
+    "version": "0.6.0-alpha.1"
   },
   "renderer": "static-html",
   "limitations": {
@@ -28,7 +28,7 @@
     "failed": 0,
     "failures": [],
     "sameOriginOnly": true,
-    "userAgent": "agentify/0.5 demo",
+    "userAgent": "agentify/0.6 demo",
     "robots": {
       "status": "fetched",
       "url": "https://notes.example/robots.txt",

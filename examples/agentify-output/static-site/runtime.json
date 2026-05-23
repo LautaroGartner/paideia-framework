@@ -1,7 +1,7 @@
 {
   "generator": {
     "name": "agentify",
-    "version": "0.5.0"
+    "version": "0.6.0-alpha.1"
   },
   "generatedAt": "2026-05-22T12:00:00.000Z",
   "renderer": "static-html",
@@ -11,27 +11,27 @@
     "privateBehaviorInferred": false,
     "robotsEnforced": false
   },
-  "buildId": "b1555ab",
+  "buildId": "54223a3",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 2721
+      "bytes": 2729
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 805
+      "bytes": 800
     },
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 2559
+      "bytes": 2567
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 1459
+      "bytes": 1467
     }
   ],
   "capabilities": [
@@ -51,7 +51,7 @@
     "failed": 0,
     "failures": [],
     "sameOriginOnly": true,
-    "userAgent": "agentify/0.5 demo",
+    "userAgent": "agentify/0.6 demo",
     "robots": {
       "status": "fetched",
       "url": "https://notes.example/robots.txt",
