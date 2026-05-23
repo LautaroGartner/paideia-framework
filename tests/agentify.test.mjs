@@ -70,6 +70,35 @@ const pages = new Map([
   ],
 ]);
 
+const expectedCapabilities = [
+  "site.crawled",
+  "routes.discovered",
+  "metadata.extracted",
+  "agent.context",
+  "agent.guide",
+  "crawl.receipts",
+];
+
+function assertWarnings(warnings, label) {
+  assert.ok(Array.isArray(warnings), `${label} warnings should be an array`);
+
+  for (const warning of warnings) {
+    assert.equal(typeof warning.code, "string", `${label} warning code`);
+    assert.equal(typeof warning.path, "string", `${label} warning path`);
+    assert.equal(typeof warning.message, "string", `${label} warning message`);
+  }
+}
+
+function assertFailures(failures, label) {
+  assert.ok(Array.isArray(failures), `${label} failures should be an array`);
+
+  for (const failure of failures) {
+    assert.equal(typeof failure.url, "string", `${label} failure url`);
+    assert.equal(typeof failure.status, "number", `${label} failure status`);
+    assert.equal(typeof failure.message, "string", `${label} failure message`);
+  }
+}
+
 try {
   const result = await agentify("https://example.test/", {
     fetchedAt: "2026-05-22T00:00:00.000Z",
@@ -122,6 +151,10 @@ try {
 
   assert.equal(system.site.title, "Example Site");
   assert.equal(system.site.description, "A tiny site for agentify.");
+  assert.equal(system.generatedAt, "2026-05-22T00:00:00.000Z");
+  assert.equal(system.sourceUrl, "https://example.test/");
+  assert.equal(system.routeCount, system.routes.length);
+  assert.equal(system.failedRouteCount, system.crawl.failures.length);
   assert.deepEqual(
     system.routes.map((route) => route.path),
     ["/", "/about", "/app", "/docs"]
@@ -137,16 +170,19 @@ try {
   assert.equal(system.crawl.status, "partial");
   assert.equal(system.crawl.fetched, 4);
   assert.equal(system.crawl.failed, 1);
+  assertFailures(system.crawl.failures, "system crawl");
   assert.equal(system.crawl.failures[0].status, 429);
   assert.ok(system.crawl.failures[0].url.endsWith("/rate-limited"));
   assert.equal(system.crawl.robots.status, "fetched");
   assert.equal(system.crawl.userAgent, "agentify-test/1.0");
-  assert.ok(system.capabilities.includes("site.crawled"));
-  assert.ok(system.capabilities.includes("routes.discovered"));
-  assert.ok(system.capabilities.includes("metadata.extracted"));
-  assert.ok(system.capabilities.includes("crawl.receipts"));
-  assert.ok(system.diagnostics.some((item) => item.code === "crawl.partial"));
-  assert.ok(system.diagnostics.some((item) => item.code === "js.required"));
+  assert.deepEqual(system.capabilities, expectedCapabilities);
+  assert.equal(system.diagnostics.status, "partial");
+  assert.equal(system.diagnostics.warnings, system.warnings.length);
+  assert.ok(system.diagnostics.codes.includes("crawl.partial"));
+  assert.ok(system.diagnostics.codes.includes("js.required"));
+  assertWarnings(system.warnings, "system");
+  assert.ok(system.warnings.some((item) => item.code === "crawl.partial"));
+  assert.ok(system.warnings.some((item) => item.code === "js.required"));
 
   assert.equal(context.generatedAt, "2026-05-22T00:00:00.000Z");
   assert.equal(context.sourceUrl, "https://example.test/");
@@ -155,8 +191,14 @@ try {
   assert.equal(context.limitations.javascriptNotExecuted, true);
   assert.equal(context.routeCount, context.routes.length);
   assert.equal(context.failedRouteCount, 1);
+  assert.equal(context.failedRouteCount, context.crawl.failures.length);
   assert.ok(context.warningCodes.includes("crawl.partial"));
   assert.ok(context.warningCodes.includes("js.required"));
+  assertWarnings(context.warnings, "context");
+  assert.deepEqual(
+    context.warningCodes,
+    context.warnings.map((warning) => warning.code).sort()
+  );
   assert.equal(context.site.title, "Example Site");
   assert.deepEqual(context.routeSummaries[1], {
     path: "/about",
@@ -182,16 +224,24 @@ try {
 
   assert.equal(runtime.generator.name, "agentify");
   assert.equal(runtime.generator.version, "0.5.0");
+  assert.equal(runtime.generatedAt, "2026-05-22T00:00:00.000Z");
+  assert.equal(runtime.sourceUrl, "https://example.test/");
+  assert.equal(runtime.routeCount, context.routeCount);
+  assert.equal(runtime.failedRouteCount, context.failedRouteCount);
   assert.equal(runtime.renderer, "static-html");
   assert.equal(runtime.limitations.javascriptNotExecuted, true);
+  assert.deepEqual(runtime.capabilities, expectedCapabilities);
   assert.equal(runtime.diagnostics.status, "partial");
   assert.ok(runtime.diagnostics.codes.includes("crawl.partial"));
   assert.ok(runtime.diagnostics.codes.includes("js.required"));
   assert.ok(runtime.diagnostics.codes.includes("missing.title"));
   assert.ok(runtime.diagnostics.codes.includes("missing.description"));
+  assert.equal(runtime.diagnostics.warnings, runtime.warnings.length);
+  assertWarnings(runtime.warnings, "runtime");
   assert.equal(runtime.crawl.status, "partial");
   assert.equal(runtime.crawl.fetched, 4);
   assert.equal(runtime.crawl.failed, 1);
+  assertFailures(runtime.crawl.failures, "runtime crawl");
   assert.equal(runtime.crawl.failures[0].status, 429);
   assert.equal(runtime.crawl.sameOriginOnly, true);
   assert.equal(runtime.crawl.userAgent, "agentify-test/1.0");

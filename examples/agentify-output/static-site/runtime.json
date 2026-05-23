@@ -11,12 +11,12 @@
     "privateBehaviorInferred": false,
     "robotsEnforced": false
   },
-  "buildId": "e4fafc5",
+  "buildId": "b1555ab",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 2601
+      "bytes": 2721
     },
     {
       "path": "llms.txt",
@@ -26,12 +26,12 @@
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 2330
+      "bytes": 2559
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 1373
+      "bytes": 1459
     }
   ],
   "capabilities": [
@@ -62,7 +62,10 @@
     "status": "complete",
     "warnings": 0,
     "errors": 0,
-    "codes": [],
-    "items": []
-  }
+    "codes": []
+  },
+  "sourceUrl": "https://notes.example/",
+  "routeCount": 3,
+  "failedRouteCount": 0,
+  "warnings": []
 }

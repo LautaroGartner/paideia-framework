@@ -80,12 +80,22 @@
     "agent.guide",
     "crawl.receipts"
   ],
-  "diagnostics": [],
+  "diagnostics": {
+    "status": "complete",
+    "warnings": 0,
+    "errors": 0,
+    "codes": []
+  },
   "caveats": [
     "Only the homepage and same-origin pages linked from it were fetched.",
     "Routes were discovered from homepage anchor href values.",
     "No recursive crawl beyond depth 1 was performed.",
     "JavaScript was not executed.",
     "No private backend behavior was inferred."
-  ]
+  ],
+  "generatedAt": "2026-05-22T12:00:00.000Z",
+  "sourceUrl": "https://notes.example/",
+  "routeCount": 3,
+  "failedRouteCount": 0,
+  "warnings": []
 }

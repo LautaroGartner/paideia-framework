@@ -11,12 +11,12 @@
     "privateBehaviorInferred": false,
     "robotsEnforced": false
   },
-  "buildId": "7a519a0",
+  "buildId": "962e6c6",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 1608
+      "bytes": 2512
     },
     {
       "path": "llms.txt",
@@ -26,12 +26,12 @@
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 2372
+      "bytes": 2598
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 2461
+      "bytes": 2355
     }
   ],
   "capabilities": [
@@ -74,38 +74,37 @@
       "missing.description",
       "missing.title",
       "route.fetch_failed"
-    ],
-    "items": [
-      {
-        "severity": "warning",
-        "code": "route.fetch_failed",
-        "path": "/dashboard",
-        "status": 403,
-        "message": "Forbidden"
-      },
-      {
-        "severity": "warning",
-        "code": "missing.title",
-        "path": "/",
-        "message": "Homepage did not include a title."
-      },
-      {
-        "severity": "warning",
-        "code": "missing.description",
-        "path": "/",
-        "message": "Homepage did not include a meta description."
-      },
-      {
-        "severity": "warning",
-        "code": "js.required",
-        "path": "/",
-        "message": "Homepage appears to require JavaScript for meaningful static content."
-      },
-      {
-        "severity": "warning",
-        "code": "crawl.partial",
-        "message": "One or more discovered routes failed to fetch."
-      }
     ]
-  }
+  },
+  "sourceUrl": "https://x.example/",
+  "routeCount": 1,
+  "failedRouteCount": 1,
+  "warnings": [
+    {
+      "code": "route.fetch_failed",
+      "path": "/dashboard",
+      "message": "Forbidden",
+      "status": 403
+    },
+    {
+      "code": "missing.title",
+      "path": "/",
+      "message": "Homepage did not include a title."
+    },
+    {
+      "code": "missing.description",
+      "path": "/",
+      "message": "Homepage did not include a meta description."
+    },
+    {
+      "code": "js.required",
+      "path": "/",
+      "message": "Homepage appears to require JavaScript for meaningful static content."
+    },
+    {
+      "code": "crawl.partial",
+      "path": "*",
+      "message": "One or more discovered routes failed to fetch."
+    }
+  ]
 }

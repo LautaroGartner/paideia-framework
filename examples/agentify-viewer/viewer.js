@@ -85,7 +85,12 @@ function renderSummary(runtime, context) {
 
 function renderBadges(runtime, context) {
   const crawl = runtime.crawl ?? context.crawl ?? {};
-  const codes = new Set(runtime.diagnostics?.codes ?? context.warningCodes ?? []);
+  const codes = new Set(
+    runtime.diagnostics?.codes ??
+      runtime.warnings?.map((warning) => warning.code) ??
+      context.warningCodes ??
+      []
+  );
   const badges = [crawl.status === "partial" ? "partial" : "complete"];
 
   if (codes.has("js.required")) {
@@ -190,7 +195,11 @@ function renderCapabilities(system, runtime) {
 
 function renderReceipts(runtime, context) {
   const limitations = runtime.limitations ?? context.limitations ?? {};
-  const warningCodes = runtime.diagnostics?.codes ?? context.warningCodes ?? [];
+  const warningCodes =
+    runtime.diagnostics?.codes ??
+    runtime.warnings?.map((warning) => warning.code) ??
+    context.warningCodes ??
+    [];
   const entries = [
     ...Object.entries(limitations).map(([key, value]) => (
       `${key}: ${value}`

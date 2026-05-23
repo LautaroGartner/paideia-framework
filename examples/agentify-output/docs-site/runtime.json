@@ -11,12 +11,12 @@
     "privateBehaviorInferred": false,
     "robotsEnforced": false
   },
-  "buildId": "116c712",
+  "buildId": "84359f7",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 4581
+      "bytes": 4701
     },
     {
       "path": "llms.txt",
@@ -26,12 +26,12 @@
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 3646
+      "bytes": 3880
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 1379
+      "bytes": 1470
     }
   ],
   "capabilities": [
@@ -62,7 +62,10 @@
     "status": "complete",
     "warnings": 0,
     "errors": 0,
-    "codes": [],
-    "items": []
-  }
+    "codes": []
+  },
+  "sourceUrl": "https://lautarogartner.com/",
+  "routeCount": 5,
+  "failedRouteCount": 0,
+  "warnings": []
 }

@@ -59,43 +59,55 @@
     "agent.guide",
     "crawl.receipts"
   ],
-  "diagnostics": [
-    {
-      "severity": "warning",
-      "code": "route.fetch_failed",
-      "path": "/dashboard",
-      "status": 403,
-      "message": "Forbidden"
-    },
-    {
-      "severity": "warning",
-      "code": "missing.title",
-      "path": "/",
-      "message": "Homepage did not include a title."
-    },
-    {
-      "severity": "warning",
-      "code": "missing.description",
-      "path": "/",
-      "message": "Homepage did not include a meta description."
-    },
-    {
-      "severity": "warning",
-      "code": "js.required",
-      "path": "/",
-      "message": "Homepage appears to require JavaScript for meaningful static content."
-    },
-    {
-      "severity": "warning",
-      "code": "crawl.partial",
-      "message": "One or more discovered routes failed to fetch."
-    }
-  ],
+  "diagnostics": {
+    "status": "partial",
+    "warnings": 5,
+    "errors": 0,
+    "codes": [
+      "crawl.partial",
+      "js.required",
+      "missing.description",
+      "missing.title",
+      "route.fetch_failed"
+    ]
+  },
   "caveats": [
     "Only the homepage and same-origin pages linked from it were fetched.",
     "Routes were discovered from homepage anchor href values.",
     "No recursive crawl beyond depth 1 was performed.",
     "JavaScript was not executed.",
     "No private backend behavior was inferred."
+  ],
+  "generatedAt": "2026-05-22T12:00:00.000Z",
+  "sourceUrl": "https://x.example/",
+  "routeCount": 1,
+  "failedRouteCount": 1,
+  "warnings": [
+    {
+      "code": "route.fetch_failed",
+      "path": "/dashboard",
+      "message": "Forbidden",
+      "status": 403
+    },
+    {
+      "code": "missing.title",
+      "path": "/",
+      "message": "Homepage did not include a title."
+    },
+    {
+      "code": "missing.description",
+      "path": "/",
+      "message": "Homepage did not include a meta description."
+    },
+    {
+      "code": "js.required",
+      "path": "/",
+      "message": "Homepage appears to require JavaScript for meaningful static content."
+    },
+    {
+      "code": "crawl.partial",
+      "path": "*",
+      "message": "One or more discovered routes failed to fetch."
+    }
   ]
 }

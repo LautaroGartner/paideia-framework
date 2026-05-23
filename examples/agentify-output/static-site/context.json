@@ -102,5 +102,12 @@
     "context.json",
     "system.json",
     "runtime.json"
-  ]
+  ],
+  "diagnostics": {
+    "status": "complete",
+    "warnings": 0,
+    "errors": 0,
+    "codes": []
+  },
+  "warnings": []
 }

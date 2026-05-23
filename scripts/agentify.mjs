@@ -302,6 +302,35 @@ function diagnosticCodes(diagnostics) {
   return Array.from(new Set(diagnostics.map((item) => item.code))).sort();
 }
 
+function normalizedWarnings(diagnostics) {
+  return diagnostics
+    .filter((item) => item.severity === "warning")
+    .map((item) => {
+      const warning = {
+        code: item.code,
+        path: item.path ?? "*",
+        message: item.message,
+      };
+
+      if (typeof item.status !== "undefined") {
+        warning.status = item.status;
+      }
+
+      return warning;
+    });
+}
+
+function diagnosticsSummary(diagnostics, failures) {
+  return {
+    status: diagnostics.some((item) => item.severity === "error")
+      ? "failing"
+      : crawlStatus(failures),
+    warnings: diagnostics.filter((item) => item.severity === "warning").length,
+    errors: diagnostics.filter((item) => item.severity === "error").length,
+    codes: diagnosticCodes(diagnostics),
+  };
+}
+
 function createLlmsText({
   sourceUrl,
   title,
@@ -419,6 +448,8 @@ function createBundle({
     diagnostics.push(...pageDiagnostics(page, index === 0));
   }
 
+  const warnings = normalizedWarnings(diagnostics);
+  const diagnosticsStatus = diagnosticsSummary(diagnostics, failures);
   const context = {
     generatedAt: fetchedAt,
     sourceUrl: parsedUrl.href,
@@ -431,6 +462,7 @@ function createBundle({
     routeCount: pages.length,
     failedRouteCount: failures.length,
     warningCodes: diagnosticCodes(diagnostics),
+    warnings,
     source: {
       url: parsedUrl.href,
       origin: parsedUrl.origin,
@@ -473,8 +505,12 @@ function createBundle({
       name: "agentify",
       version,
     },
+    generatedAt: fetchedAt,
+    sourceUrl: parsedUrl.href,
     renderer: RENDERER,
     limitations: LIMITATIONS,
+    routeCount: pages.length,
+    failedRouteCount: failures.length,
     source: {
       url: parsedUrl.href,
       origin: parsedUrl.origin,
@@ -505,7 +541,8 @@ function createBundle({
       robots,
     },
     capabilities,
-    diagnostics,
+    diagnostics: diagnosticsStatus,
+    warnings,
     caveats: [
       "Only the homepage and same-origin pages linked from it were fetched.",
       "Routes were discovered from homepage anchor href values.",
@@ -538,8 +575,11 @@ function createBundle({
       version,
     },
     generatedAt: fetchedAt,
+    sourceUrl: parsedUrl.href,
     renderer: RENDERER,
     limitations: LIMITATIONS,
+    routeCount: pages.length,
+    failedRouteCount: failures.length,
     buildId: buildIdFor(partialOutputs),
     artifacts: [],
     capabilities,
@@ -555,15 +595,8 @@ function createBundle({
       userAgent,
       robots,
     },
-    diagnostics: {
-      status: diagnostics.some((item) => item.severity === "error")
-        ? "failing"
-        : crawlStatus(failures),
-      warnings: diagnostics.filter((item) => item.severity === "warning").length,
-      errors: diagnostics.filter((item) => item.severity === "error").length,
-      codes: diagnosticCodes(diagnostics),
-      items: diagnostics,
-    },
+    diagnostics: diagnosticsStatus,
+    warnings,
   };
 
   let runtimeOutput = `${JSON.stringify(runtime, null, 2)}\n`;

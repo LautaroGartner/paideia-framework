@@ -24,12 +24,19 @@ Describes the discovered or generated system.
 Required fields:
 
 * `generator`: object with `name` and `version`
+* `generatedAt`: ISO timestamp
+* `sourceUrl`: canonical URL that was crawled
 * `renderer`: renderer identity such as `static-html` when known
 * `limitations`: explicit limitation receipt when known
+* `routeCount`: number of successfully described routes
+* `failedRouteCount`: number of failed route fetches
 * `source`: object with `url` and `origin`
 * `site`: object with `title` and `description`
 * `routes`: array of route objects
+* `crawl`: crawl limits and crawl receipt
 * `capabilities`: array of strings
+* `diagnostics`: summary object with `status`, `warnings`, `errors`, and `codes`
+* `warnings`: array of warning objects
 
 Route fields:
 
@@ -38,12 +45,6 @@ Route fields:
 * `title`: page title when found
 * `description`: page description when found
 * `headings`: visible heading text extracted from the page
-
-Optional fields:
-
-* `crawl`: crawl limits and crawl receipt
-* `diagnostics`: warnings and errors
-* `caveats`: human-readable limits of what was inferred
 
 Semantics:
 
@@ -59,22 +60,23 @@ Required fields:
 
 * `generator`: object with `name` and `version`
 * `generatedAt`: ISO timestamp
+* `sourceUrl`: canonical URL that was crawled
 * `renderer`: renderer identity such as `static-html` when known
 * `limitations`: explicit limitation receipt when known
+* `routeCount`: number of successfully described routes
+* `failedRouteCount`: number of failed route fetches
 * `buildId`: deterministic or stable fingerprint when possible
 * `artifacts`: generated artifact inventory
 * `capabilities`: array of strings
+* `crawl`: crawl receipt
+* `diagnostics`: summary object with `status`, `warnings`, `errors`, and `codes`
+* `warnings`: array of warning objects
 
 Artifact fields:
 
 * `path`: artifact path
 * `kind`: artifact role
 * `bytes`: byte size of the emitted artifact
-
-Optional fields:
-
-* `crawl`: crawl receipt
-* `diagnostics`: summary of warnings and errors
 
 Semantics:
 
@@ -109,6 +111,23 @@ Semantics:
 
 A partial crawl is still useful if the failure is explicit.
 
+## Warnings
+
+Purpose:
+
+Makes non-fatal crawl and metadata issues inspectable.
+
+Fields:
+
+* `code`: stable warning code
+* `path`: route path related to the warning, or `*` for bundle-level warnings
+* `message`: human-readable explanation
+* `status`: HTTP status when the warning describes a failed fetch
+
+Semantics:
+
+`warnings` is the normalized warning list. `diagnostics` is a compact summary for counts and codes. Warnings should always be objects, not bare strings.
+
 ## `context.json`
 
 Purpose:
@@ -123,9 +142,12 @@ Required fields:
 * `limitations`
 * `routeCount`
 * `failedRouteCount`
+* `warningCodes`
+* `warnings`
 * `site`
 * `routeSummaries`
 * `routes`
+* `crawl`
 
 Route summary fields:
 

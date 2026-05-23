@@ -75,5 +75,45 @@
     "context.json",
     "system.json",
     "runtime.json"
+  ],
+  "diagnostics": {
+    "status": "partial",
+    "warnings": 5,
+    "errors": 0,
+    "codes": [
+      "crawl.partial",
+      "js.required",
+      "missing.description",
+      "missing.title",
+      "route.fetch_failed"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "route.fetch_failed",
+      "path": "/dashboard",
+      "message": "Forbidden",
+      "status": 403
+    },
+    {
+      "code": "missing.title",
+      "path": "/",
+      "message": "Homepage did not include a title."
+    },
+    {
+      "code": "missing.description",
+      "path": "/",
+      "message": "Homepage did not include a meta description."
+    },
+    {
+      "code": "js.required",
+      "path": "/",
+      "message": "Homepage appears to require JavaScript for meaningful static content."
+    },
+    {
+      "code": "crawl.partial",
+      "path": "*",
+      "message": "One or more discovered routes failed to fetch."
+    }
   ]
 }
