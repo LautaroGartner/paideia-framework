@@ -1,23 +1,4 @@
-# Robots.txt for https://www.lautarogartner.com/
-# Optimize crawlability for search engines
-
 User-agent: *
 Allow: /
-Disallow: /node_modules/
-Disallow: /.git/
-Disallow: /build/
-Disallow: /.vercel/
-Disallow: /.paideia/
 
-# Allow specific crawlers
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-# Specify sitemap location
-Sitemap: https://www.lautarogartner.com/sitemap.xml
-
-# Crawl delay (optional, helps reduce server load)
-Crawl-delay: 1
+Sitemap: https://lautarogartner.com/sitemap.xml

@@ -10,6 +10,8 @@ export const AGENTIFY_VERSION = "0.6.0-alpha.1";
 const ARTIFACT_SCHEMA_VERSION = "0.1";
 const DEFAULT_MAX_PAGES = 10;
 const DEFAULT_TIMEOUT_MS = 10000;
+const DEFAULT_DELAY_MS = 0;
+const DEFAULT_RETRIES = 0;
 const DEFAULT_USER_AGENT = "agentify/0.6";
 const RENDERER = "static-html";
 const LIMITATIONS = {
@@ -219,6 +221,30 @@ function normalizeTimeoutMs(value) {
   return Math.floor(numberValue);
 }
 
+function normalizeDelayMs(value) {
+  const numberValue = Number(value);
+
+  if (!Number.isFinite(numberValue) || numberValue < 0) {
+    return DEFAULT_DELAY_MS;
+  }
+
+  return Math.floor(numberValue);
+}
+
+function normalizeRetries(value) {
+  const numberValue = Number(value);
+
+  if (!Number.isFinite(numberValue) || numberValue < 0) {
+    return DEFAULT_RETRIES;
+  }
+
+  return Math.floor(numberValue);
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function failureFromError(url, error) {
   const status = typeof error?.status === "number"
     ? error.status
@@ -419,6 +445,8 @@ function createBundle({
   failures,
   robots,
   timeoutMs,
+  delayMs,
+  retries,
   userAgent,
   diagnostics: crawlDiagnostics = [],
 }) {
@@ -474,6 +502,8 @@ function createBundle({
       maxDepth: 1,
       maxPages,
       timeoutMs,
+      delayMs,
+      retries,
       fetched: pages.length,
       failed: failures.length,
       failures,
@@ -536,6 +566,8 @@ function createBundle({
       maxDepth: 1,
       maxPages,
       timeoutMs,
+      delayMs,
+      retries,
       fetched: pages.length,
       failed: failures.length,
       failures,
@@ -592,6 +624,8 @@ function createBundle({
       maxDepth: 1,
       maxPages,
       timeoutMs,
+      delayMs,
+      retries,
       fetched: pages.length,
       failed: failures.length,
       failures,
@@ -660,7 +694,9 @@ async function fetchText(url, userAgent, timeoutMs) {
 
     if (!response.ok) {
       throw new AgentifyFetchError(
-        response.statusText || `HTTP ${response.status}`,
+        response.status === 429
+          ? "Server returned 429 Too Many Requests. Try again later, lower --max-pages, add --delay-ms, or use a site-approved user agent."
+          : response.statusText || `HTTP ${response.status}`,
         {
           status: response.status,
           statusText: response.statusText,
@@ -687,6 +723,41 @@ async function fetchText(url, userAgent, timeoutMs) {
   } finally {
     clearTimeout(timeout);
   }
+}
+
+async function fetchTextWithRetry(url, userAgent, timeoutMs, retries, delayMs) {
+  let attempt = 0;
+
+  while (true) {
+    try {
+      return await fetchText(url, userAgent, timeoutMs);
+    } catch (error) {
+      attempt += 1;
+
+      if (attempt > retries) {
+        throw error;
+      }
+
+      if (delayMs > 0) {
+        await sleep(delayMs);
+      }
+    }
+  }
+}
+
+async function fetchHtmlWithRetry(url, userAgent, timeoutMs, retries, delayMs) {
+  const response = await fetchTextWithRetry(url, userAgent, timeoutMs, retries, delayMs);
+
+  if (!response.contentType.includes("text/html")) {
+    throw new AgentifyFetchError(
+      `expected HTML response, received ${response.contentType}`,
+      {
+        url,
+      }
+    );
+  }
+
+  return response.text;
 }
 
 async function fetchHtml(url, userAgent, timeoutMs) {
@@ -725,10 +796,12 @@ async function fetchRobots(source, options) {
 
   try {
     const textFetcher = options.textFetcher ??
-      ((targetUrl) => fetchText(
+      ((targetUrl) => fetchTextWithRetry(
         targetUrl,
         options.userAgent ?? DEFAULT_USER_AGENT,
-        normalizeTimeoutMs(options.timeoutMs)
+        normalizeTimeoutMs(options.timeoutMs),
+        normalizeRetries(options.retries),
+        normalizeDelayMs(options.delayMs)
       ));
     const result = await textFetcher(url);
     const text = typeof result === "string" ? result : result.text;
@@ -753,14 +826,18 @@ async function crawlRoutes(sourceUrl, options) {
   const source = new URL(sourceUrl);
   const maxPages = normalizeMaxPages(options.maxPages);
   const timeoutMs = normalizeTimeoutMs(options.timeoutMs);
+  const delayMs = normalizeDelayMs(options.delayMs);
+  const retries = normalizeRetries(options.retries);
   const userAgent = options.userAgent ?? DEFAULT_USER_AGENT;
   const verbose = Boolean(options.verbose);
   const fetcher = options.fetcher ??
-    ((url) => fetchHtml(url, userAgent, timeoutMs));
+    ((url) => fetchHtmlWithRetry(url, userAgent, timeoutMs, retries, delayMs));
   const robots = await fetchRobots(source, {
     ...options,
     timeoutMs,
     userAgent,
+    delayMs,
+    retries,
   });
   const pages = [];
   const failures = [];
@@ -843,6 +920,8 @@ async function crawlRoutes(sourceUrl, options) {
     pages,
     robots,
     timeoutMs,
+    delayMs,
+    retries,
     userAgent,
   };
 }
@@ -870,6 +949,8 @@ export async function agentify(url, options = {}) {
     failures: crawled.failures,
     robots: crawled.robots,
     timeoutMs: crawled.timeoutMs,
+    delayMs: crawled.delayMs,
+    retries: crawled.retries,
     userAgent: crawled.userAgent,
     diagnostics: crawled.diagnostics,
   });
@@ -887,6 +968,8 @@ function parseArgs(argv) {
     maxPages: DEFAULT_MAX_PAGES,
     outputDir: path.join(process.cwd(), "agent"),
     timeoutMs: DEFAULT_TIMEOUT_MS,
+    delayMs: DEFAULT_DELAY_MS,
+    retries: DEFAULT_RETRIES,
     userAgent: DEFAULT_USER_AGENT,
     verbose: false,
   };
@@ -913,6 +996,18 @@ function parseArgs(argv) {
       continue;
     }
 
+    if (value === "--delay-ms") {
+      options.delayMs = normalizeDelayMs(argv[index + 1]);
+      index += 1;
+      continue;
+    }
+
+    if (value === "--retries") {
+      options.retries = normalizeRetries(argv[index + 1]);
+      index += 1;
+      continue;
+    }
+
     if (value === "--verbose") {
       options.verbose = true;
       continue;
@@ -933,12 +1028,14 @@ function printHelp() {
   console.log(`agentify ${AGENTIFY_VERSION}
 
 Usage:
-  agentify <url> [--out agent] [--max-pages 10] [--user-agent agentify/0.6] [--verbose]
+  agentify <url> [--out agent] [--max-pages 10] [--user-agent agentify/0.6] [--delay-ms 0] [--retries 0] [--verbose]
 
 Options:
   --out <dir>          Write artifacts to this directory
   --max-pages <count>  Maximum same-origin pages to fetch
   --user-agent <ua>    User agent to send while fetching
+  --delay-ms <ms>      Wait between retries when fetching pages
+  --retries <count>    Retry failed fetches up to this many times
   --verbose            Print each fetch attempt
   --version            Show agentify version
   --help               Show this help`);

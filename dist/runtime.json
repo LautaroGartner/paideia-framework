@@ -4,10 +4,10 @@
     "version": "1.8.1"
   },
   "build": {
-    "id": "d015232",
-    "generatedAt": "2026-05-23T15:25:11.768Z",
+    "id": "090fa34",
+    "generatedAt": "2026-05-23T21:14:34.101Z",
     "mode": "production",
-    "artifactCount": 12
+    "artifactCount": 14
   },
   "capabilities": [
     "site.static",
@@ -64,9 +64,19 @@
       "bytes": 264
     },
     {
+      "path": "robots.txt",
+      "kind": "seo",
+      "bytes": 71
+    },
+    {
+      "path": "sitemap.xml",
+      "kind": "seo",
+      "bytes": 711
+    },
+    {
       "path": "system.json",
       "kind": "contract",
-      "bytes": 5205
+      "bytes": 5246
     },
     {
       "path": "context.json",
@@ -76,7 +86,7 @@
     {
       "path": "runtime.json",
       "kind": "runtime-identity",
-      "bytes": 1829
+      "bytes": 1991
     },
     {
       "path": "llms.txt",

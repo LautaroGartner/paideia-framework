@@ -280,6 +280,64 @@ try {
   assert.ok(llms.includes("## Crawl Failures"));
   assert.ok(llms.includes("HTTP 429"));
   assert.ok(!llms.includes("external.example"));
+
+  const originalFetch = globalThis.fetch;
+
+  try {
+    let aboutAttempts = 0;
+    globalThis.fetch = async (url, init) => {
+      const route = new URL(url).pathname.replace(/\/$/, "") || "/";
+
+      if (route === "/about") {
+        aboutAttempts += 1;
+
+        if (aboutAttempts === 1) {
+          return {
+            ok: false,
+            status: 429,
+            statusText: "Too Many Requests",
+            headers: { get: () => "text/html" },
+            text: async () => "",
+          };
+        }
+      }
+
+      const html = pages.get(route);
+
+      if (!html) {
+        return {
+          ok: false,
+          status: 404,
+          statusText: "Not Found",
+          headers: { get: () => "text/html" },
+          text: async () => "",
+        };
+      }
+
+      return {
+        ok: true,
+        status: 200,
+        statusText: "OK",
+        headers: { get: (name) => (name.toLowerCase() === "content-type" ? "text/html" : "") },
+        text: async () => html,
+      };
+    };
+
+    const retryResult = await agentify("https://retry.example/", {
+      fetchedAt: "2026-05-22T00:00:00.000Z",
+      maxPages: 2,
+      outputDir: path.join(testRoot, "agent-retry"),
+      robotsTxt: "User-agent: *\nAllow: /\n",
+      userAgent: "agentify-test/1.0",
+      retries: 1,
+      delayMs: 1,
+    });
+
+    assert.equal(retryResult.routes.length, 2);
+    assert.equal(aboutAttempts, 2);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 } finally {
   fs.rmSync(testRoot, {
     recursive: true,

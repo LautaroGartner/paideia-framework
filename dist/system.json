@@ -117,6 +117,8 @@
       "favicon.svg",
       "pages",
       "posts",
+      "robots.txt",
+      "sitemap.xml",
       "system.json",
       "runtime.json",
       "llms.txt",
