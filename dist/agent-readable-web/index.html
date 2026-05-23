@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Agent-Readable Web - Lautaro Gärtner</title>
+    <meta name="description" content="Why websites may need small, honest runtime receipts for routes, crawl status, artifacts, and limits.">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <meta name="author" content="Lautaro Gärtner">
+    <link rel="canonical" href="https://lautarogartner.com/agent-readable-web">
+    <script>
+      (() => {
+        const localHosts = new Set(["localhost", "127.0.0.1", "::1"]);
+
+        if (localHosts.has(window.location.hostname)) {
+          return;
+        }
+
+        for (const src of [
+          "/_vercel/insights/script.js",
+          "/_vercel/speed-insights/script.js",
+        ]) {
+          const script = document.createElement("script");
+          script.defer = true;
+          script.src = src;
+          document.head.append(script);
+        }
+      })();
+    </script>
+    <style>
+      :root {
+        --accent: #5f6f52;
+        --bg: #fbfaf7;
+        --line: #e8e2d8;
+        --muted: #6f6a61;
+        --text: #151515;
+
+        color-scheme: light dark;
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --accent: #a7b995;
+          --bg: #181815;
+          --line: #303026;
+          --muted: #9b958a;
+          --text: #eeeae2;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+      }
+
+      .shell {
+        display: flex;
+        flex-direction: column;
+        max-width: 42rem;
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 1.5rem 1.5rem 4rem;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 2.5rem;
+        padding-bottom: 8px;
+      }
+
+      header a,
+      header .brand,
+      nav a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      header a,
+      header .brand {
+        font-size: 1.125rem;
+        font-weight: 700;
+        line-height: 1.75rem;
+      }
+
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+      }
+
+      nav a {
+        color: var(--muted);
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.75rem;
+        font-weight: 500;
+        line-height: 1rem;
+        padding: 0.125rem 0.375rem;
+        border-radius: 0.75rem;
+      }
+
+      main {
+        padding-top: 0;
+      }
+
+      a:hover {
+        color: var(--accent);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+
+      nav a:hover {
+        background: var(--line);
+        color: var(--text);
+        text-decoration: none;
+      }
+
+      footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-top: auto;
+        padding: 0.75rem 0 1.5rem;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.75rem;
+        line-height: 1rem;
+      }
+
+      footer a {
+        color: inherit;
+      }
+
+      footer a:hover {
+        color: var(--accent);
+      }
+
+      .generated-by {
+        color: var(--muted);
+      }
+
+      .page-title,
+      .not-found-title {
+        margin: 0;
+        max-width: 680px;
+        font-size: clamp(1.8rem, 5vw, 3rem);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .page-body p,
+      .not-found-copy {
+        max-width: 620px;
+        margin: 18px 0 0;
+        color: var(--text);
+        font-size: 1rem;
+        line-height: 1.75;
+      }
+
+      .not-found-copy {
+        line-height: 1.7;
+      }
+
+      .post-list {
+        display: grid;
+        gap: 20px;
+        margin-top: 0;
+        padding-top: 0;
+      }
+
+      .post-list > h2 {
+        margin: 0;
+        font-size: 1rem;
+        letter-spacing: 0;
+      }
+
+      .empty-state {
+        margin-top: 0;
+        font-size: 1rem;
+      }
+
+      .post-item {
+        display: grid;
+        grid-template-columns: 112px minmax(0, 1fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      time {
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.75rem;
+        white-space: nowrap;
+      }
+
+      .post-kicker {
+        margin: 0 0 5px;
+        color: var(--accent);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        line-height: 1.4;
+        text-transform: uppercase;
+      }
+
+      .post-item h2 {
+        margin: 0;
+        font-size: 0.875rem;
+        font-weight: 560;
+        letter-spacing: 0;
+        line-height: 1.25rem;
+      }
+
+      .post-item h2 a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .post-title-link {
+        transition: color 0.15s ease;
+      }
+
+      .post-item:hover .post-title-link {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .post-topics {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.75rem;
+        line-height: 1.5;
+      }
+
+      .page-body .agent-files {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        max-width: 620px;
+        margin: 2rem 0 2.25rem;
+        color: #6f6a61;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .page-body .agent-files a {
+        color: inherit;
+      }
+
+      .page-body .agent-files a:hover {
+        color: var(--accent);
+      }
+
+      .meta {
+        margin-top: 0;
+        color: var(--muted);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.75rem;
+        line-height: 1.5;
+      }
+
+      .meta a {
+        color: inherit;
+      }
+
+      .meta a:hover {
+        color: var(--accent);
+      }
+
+      .post-title {
+        margin: 0 0 0.25rem;
+        max-width: 100%;
+        font-size: 1.5rem;
+        line-height: 2rem;
+        letter-spacing: 0;
+      }
+
+      .description {
+        max-width: 100%;
+        margin: 0.5rem 0 0;
+        color: var(--muted);
+        font-size: 1rem;
+        font-style: italic;
+        line-height: 1.65;
+      }
+
+      .post-body {
+        margin-top: 0.5rem;
+      }
+
+      .post-body p {
+        max-width: 100%;
+        margin: 1.25rem 0;
+        color: var(--text);
+        font-size: 1rem;
+        line-height: 1.5;
+      }
+
+      .post-body h2,
+      .post-body h3 {
+        max-width: 100%;
+        margin: 2rem 0 1rem;
+        color: var(--text);
+        font-size: 1.25rem;
+        line-height: 1.35;
+      }
+
+      .post-body ul {
+        margin: 1rem 0 1.5rem;
+        padding-left: 1.25rem;
+      }
+
+      .post-body li {
+        margin: 0.45rem 0;
+        line-height: 1.55;
+      }
+
+      .post-body pre {
+        max-width: 100%;
+        margin: 1.25rem 0;
+        padding: 1rem;
+        overflow-x: auto;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--line) 42%, transparent);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.86rem;
+        line-height: 1.6;
+      }
+
+      @media (max-width: 640px) {
+        .shell {
+          padding-top: 0.75rem;
+        }
+
+        header {
+          align-items: baseline;
+          gap: 14px;
+          margin-bottom: 1.25rem;
+        }
+
+        header .brand {
+          font-size: 1rem;
+          line-height: 1.5rem;
+        }
+
+        nav {
+          gap: 24px;
+        }
+
+        footer {
+          justify-content: space-between;
+          gap: 16px;
+          margin-top: auto;
+          padding: 1rem 0 0;
+          border-top: 1px solid var(--line);
+          font-size: 0.75rem;
+        }
+
+        .generated-by {
+          display: none;
+        }
+
+        .post-list {
+          gap: 24px;
+        }
+
+        .post-item {
+          grid-template-columns: 1fr;
+          gap: 6px;
+        }
+
+        .post-item h2 {
+          font-weight: 560;
+          line-height: 1.42;
+        }
+
+        .post-topics {
+          max-width: 28rem;
+        }
+
+        .post-kicker {
+          margin-bottom: 0.75rem;
+        }
+
+        .meta {
+          margin-top: 0;
+          line-height: 1.6;
+        }
+
+        .post-title {
+          margin-top: 0;
+        }
+
+        .description {
+          margin-top: 0.5rem;
+          font-size: 1rem;
+          line-height: 1.6;
+        }
+
+        .post-body {
+          margin-top: 0.5rem;
+        }
+
+        .post-body p {
+          line-height: 1.5;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header>
+        <a class="brand" href="/">Lautaro Gärtner</a>
+        <nav aria-label="Site">
+          
+          <a href="/about">About</a>
+          <a href="https://x.com/lautyxgr" rel="me">𝕏 Follow me</a>
+        </nav>
+      </header>
+      <main>
+        <h1 class="post-title">The Agent-Readable Web</h1>
+        <div class="meta"><a href="https://x.com/lautyxgr" rel="me">@lautyxgr</a> | <time datetime="2026-05-22">May 22, 2026</time> | 1d ago</div>
+        <p class="description">Why websites may need small, honest runtime receipts for routes, crawl status, artifacts, and limits.</p>
+        <div class="post-body">
+          <p>The web was built for browsers. That sounds obvious, but it explains a lot. A website is usually judged by what happens after a browser loads it: does it look good, is it fast enough, can a person find what they came for, does the writing make sense, does the interface feel trustworthy?</p>
+        <p>Over time, the web also became readable by other systems. Search engines learned to index it. Social platforms learned to preview it. Analytics tools learned to observe it. APIs exposed parts of it. Feeds, sitemaps, metadata, and structured data all became ways for a site to say a little more about itself than the visible page alone could say.</p>
+        <p>Now another kind of reader is becoming normal: agents. I do not mean that in a grand science fiction sense. I mean ordinary software that can fetch a page, summarize it, compare it with another page, monitor it, answer questions about it, or decide what to do next. Some of these systems are simple. Some are more capable. The important part is that they are not just looking at a page once. They are trying to build a working understanding of a site.</p>
+        <p>Most websites are not very good at helping with that, and not because they lack content. The web has more content than anyone can read. The problem is that many sites do not explain themselves clearly. They show pages, but they rarely say what those pages mean in the structure of the site. They expose links, but not always which links matter. They return HTML, but not always enough HTML to understand the page without running a large client application. They may have metadata, but often it is missing, duplicated, stale, or written only for previews.</p>
+        <p>A person can tolerate a surprising amount of ambiguity. We can skim. We can infer. We can click around. We can notice that a page is important because it is in the navigation, or that a missing description is not fatal, or that an error probably means a site is rate limiting us.</p>
+        <p>Software is less graceful about that. It can guess, and modern systems can guess impressively well, but guessing is not the same as understanding. That is the gap I keep noticing: a site can be beautifully designed and still reveal almost nothing about what routes exist, what artifacts are authoritative, what was generated, what failed during a crawl, whether metadata is missing, whether JavaScript was required, or what limits shaped the observed result. The page is visible. The system is not. I think that distinction is going to matter more.</p>
+        <h2>A Receipt Layer</h2>
+        <p>The phrase &quot;agent-readable web&quot; can sound more futuristic than it needs to. I do not think the web needs a giant new layer of magic. I do not think every site should become an API. I do not think every page needs to be optimized for automated systems at the expense of people. What I think is simpler: websites should become better at publishing receipts.</p>
+        <p>A receipt is not a pitch, a brand statement, or a confident summary written to sound impressive. It is a record of what happened.</p>
+        <p>For a website, that might mean:</p>
+        <ul><li>these routes were discovered</li><li>these pages were fetched</li><li>these files were generated</li><li>these capabilities are declared</li><li>these failures occurred</li><li>these warnings apply</li><li>these limits shaped the output</li></ul>
+        <p>That kind of information is boring in the best way. It is close to logs, manifests, health checks, build output, and diagnostics. It does not ask for belief. It gives you something to inspect.</p>
+        <p>This is why I find the current conversation around `llms.txt` useful but incomplete. `llms.txt` is a good idea. A plain text entry point for tools that want to understand a site is much better than asking every system to scrape from scratch. It gives the site a front door, but a front door is not a map.</p>
+        <p>A single text file can introduce a site, but it cannot carry everything an agent or a careful human might need to know. It cannot fully explain crawl coverage, missing metadata, partial failures, route inventory, runtime capabilities, generated artifacts, or the difference between what was observed and what was inferred. That does not make `llms.txt` wrong. It makes it the beginning of a larger shape.</p>
+        <p>The next step is not necessarily a standard. It may be too early for that. The next step is a habit: when software observes or generates a site, it should leave behind small artifacts that explain what it knows.</p>
+        <h2>The Problem With Successful Crawls</h2>
+        <p>One of the odd problems with crawlers is that many of them are too eager to look successful. If a page fails, the error often disappears into logs. If metadata is missing, the crawler continues silently. If a site is mostly a client side application and the static HTML contains almost no meaningful content, the crawler may still return an output that looks finished.</p>
+        <p>That is dangerous because it creates confidence without observability. A thin result is not the problem. Thin results happen. Some pages are protected. Some sites rate limit. Some sites require JavaScript. Some metadata is missing. Some links break. The web is messy. The problem is pretending the result is thicker than it is.</p>
+        <p>If a crawl only saw three pages, say that. If one route failed with a 429, record it. If descriptions were missing, warn about them. If JavaScript was not executed, make that explicit. If robots.txt was fetched only for awareness and not enforced, say so plainly.</p>
+        <p>There is a calmness in that kind of artifact. It does not overclaim. It does not collapse because the world was imperfect. It says: here is what I observed, here is what I could not observe, and here are the limits of this result.</p>
+        <p>That is much more useful than a polished lie.</p>
+        <h2>A Small Prototype</h2>
+        <p>I built a small prototype called `agentify` to explore this idea. The tool is intentionally modest. It fetches a website, follows same origin links from the homepage up to a small page limit, extracts basic route metadata, and writes an explanation bundle:</p>
+        <pre><code>agent/
+  system.json
+  runtime.json
+  context.json
+  llms.txt</code></pre>
+        <p>It does not run JavaScript. It does not crawl deeply. It does not log in. It does not infer private backend behavior. It does not claim the site is secure, complete, or well documented. That restraint is part of the point.</p>
+        <p>The current version identifies itself as a static HTML renderer. It records that JavaScript was not executed. It records that recursive crawling was not performed. It records whether the crawl was complete or partial. It emits warning codes for missing titles, missing descriptions, JavaScript heavy pages, and partial crawls.</p>
+        <p>In other words, it does not only produce a summary. It produces a receipt. The bundle is small enough to read by hand. A person can open `llms.txt` first for the plain language version. A script can read `runtime.json` to see what happened during generation. Another tool can read `context.json` for routes and headings. `system.json` can describe the discovered shape of the site.</p>
+        <p>None of this is glamorous infrastructure. That is why I like it. It is just enough structure to reduce guessing.</p>
+        <h2>The Demo That Looked Like Failure</h2>
+        <p>The most clarifying test was not a clean static site. It was a JavaScript heavy app shell. The output was thin. There was little useful title metadata. There was little useful description metadata. The static HTML did not reveal much route structure. The artifact warned that JavaScript appeared to be required for meaningful content.</p>
+        <p>At first glance, that looks like the crawler failed, but I think it is the opposite. The tool did exactly what I wanted it to do. It refused to pretend that a mostly opaque page had become understandable. That distinction matters.</p>
+        <p>If a crawler says &quot;complete&quot; but the actual understanding is mostly fictional, the receiving system is now standing on bad ground. It may summarize confidently. It may recommend badly. It may compare two sites as if both were equally visible. It may act as if missing evidence is evidence.</p>
+        <p>An honest crawl gives the next system a better contract. It can say: this result is complete for the limits that were declared, but the static page was sparse. Or: this crawl is partial because one route failed. Or: this bundle was produced without executing JavaScript, so do not treat it as a full rendering of the application. That is not a weakness. That is the beginning of trust.</p>
+        <h2>Why This Also Matters For People</h2>
+        <p>It would be easy to frame all of this as something machines need. I think that misses the better point: people need it too. Anyone who has inherited a codebase knows the feeling of trying to understand a system from the outside. Where are the important routes? What does the build emit? Which files are source and which are generated? What changed? What failed? What does this project think it is?</p>
+        <p>Good documentation helps. Good code helps. Good naming helps. But systems also need live, boring, generated facts about themselves.</p>
+        <p>This is why I have been exploring similar ideas in Paideia, the small framework this blog is built with. Paideia generates a site, but it also emits runtime artifacts: a system description, a runtime identity file, a compact context file, and an `llms.txt` entry point.</p>
+        <p>The philosophy is the same as `agentify`, but from the other direction. `agentify` is retrofit: it takes an existing site and tries to describe what can be observed. Paideia is native generation: the framework already knows what it created, so it can describe the system directly. Both paths matter.</p>
+        <p>Retrofit matters because most of the web already exists. You cannot ask every site to rebuild itself before it becomes more inspectable. A small tool that can produce a useful receipt from the outside is practical.</p>
+        <p>Native generation matters because it is cleaner. A framework does not need to guess its own routes, artifacts, capabilities, or diagnostics. It can publish them as part of the build. Manual retrofit is useful. Native explanation is stronger. The interesting thing is that both point toward the same idea: software should make its shape easier to inspect.</p>
+        <h2>Caveats</h2>
+        <p>There are plenty of caveats. Some sites cannot expose too much structure without creating security or abuse problems. Some crawls should respect robots.txt more deeply than a prototype does. Some pages need authenticated context. Some sites are intentionally dynamic. Some metadata is hard to summarize. Some agents will misuse good artifacts anyway.</p>
+        <p>There is also a risk of inventing too many files too quickly. The web does not need another pile of ceremonial formats that nobody maintains. If runtime receipts become useful, they will need to stay small, boring, and close to facts that software already knows.</p>
+        <p>That is why I am more interested in working examples than declarations. A route list is useful. A crawl status is useful. A warning code is useful. A generated artifact inventory is useful. A vague claim that a site is &quot;AI ready&quot; is not useful.</p>
+        <p>The standard should come after the habit, if it comes at all.</p>
+        <h2>What I Mean By Agent Readable</h2>
+        <p>An agent-readable site is not a site that flatters agents. It is not a site stuffed with keywords for language models. It is not a site that replaces human writing with machine instructions. It is not a site that assumes automation is the primary audience. An agent-readable site is a site that publishes enough context for another system to behave more carefully around it.</p>
+        <p>That can be modest.</p>
+        <p>It can mean a plain text guide. It can mean a route inventory. It can mean metadata that is accurate. It can mean a runtime receipt. It can mean warnings when a crawl is incomplete. It can mean saying &quot;this page requires JavaScript&quot; instead of pretending the static result was meaningful.</p>
+        <p>The web spent decades optimizing presentation. That work still matters. People should remain the first audience for most sites. But presentation is not the same as inspectability.</p>
+        <p>As more software reads, compares, and acts on the web, inspectability becomes part of the public surface of a site. Not every site needs the same depth. A personal blog, a government service, a documentation site, an online store, and a private dashboard have different risks and responsibilities.</p>
+        <p>The shared principle is smaller: do not make other systems guess more than they have to. Publish what exists. Say what failed. Mark the limits. Keep the artifacts readable. Let humans and tools inspect the same facts.</p>
+        <p>That is the agent-readable web I want: not a web that becomes less human, but a web where software is more honest about what it knows.</p>
+        </div>
+      </main>
+      <footer>
+        <span>
+          Lautaro Gärtner
+          <a href="https://x.com/lautyxgr" rel="me">@lautyxgr</a>
+        </span>
+        
+        <span class="generated-by">
+          Generated by Paideia Framework v1.8.1.
+        </span>
+        <a href="https://github.com/LautaroGartner/paideia-framework">Source</a>
+      </footer>
+    </div>
+  </body>
+</html>
