@@ -286,7 +286,15 @@ It crawls a site and generates agent-readable runtime artifacts for an existing 
 Example:
 
 ```bash
-npx --package github:LautaroGartner/paideia-framework agentify https://example.com --out agent --max-pages 5
+npm install -g github:LautaroGartner/paideia-framework
+agentify https://example.com --out ./agent --max-pages 10
+```
+
+CLI reference:
+
+```bash
+agentify --help
+agentify --version
 ```
 
 From a local checkout:
