@@ -12,6 +12,7 @@ const repoRoot = path.dirname(
 const packageRoot = path.join(repoRoot, "packages", "agentify");
 const packageJsonPath = path.join(packageRoot, "package.json");
 const packageBinPath = path.join(packageRoot, "bin", "agentify.mjs");
+const packageReadmePath = path.join(packageRoot, "README.md");
 const smokeRoot = fs.mkdtempSync(
   path.join(os.tmpdir(), "agentify-package-smoke-")
 );
@@ -101,11 +102,18 @@ try {
   assert.equal(fs.existsSync(packageRoot), true, "package folder should exist");
   assert.equal(fs.existsSync(packageJsonPath), true, "package.json should exist");
   assert.equal(fs.existsSync(packageBinPath), true, "package bin should exist");
+  assert.equal(fs.existsSync(packageReadmePath), true, "README should exist");
 
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
   assert.equal(packageJson.name, "agentify");
   assert.equal(packageJson.version, "0.6.0-alpha.1");
   assert.equal(packageJson.bin?.agentify, "./bin/agentify.mjs");
+
+  const readme = fs.readFileSync(packageReadmePath, "utf8");
+  assert.ok(readme.includes("system.json"), "README should mention system.json");
+  assert.ok(readme.includes("static HTML crawl"), "README should mention static crawl");
+  assert.ok(readme.includes("honest receipts"), "README should mention honest receipts");
+  assert.ok(readme.includes("limitations"), "README should mention limitations");
 
   const pack = runSync(
     "npm",

@@ -17,6 +17,7 @@
   ],
   "files": [
     "bin/",
+    "CHANGELOG.md",
     "README.md"
   ]
 }

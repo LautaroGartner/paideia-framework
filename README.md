@@ -283,6 +283,9 @@ Human + agent guidance entrypoint.
 `agentify` is experimental and currently lives inside the Paideia repo.
 It crawls a site and generates agent-readable runtime artifacts for an existing website.
 
+`agentify` is incubating as a package candidate in [`packages/agentify`](packages/agentify/README.md).
+The root package still exposes the CLI while the package boundary stabilizes.
+
 Example:
 
 ```bash
@@ -301,6 +304,13 @@ From a local checkout:
 
 ```bash
 node scripts/agentify.mjs https://example.com --out agent --max-pages 5
+```
+
+Package boundary check:
+
+```bash
+cd packages/agentify
+npm pack --dry-run
 ```
 
 Outputs:
