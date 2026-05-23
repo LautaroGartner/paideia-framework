@@ -25,4 +25,4 @@ Include:
 
 Current supported line:
 
-- v1.3.x
+- v1.8.x

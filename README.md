@@ -4,7 +4,7 @@ Generated websites and applications that explain what was built.
 
 Paideia generates small websites and applications with files that describe their routes, artifacts, capabilities, diagnostics, and runtime identity.
 
-Current version: `v1.8.0`
+Current version: `v1.8.1`
 Runtime identity foundation
 
 ---
@@ -74,7 +74,7 @@ Paideia Runtime Inspect
 
 Project
   Framework      Paideia Framework
-  Version        1.8.0
+  Version        1.8.1
   Title          Lautaro Gärtner's blog
 
 Runtime
@@ -513,7 +513,7 @@ Example:
 {
   "status": "ok",
   "framework": "paideia",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "runtime": "production",
   "dist": "ready"
 }

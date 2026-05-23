@@ -2,6 +2,8 @@
 
 Generate agent-readable runtime artifacts for a website.
 
+**Status:** Alpha. Schema and outputs may change. Not for production use yet.
+
 ```bash
 npx agentify https://example.com
 ```
@@ -30,4 +32,4 @@ agent/
   llms.txt
 ```
 
-agentify performs a static HTML crawl and records what it could and could not observe. The generated artifacts are honest receipts: they include crawl status, metadata, warnings, failures, and explicit limitations instead of hiding partial results.
+agentify performs a **static HTML crawl** (JavaScript is not executed) and records what it could and could not observe. The generated artifacts are honest receipts: they include crawl status, metadata, warnings, failures, and explicit limitations instead of hiding partial results.
