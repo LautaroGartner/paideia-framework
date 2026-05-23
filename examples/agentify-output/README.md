@@ -4,10 +4,9 @@ These checked-in bundles show how `agentify` reports different kinds of sites wi
 
 ## Demos
 
-* `paideia-blog/`: deterministic crawl of the built Paideia blog output.
-* `static-content-site/`: complete crawl of a small static content fixture.
-* `marketing-site/`: partial crawl of a landing-page fixture with a blocked demo route.
-* `js-heavy-spa/`: JavaScript-heavy app shell fixture with sparse static metadata.
+* `static-site/`: complete crawl of a small static content fixture with rich metadata.
+* `docs-site/`: deterministic multi-page crawl of the built Paideia blog output.
+* `js-heavy-spa/`: JavaScript-heavy app shell fixture with sparse static metadata and explicit limitation warnings.
 
 ## What to inspect
 
@@ -18,6 +17,7 @@ system.json
 runtime.json
 context.json
 llms.txt
+README.md
 ```
 
 `runtime.json` is the fastest place to see crawl status, renderer identity, limitation receipts, warning codes, and failures.

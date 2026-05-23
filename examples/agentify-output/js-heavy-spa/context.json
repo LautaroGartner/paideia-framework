@@ -13,24 +13,32 @@
     "robotsEnforced": false
   },
   "routeCount": 1,
-  "failedRouteCount": 0,
+  "failedRouteCount": 1,
   "warningCodes": [
+    "crawl.partial",
     "js.required",
     "missing.description",
-    "missing.title"
+    "missing.title",
+    "route.fetch_failed"
   ],
   "source": {
     "url": "https://x.example/",
     "origin": "https://x.example"
   },
   "crawl": {
-    "status": "complete",
+    "status": "partial",
     "maxDepth": 1,
     "maxPages": 10,
     "timeoutMs": 10000,
     "fetched": 1,
-    "failed": 0,
-    "failures": [],
+    "failed": 1,
+    "failures": [
+      {
+        "url": "https://x.example/dashboard",
+        "status": 403,
+        "message": "Forbidden"
+      }
+    ],
     "sameOriginOnly": true,
     "userAgent": "agentify/0.5 demo",
     "robots": {

@@ -318,9 +318,8 @@ The prototype currently performs a depth-1 same-origin static HTML crawl, extrac
 Demo output:
 
 ```txt
-examples/agentify-output/paideia-blog/
-examples/agentify-output/static-content-site/
-examples/agentify-output/marketing-site/
+examples/agentify-output/static-site/
+examples/agentify-output/docs-site/
 examples/agentify-output/js-heavy-spa/
 ```
 

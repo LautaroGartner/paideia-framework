@@ -126,13 +126,12 @@ The prototype should not yet:
 Checked-in demo output lives at:
 
 ```txt
-examples/agentify-output/paideia-blog/
-examples/agentify-output/static-content-site/
-examples/agentify-output/marketing-site/
+examples/agentify-output/static-site/
+examples/agentify-output/docs-site/
 examples/agentify-output/js-heavy-spa/
 ```
 
-The Paideia blog demo is generated from local built Paideia blog HTML so it remains deterministic even when the live site rate-limits crawler requests. The other demos are small fixtures that show a static content site, a partial marketing-site crawl, and a JavaScript-heavy app shell.
+The docs-site demo is generated from local built Paideia blog HTML so it remains deterministic even when the live site rate-limits crawler requests. The other demos are small fixtures that show a static content site and a JavaScript-heavy app shell with explicit limitation warnings.
 
 ## Open questions
 

@@ -16,22 +16,22 @@
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 1441
+      "bytes": 1608
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 772
+      "bytes": 808
     },
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 1957
+      "bytes": 2372
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 1972
+      "bytes": 2461
     }
   ],
   "capabilities": [
@@ -43,13 +43,19 @@
     "crawl.receipts"
   ],
   "crawl": {
-    "status": "complete",
+    "status": "partial",
     "maxDepth": 1,
     "maxPages": 10,
     "timeoutMs": 10000,
     "fetched": 1,
-    "failed": 0,
-    "failures": [],
+    "failed": 1,
+    "failures": [
+      {
+        "url": "https://x.example/dashboard",
+        "status": 403,
+        "message": "Forbidden"
+      }
+    ],
     "sameOriginOnly": true,
     "userAgent": "agentify/0.5 demo",
     "robots": {
@@ -59,15 +65,24 @@
     }
   },
   "diagnostics": {
-    "status": "complete",
-    "warnings": 3,
+    "status": "partial",
+    "warnings": 5,
     "errors": 0,
     "codes": [
+      "crawl.partial",
       "js.required",
       "missing.description",
-      "missing.title"
+      "missing.title",
+      "route.fetch_failed"
     ],
     "items": [
+      {
+        "severity": "warning",
+        "code": "route.fetch_failed",
+        "path": "/dashboard",
+        "status": 403,
+        "message": "Forbidden"
+      },
       {
         "severity": "warning",
         "code": "missing.title",
@@ -85,6 +100,11 @@
         "code": "js.required",
         "path": "/",
         "message": "Homepage appears to require JavaScript for meaningful static content."
+      },
+      {
+        "severity": "warning",
+        "code": "crawl.partial",
+        "message": "One or more discovered routes failed to fetch."
       }
     ]
   }

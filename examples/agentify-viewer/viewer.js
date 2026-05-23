@@ -1,12 +1,24 @@
-const artifactFiles = {
-  runtime: "./demo/runtime.json",
-  system: "./demo/system.json",
-  context: "./demo/context.json",
-  llms: "./demo/llms.txt",
-};
+const demos = [
+  {
+    id: "static-site",
+    label: "static-site",
+    path: "../agentify-output/static-site",
+  },
+  {
+    id: "docs-site",
+    label: "docs-site",
+    path: "../agentify-output/docs-site",
+  },
+  {
+    id: "js-heavy-spa",
+    label: "js-heavy-spa",
+    path: "../agentify-output/js-heavy-spa",
+  },
+];
 
 const state = {
   artifacts: {},
+  demo: demos[0],
 };
 
 function byId(id) {
@@ -31,7 +43,17 @@ async function fetchText(path) {
   return response.text();
 }
 
+function artifactFilesFor(demo) {
+  return {
+    runtime: `${demo.path}/runtime.json`,
+    system: `${demo.path}/system.json`,
+    context: `${demo.path}/context.json`,
+    llms: `${demo.path}/llms.txt`,
+  };
+}
+
 async function loadArtifacts() {
+  const artifactFiles = artifactFilesFor(state.demo);
   const entries = await Promise.all(
     Object.entries(artifactFiles).map(async ([key, file]) => {
       const text = await fetchText(file);
@@ -46,7 +68,7 @@ async function loadArtifacts() {
 
 function renderSummary(runtime, context) {
   const crawl = runtime.crawl ?? context.crawl ?? {};
-  const sourceUrl = context.sourceUrl ?? context.source?.url ?? "./demo/context.json";
+  const sourceUrl = context.sourceUrl ?? context.source?.url ?? `${state.demo.path}/context.json`;
 
   setText("crawl-status", crawl.status ?? "unknown");
   setText("crawl-renderer", runtime.renderer ?? context.renderer ?? "unknown");
@@ -59,6 +81,31 @@ function renderSummary(runtime, context) {
   const sourceLink = byId("source-link");
   sourceLink.href = sourceUrl;
   sourceLink.textContent = sourceUrl;
+}
+
+function renderBadges(runtime, context) {
+  const crawl = runtime.crawl ?? context.crawl ?? {};
+  const codes = new Set(runtime.diagnostics?.codes ?? context.warningCodes ?? []);
+  const badges = [crawl.status === "partial" ? "partial" : "complete"];
+
+  if (codes.has("js.required")) {
+    badges.push("js-required");
+  }
+
+  if (codes.has("missing.title") || codes.has("missing.description")) {
+    badges.push("metadata-missing");
+  }
+
+  const list = byId("status-badges");
+  list.replaceChildren(
+    ...badges.map((badge) => {
+      const item = document.createElement("span");
+      item.className = `badge badge-${badge}`;
+      item.textContent = badge;
+
+      return item;
+    })
+  );
 }
 
 function renderRoutes(context) {
@@ -185,6 +232,32 @@ function showArtifact(name) {
   }
 }
 
+function wireDemos() {
+  const selector = byId("demo-selector");
+
+  selector.replaceChildren(
+    ...demos.map((demo) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "demo-button";
+      button.dataset.demo = demo.id;
+      button.textContent = demo.label;
+      button.addEventListener("click", async () => {
+        state.demo = demo;
+        await renderDemo();
+      });
+
+      return button;
+    })
+  );
+}
+
+function syncDemoButtons() {
+  for (const button of document.querySelectorAll(".demo-button")) {
+    button.classList.toggle("is-active", button.dataset.demo === state.demo.id);
+  }
+}
+
 function wireTabs() {
   for (const button of document.querySelectorAll(".tab")) {
     button.addEventListener("click", () => {
@@ -193,17 +266,26 @@ function wireTabs() {
   }
 }
 
+async function renderDemo() {
+  syncDemoButtons();
+  byId("artifact-preview").textContent = "Loading artifacts...";
+
+  await loadArtifacts();
+  renderSummary(state.artifacts.runtime.value, state.artifacts.context.value);
+  renderBadges(state.artifacts.runtime.value, state.artifacts.context.value);
+  renderRoutes(state.artifacts.context.value);
+  renderFailures(state.artifacts.runtime.value);
+  renderCapabilities(state.artifacts.system.value, state.artifacts.runtime.value);
+  renderReceipts(state.artifacts.runtime.value, state.artifacts.context.value);
+  showArtifact("runtime");
+}
+
 async function main() {
+  wireDemos();
   wireTabs();
 
   try {
-    await loadArtifacts();
-    renderSummary(state.artifacts.runtime.value, state.artifacts.context.value);
-    renderRoutes(state.artifacts.context.value);
-    renderFailures(state.artifacts.runtime.value);
-    renderCapabilities(state.artifacts.system.value, state.artifacts.runtime.value);
-    renderReceipts(state.artifacts.runtime.value, state.artifacts.context.value);
-    showArtifact("runtime");
+    await renderDemo();
   } catch (error) {
     byId("artifact-preview").textContent =
       error instanceof Error ? error.message : String(error);

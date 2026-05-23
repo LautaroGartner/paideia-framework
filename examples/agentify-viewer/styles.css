@@ -1,12 +1,12 @@
 :root {
   color-scheme: light;
-  --bg: #fbfaf7;
+  --bg: #f7f8f6;
   --ink: #151515;
-  --muted: #6f6a61;
-  --line: #e8e2d8;
-  --panel: #fffdf9;
-  --accent: #3f3a34;
-  --accent-soft: #f3eee6;
+  --muted: #66706a;
+  --line: #dfe5df;
+  --panel: #ffffff;
+  --accent: #2f4d42;
+  --accent-soft: #eef4f1;
   --warn: #7a4b20;
   --code: #1d1b18;
 }
@@ -87,6 +87,57 @@ h2 {
   overflow-wrap: anywhere;
 }
 
+.masthead-aside {
+  display: grid;
+  gap: 16px;
+}
+
+.demo-selector,
+.badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.demo-button {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0 11px;
+  background: var(--panel);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 720;
+  cursor: pointer;
+}
+
+.demo-button.is-active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--panel);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+
+.badge-partial,
+.badge-js-required,
+.badge-metadata-missing {
+  color: var(--warn);
+  background: #fff8ee;
+}
+
 .summary-band {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -136,6 +187,10 @@ h2 {
   overflow-wrap: anywhere;
 }
 
+.site-summary .badge-list {
+  margin-top: 12px;
+}
+
 .site-summary a {
   flex: 0 0 auto;
   color: var(--ink);
@@ -149,6 +204,22 @@ h2 {
   grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr);
   gap: 18px;
   margin-bottom: 18px;
+}
+
+.why {
+  max-width: 760px;
+  margin-bottom: 26px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.why h2 {
+  margin-bottom: 8px;
+}
+
+.why p:last-child {
+  margin-bottom: 0;
+  color: var(--muted);
 }
 
 .panel {
@@ -277,7 +348,7 @@ h2 {
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 0 12px;
-  background: #fbfbf8;
+  background: #fbfcfa;
   color: var(--ink);
   font: inherit;
   font-size: 0.85rem;
