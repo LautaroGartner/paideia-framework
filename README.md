@@ -384,6 +384,16 @@ examples/agentify-output/docs-site/
 examples/agentify-output/js-heavy-spa/
 ```
 
+Protocol fixtures:
+
+```txt
+packages/agentify/fixtures/complete-static-site/
+packages/agentify/fixtures/partial-js-site/
+packages/agentify/fixtures/rate-limited-site/
+packages/agentify/fixtures/missing-metadata-site/
+packages/agentify/fixtures/redirected-site/
+```
+
 Visual viewer:
 
 ```txt

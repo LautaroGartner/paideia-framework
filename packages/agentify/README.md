@@ -45,6 +45,17 @@ Protocol contract:
 AGENTIFY_PROTOCOL.md
 ```
 
+Protocol fixtures:
+
+```txt
+fixtures/
+  complete-static-site/
+  partial-js-site/
+  rate-limited-site/
+  missing-metadata-site/
+  redirected-site/
+```
+
 Successful live example:
 
 ```bash

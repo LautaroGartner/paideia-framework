@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.2-alpha.1
+
+- Added canonical protocol fixtures.
+- Added fixture validation coverage.
+- Included fixtures in the npm package.
+
 ## 0.7.1-alpha.2
 
 - Added sitemap discovery through `/sitemap.xml`, `robots.txt`, and homepage sitemap links.

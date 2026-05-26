@@ -1,0 +1,147 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.1"
+  },
+  "generatedAt": "2026-05-26T00:00:00.000Z",
+  "sourceUrl": "https://fixtures.agentify.test/",
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 2,
+  "failedRouteCount": 0,
+  "source": {
+    "url": "https://fixtures.agentify.test/",
+    "origin": "https://fixtures.agentify.test"
+  },
+  "site": {
+    "title": "Complete Fixture",
+    "description": "A complete static fixture."
+  },
+  "routes": [
+    {
+      "path": "/",
+      "title": "Complete Fixture",
+      "description": "A complete static fixture.",
+      "headings": [
+        "Complete Fixture"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html",
+      "canonical": "https://fixtures.agentify.test/",
+      "discoveredVia": "source",
+      "depth": 0,
+      "url": "https://fixtures.agentify.test/"
+    },
+    {
+      "path": "/about",
+      "title": "About Complete",
+      "description": "About the complete fixture.",
+      "headings": [
+        "About"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html",
+      "canonical": "",
+      "discoveredVia": "homepage-anchor",
+      "depth": 1,
+      "url": "https://fixtures.agentify.test/about"
+    }
+  ],
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 10,
+    "timeoutMs": 10000,
+    "delayMs": 0,
+    "retries": 0,
+    "fetched": 2,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/",
+        "url": "https://fixtures.agentify.test/",
+        "finalUrl": "https://fixtures.agentify.test/",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 12,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "https://fixtures.agentify.test/",
+        "discoveredVia": "source",
+        "depth": 0
+      },
+      {
+        "path": "/about",
+        "url": "https://fixtures.agentify.test/about",
+        "finalUrl": "https://fixtures.agentify.test/about",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 12,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "homepage-anchor",
+        "depth": 1
+      }
+    ],
+    "sitemap": {
+      "status": "fetched",
+      "url": "https://fixtures.agentify.test/sitemap.xml",
+      "bytes": 55,
+      "candidateUrls": [
+        "https://fixtures.agentify.test/sitemap.xml"
+      ],
+      "discoveredVia": "provided",
+      "note": "sitemap.xml was provided by the caller."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 fixture",
+    "robots": {
+      "status": "fetched",
+      "url": "https://fixtures.agentify.test/robots.txt",
+      "bytes": 45,
+      "sitemaps": [
+        "https://fixtures.agentify.test/sitemap.xml"
+      ],
+      "note": "robots.txt was provided by the caller."
+    }
+  },
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "diagnostics": {
+    "status": "complete",
+    "warnings": 0,
+    "errors": 0,
+    "codes": []
+  },
+  "warnings": [],
+  "caveats": [
+    "Only the homepage and same-origin pages linked from it were fetched.",
+    "Routes were discovered from homepage anchor href values.",
+    "No recursive crawl beyond depth 1 was performed.",
+    "JavaScript was not executed.",
+    "No private backend behavior was inferred."
+  ]
+}

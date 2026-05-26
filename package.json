@@ -31,6 +31,7 @@
     "test:manifest": "node tests/manifest-contract.test.mjs",
     "test:docs-example": "node tests/docs-example.test.mjs",
     "test:agentify": "node tests/agentify.test.mjs",
+    "test:agentify-fixtures": "node tests/agentify-fixtures.test.mjs",
     "test:agentify-package": "node tests/agentify-package.test.mjs",
     "test:agentify-install": "node tests/agentify-install.test.mjs",
     "test:init": "node tests/init-project.test.mjs",

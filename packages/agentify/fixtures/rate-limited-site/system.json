@@ -1,0 +1,138 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.1"
+  },
+  "generatedAt": "2026-05-26T00:00:00.000Z",
+  "sourceUrl": "https://limited.fixture.agentify.test/",
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 1,
+  "failedRouteCount": 1,
+  "source": {
+    "url": "https://limited.fixture.agentify.test/",
+    "origin": "https://limited.fixture.agentify.test"
+  },
+  "site": {
+    "title": "Rate Limited Fixture",
+    "description": "A fixture with a rate-limited route."
+  },
+  "routes": [
+    {
+      "path": "/",
+      "title": "Rate Limited Fixture",
+      "description": "A fixture with a rate-limited route.",
+      "headings": [
+        "Rate Limited"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html",
+      "canonical": "",
+      "discoveredVia": "source",
+      "depth": 0,
+      "url": "https://limited.fixture.agentify.test/"
+    }
+  ],
+  "crawl": {
+    "status": "partial",
+    "maxDepth": 1,
+    "maxPages": 10,
+    "timeoutMs": 10000,
+    "delayMs": 0,
+    "retries": 0,
+    "fetched": 1,
+    "failed": 1,
+    "failures": [
+      {
+        "url": "https://limited.fixture.agentify.test/blocked",
+        "status": 429,
+        "message": "Too Many Requests"
+      }
+    ],
+    "receipts": [
+      {
+        "path": "/",
+        "url": "https://limited.fixture.agentify.test/",
+        "finalUrl": "https://limited.fixture.agentify.test/",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 12,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "source",
+        "depth": 0
+      }
+    ],
+    "sitemap": {
+      "status": "fetched",
+      "url": "https://limited.fixture.agentify.test/sitemap.xml",
+      "bytes": 55,
+      "candidateUrls": [
+        "https://limited.fixture.agentify.test/sitemap.xml"
+      ],
+      "discoveredVia": "provided",
+      "note": "sitemap.xml was provided by the caller."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 fixture",
+    "robots": {
+      "status": "fetched",
+      "url": "https://limited.fixture.agentify.test/robots.txt",
+      "bytes": 45,
+      "sitemaps": [
+        "https://limited.fixture.agentify.test/sitemap.xml"
+      ],
+      "note": "robots.txt was provided by the caller."
+    }
+  },
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "diagnostics": {
+    "status": "partial",
+    "warnings": 2,
+    "errors": 0,
+    "codes": [
+      "crawl.partial",
+      "route.fetch_failed"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "route.fetch_failed",
+      "path": "/blocked",
+      "message": "Too Many Requests",
+      "status": 429
+    },
+    {
+      "code": "crawl.partial",
+      "path": "*",
+      "message": "One or more discovered routes failed to fetch."
+    }
+  ],
+  "caveats": [
+    "Only the homepage and same-origin pages linked from it were fetched.",
+    "Routes were discovered from homepage anchor href values.",
+    "No recursive crawl beyond depth 1 was performed.",
+    "JavaScript was not executed.",
+    "No private backend behavior was inferred."
+  ]
+}

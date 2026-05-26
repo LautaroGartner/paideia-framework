@@ -177,7 +177,7 @@ try {
     system.routes.map((route) => route.path),
     ["/", "/about", "/app", "/docs"]
   );
-  assert.equal(system.generator.version, "0.7.1-alpha.2");
+  assert.equal(system.generator.version, "0.7.2-alpha.1");
   assert.deepEqual(system.renderer, {
     mode: "static-html",
     javascriptExecuted: false,
@@ -215,7 +215,7 @@ try {
   assert.equal(context.generatedAt, "2026-05-22T00:00:00.000Z");
   assert.equal(context.artifactSchemaVersion, "0.1");
   assert.equal(context.sourceUrl, "https://example.test/");
-  assert.equal(context.generator.version, "0.7.1-alpha.2");
+  assert.equal(context.generator.version, "0.7.2-alpha.1");
   assert.deepEqual(context.renderer, {
     mode: "static-html",
     javascriptExecuted: false,
@@ -262,7 +262,7 @@ try {
   assert.equal(context.routes[2].javascriptRequired, true);
 
   assert.equal(runtime.generator.name, "agentify");
-  assert.equal(runtime.generator.version, "0.7.1-alpha.2");
+  assert.equal(runtime.generator.version, "0.7.2-alpha.1");
   assert.equal(runtime.artifactSchemaVersion, "0.1");
   assert.equal(runtime.generatedAt, "2026-05-22T00:00:00.000Z");
   assert.equal(runtime.sourceUrl, "https://example.test/");

@@ -1,0 +1,131 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.1"
+  },
+  "generatedAt": "2026-05-26T00:00:00.000Z",
+  "sourceUrl": "https://js.fixture.agentify.test/",
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 1,
+  "failedRouteCount": 0,
+  "buildId": "1a7d1c0",
+  "artifacts": [
+    {
+      "path": "context.json",
+      "kind": "agent-metadata",
+      "bytes": 3069,
+      "sha256": "61856bc0951ad4fae82c6c4eafb86bd920b47461558ac70562aa6284f2d778a6"
+    },
+    {
+      "path": "llms.txt",
+      "kind": "agent-guide",
+      "bytes": 797,
+      "sha256": "06622ffa2ab86743de1f51662df2af8980555767d0d98594c311ccc00d5b02f8"
+    },
+    {
+      "path": "runtime.json",
+      "kind": "agent-metadata",
+      "bytes": 3260,
+      "sha256": "f0c78c48ffa409eb086357e2e8319a6c9cc0c813c7e67442cd6d6c0abc59f537"
+    },
+    {
+      "path": "system.json",
+      "kind": "agent-metadata",
+      "bytes": 3341,
+      "sha256": "e75a44581faed40b696f299a7008d6ff1b40fb0b300e72d014002d7454fed4c4"
+    }
+  ],
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 10,
+    "timeoutMs": 10000,
+    "delayMs": 0,
+    "retries": 0,
+    "fetched": 1,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/",
+        "url": "https://js.fixture.agentify.test/",
+        "finalUrl": "https://js.fixture.agentify.test/",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 12,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "source",
+        "depth": 0
+      }
+    ],
+    "sitemap": {
+      "status": "fetched",
+      "url": "https://js.fixture.agentify.test/sitemap.xml",
+      "bytes": 55,
+      "candidateUrls": [
+        "https://js.fixture.agentify.test/sitemap.xml"
+      ],
+      "discoveredVia": "provided",
+      "note": "sitemap.xml was provided by the caller."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 fixture",
+    "robots": {
+      "status": "fetched",
+      "url": "https://js.fixture.agentify.test/robots.txt",
+      "bytes": 45,
+      "sitemaps": [
+        "https://js.fixture.agentify.test/sitemap.xml"
+      ],
+      "note": "robots.txt was provided by the caller."
+    }
+  },
+  "diagnostics": {
+    "status": "complete",
+    "warnings": 3,
+    "errors": 0,
+    "codes": [
+      "js.required",
+      "missing.description",
+      "missing.title"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "missing.title",
+      "path": "/",
+      "message": "Homepage did not include a title."
+    },
+    {
+      "code": "missing.description",
+      "path": "/",
+      "message": "Homepage did not include a meta description."
+    },
+    {
+      "code": "js.required",
+      "path": "/",
+      "message": "Homepage appears to require JavaScript for meaningful static content."
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Agentify Protocol
 
-Status: alpha. This document describes the `0.1` artifact schema emitted by `@lautarogartner/agentify@0.7.1-alpha.2`.
+Status: alpha. This document describes the `0.1` artifact schema emitted by `@lautarogartner/agentify@0.7.2-alpha.1`.
 
 ## 1. Purpose
 
@@ -208,3 +208,5 @@ The current artifact schema version is `0.1`.
 During the alpha period, schema details may change. Compatible consumers should check `artifactSchemaVersion`, inspect renderer metadata, and run validation before relying on a bundle.
 
 The long-term compatibility goal is for validators, CI integrations, and other generators to implement this protocol independently of the Agentify CLI.
+
+Canonical fixture bundles live in `fixtures/`. They provide stable examples of complete, partial, JavaScript-required, missing-metadata, rate-limited, and redirected crawl states.

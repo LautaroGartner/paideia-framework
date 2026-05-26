@@ -1,0 +1,114 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.1"
+  },
+  "generatedAt": "2026-05-26T00:00:00.000Z",
+  "sourceUrl": "https://redirect.fixture.agentify.test/",
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 1,
+  "failedRouteCount": 0,
+  "buildId": "1b7f3e6",
+  "artifacts": [
+    {
+      "path": "context.json",
+      "kind": "agent-metadata",
+      "bytes": 3005,
+      "sha256": "2ec2d3927121ca007a5106cb66c91e18e8344e28daa35987006821ac25dda65a"
+    },
+    {
+      "path": "llms.txt",
+      "kind": "agent-guide",
+      "bytes": 733,
+      "sha256": "6539fd9457634b00a69f43c1f36ef7511eea4f9a82090758acb103b08c23af3a"
+    },
+    {
+      "path": "runtime.json",
+      "kind": "agent-metadata",
+      "bytes": 2991,
+      "sha256": "fd9cba24f36d7f247a0516c4b7758db1d696c228de459dedbf46f613779f75db"
+    },
+    {
+      "path": "system.json",
+      "kind": "agent-metadata",
+      "bytes": 3237,
+      "sha256": "17bd40947073aab6cbc6d107f0c3789a45297577c2e61eef953cc1d42e26b7ec"
+    }
+  ],
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 10,
+    "timeoutMs": 10000,
+    "delayMs": 0,
+    "retries": 0,
+    "fetched": 1,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/",
+        "url": "https://redirect.fixture.agentify.test/",
+        "finalUrl": "https://redirect.fixture.agentify.test/final",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 12,
+        "redirected": true,
+        "redirectChain": [
+          "https://redirect.fixture.agentify.test/",
+          "https://redirect.fixture.agentify.test/final"
+        ],
+        "canonical": "https://redirect.fixture.agentify.test/final",
+        "discoveredVia": "source",
+        "depth": 0
+      }
+    ],
+    "sitemap": {
+      "status": "fetched",
+      "url": "https://redirect.fixture.agentify.test/sitemap.xml",
+      "bytes": 55,
+      "candidateUrls": [
+        "https://redirect.fixture.agentify.test/sitemap.xml"
+      ],
+      "discoveredVia": "provided",
+      "note": "sitemap.xml was provided by the caller."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 fixture",
+    "robots": {
+      "status": "fetched",
+      "url": "https://redirect.fixture.agentify.test/robots.txt",
+      "bytes": 45,
+      "sitemaps": [
+        "https://redirect.fixture.agentify.test/sitemap.xml"
+      ],
+      "note": "robots.txt was provided by the caller."
+    }
+  },
+  "diagnostics": {
+    "status": "complete",
+    "warnings": 0,
+    "errors": 0,
+    "codes": []
+  },
+  "warnings": []
+}

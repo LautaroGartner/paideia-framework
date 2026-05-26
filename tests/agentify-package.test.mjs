@@ -106,8 +106,16 @@ try {
 
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
   assert.equal(packageJson.name, "@lautarogartner/agentify");
-  assert.equal(packageJson.version, "0.7.1-alpha.2");
+  assert.equal(packageJson.version, "0.7.2-alpha.1");
   assert.equal(packageJson.bin?.agentify, "bin/agentify.mjs");
+  assert.ok(
+    packageJson.files.includes("AGENTIFY_PROTOCOL.md"),
+    "package should publish protocol docs"
+  );
+  assert.ok(
+    packageJson.files.includes("fixtures/"),
+    "package should publish protocol fixtures"
+  );
 
   const readme = fs.readFileSync(packageReadmePath, "utf8");
   assert.ok(readme.includes("system.json"), "README should mention system.json");
@@ -154,7 +162,7 @@ try {
     cwd: appRoot,
   });
   assert.equal(version.status, 0, version.output);
-  assert.equal(version.output.trim(), "0.7.1-alpha.2");
+  assert.equal(version.output.trim(), "0.7.2-alpha.1");
 
   const server = http.createServer((request, response) => {
     if (request.url === "/robots.txt") {
@@ -254,7 +262,7 @@ try {
       fs.readFileSync(path.join(outputDir, "runtime.json"), "utf8")
     );
     assert.equal(runtime.generator.name, "agentify");
-    assert.equal(runtime.generator.version, "0.7.1-alpha.2");
+    assert.equal(runtime.generator.version, "0.7.2-alpha.1");
     assert.deepEqual(runtime.renderer, {
       mode: "static-html",
       javascriptExecuted: false,

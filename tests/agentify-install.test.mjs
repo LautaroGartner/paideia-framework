@@ -131,7 +131,7 @@ try {
     }
   );
   assertCommand(version, "npx agentify --version should succeed");
-  assert.equal(version.output.trim(), "0.7.1-alpha.2");
+  assert.equal(version.output.trim(), "0.7.2-alpha.1");
 
   const server = http.createServer((request, response) => {
     if (request.url === "/robots.txt") {
@@ -221,7 +221,7 @@ try {
     assert.equal(system.artifactSchemaVersion, "0.1");
     assert.equal(context.artifactSchemaVersion, "0.1");
     assert.equal(runtime.artifactSchemaVersion, "0.1");
-    assert.equal(runtime.generator.version, "0.7.1-alpha.2");
+    assert.equal(runtime.generator.version, "0.7.2-alpha.1");
     assert.equal(context.routeCount, 2);
     assert.equal(runtime.crawl.status, "complete");
     assert.equal(runtime.crawl.fetched, 2);

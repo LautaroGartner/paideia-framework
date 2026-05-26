@@ -1,0 +1,125 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.1"
+  },
+  "generatedAt": "2026-05-26T00:00:00.000Z",
+  "sourceUrl": "https://metadata.fixture.agentify.test/",
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 1,
+  "failedRouteCount": 0,
+  "buildId": "9701838",
+  "artifacts": [
+    {
+      "path": "context.json",
+      "kind": "agent-metadata",
+      "bytes": 2990,
+      "sha256": "e7436492ccdaaef468631d8d43a6db61388789bcd8b915952cf4373bc49a2c7c"
+    },
+    {
+      "path": "llms.txt",
+      "kind": "agent-guide",
+      "bytes": 795,
+      "sha256": "9a393a36c0a39f28d04d2768b44c9aff6ab5c06fbe8fadc97e8e0c24b7f40fbe"
+    },
+    {
+      "path": "runtime.json",
+      "kind": "agent-metadata",
+      "bytes": 3131,
+      "sha256": "879d728dfc2bcd2547a78fa4ad8e011b89b913c8bf095f3a5adb7945fcc59889"
+    },
+    {
+      "path": "system.json",
+      "kind": "agent-metadata",
+      "bytes": 3265,
+      "sha256": "cb00c77b3a878aa013bad94f0e12edbb703abdeedb086042f8a6b87d7dbea37c"
+    }
+  ],
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 10,
+    "timeoutMs": 10000,
+    "delayMs": 0,
+    "retries": 0,
+    "fetched": 1,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/",
+        "url": "https://metadata.fixture.agentify.test/",
+        "finalUrl": "https://metadata.fixture.agentify.test/",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 12,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "source",
+        "depth": 0
+      }
+    ],
+    "sitemap": {
+      "status": "fetched",
+      "url": "https://metadata.fixture.agentify.test/sitemap.xml",
+      "bytes": 55,
+      "candidateUrls": [
+        "https://metadata.fixture.agentify.test/sitemap.xml"
+      ],
+      "discoveredVia": "provided",
+      "note": "sitemap.xml was provided by the caller."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 fixture",
+    "robots": {
+      "status": "fetched",
+      "url": "https://metadata.fixture.agentify.test/robots.txt",
+      "bytes": 45,
+      "sitemaps": [
+        "https://metadata.fixture.agentify.test/sitemap.xml"
+      ],
+      "note": "robots.txt was provided by the caller."
+    }
+  },
+  "diagnostics": {
+    "status": "complete",
+    "warnings": 2,
+    "errors": 0,
+    "codes": [
+      "missing.description",
+      "missing.title"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "missing.title",
+      "path": "/",
+      "message": "Homepage did not include a title."
+    },
+    {
+      "code": "missing.description",
+      "path": "/",
+      "message": "Homepage did not include a meta description."
+    }
+  ]
+}

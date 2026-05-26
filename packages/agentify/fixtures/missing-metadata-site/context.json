@@ -1,0 +1,127 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generatedAt": "2026-05-26T00:00:00.000Z",
+  "sourceUrl": "https://metadata.fixture.agentify.test/",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.1"
+  },
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 1,
+  "failedRouteCount": 0,
+  "warningCodes": [
+    "missing.description",
+    "missing.title"
+  ],
+  "warnings": [
+    {
+      "code": "missing.title",
+      "path": "/",
+      "message": "Homepage did not include a title."
+    },
+    {
+      "code": "missing.description",
+      "path": "/",
+      "message": "Homepage did not include a meta description."
+    }
+  ],
+  "source": {
+    "url": "https://metadata.fixture.agentify.test/",
+    "origin": "https://metadata.fixture.agentify.test"
+  },
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 10,
+    "timeoutMs": 10000,
+    "delayMs": 0,
+    "retries": 0,
+    "fetched": 1,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/",
+        "url": "https://metadata.fixture.agentify.test/",
+        "finalUrl": "https://metadata.fixture.agentify.test/",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 12,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "source",
+        "depth": 0
+      }
+    ],
+    "sitemap": {
+      "status": "fetched",
+      "url": "https://metadata.fixture.agentify.test/sitemap.xml",
+      "bytes": 55,
+      "candidateUrls": [
+        "https://metadata.fixture.agentify.test/sitemap.xml"
+      ],
+      "discoveredVia": "provided",
+      "note": "sitemap.xml was provided by the caller."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 fixture",
+    "robots": {
+      "status": "fetched",
+      "url": "https://metadata.fixture.agentify.test/robots.txt",
+      "bytes": 45,
+      "sitemaps": [
+        "https://metadata.fixture.agentify.test/sitemap.xml"
+      ],
+      "note": "robots.txt was provided by the caller."
+    }
+  },
+  "site": {
+    "title": "",
+    "description": ""
+  },
+  "routeSummaries": [
+    {
+      "path": "/",
+      "title": "",
+      "description": "",
+      "headingCount": 1,
+      "status": 200,
+      "contentType": "text/html",
+      "javascriptRequired": false
+    }
+  ],
+  "routes": [
+    {
+      "path": "/",
+      "title": "",
+      "description": "",
+      "headings": [
+        "Metadata Fixture"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html",
+      "canonical": "",
+      "discoveredVia": "source",
+      "depth": 0
+    }
+  ],
+  "suggestedReadingOrder": [
+    "llms.txt",
+    "context.json",
+    "system.json",
+    "runtime.json"
+  ]
+}
