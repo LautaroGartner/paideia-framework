@@ -2,9 +2,11 @@
 
 ## 0.6.0-alpha.3
 
-- Normalized bare domains to HTTPS URLs
-- Printed warning details directly in CLI output
-- Added `agentify inspect`
+- Added bare-domain URL normalization.
+- Added visible warning output after crawl.
+- Grouped generated artifact paths under output.
+- Added `agentify inspect [agent]`.
+- Added package smoke coverage for partial crawls and inspect.
 
 ## 0.6.0-alpha.2
 
