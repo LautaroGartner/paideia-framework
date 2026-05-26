@@ -12,6 +12,7 @@ export {
   agentify,
   inspectAgentify,
   main,
+  validateAgentify,
 } from "../packages/agentify/bin/agentify.mjs";
 
 const isCli = process.argv[1]

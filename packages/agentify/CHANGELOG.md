@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0-alpha.1
+
+- Added `agentify validate [agent]`.
+- Added structured renderer metadata.
+- Added deterministic artifact hashes.
+- Added crawl receipts with status, content type, timing, redirect, canonical URL, discovery, and depth metadata.
+- Added validation coverage for artifact integrity.
+
 ## 0.6.0-alpha.3
 
 - Added bare-domain URL normalization.

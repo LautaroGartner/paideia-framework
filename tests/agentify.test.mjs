@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-import { agentify } from "../scripts/agentify.mjs";
+import { agentify, validateAgentify } from "../scripts/agentify.mjs";
 
 const testRoot = fs.mkdtempSync(
   path.join(os.tmpdir(), "paideia-agentify-")
@@ -99,6 +100,21 @@ function assertFailures(failures, label) {
   }
 }
 
+function sha256(value) {
+  return createHash("sha256").update(value).digest("hex");
+}
+
+function runtimeHashInput(value) {
+  const runtime = JSON.parse(value);
+  runtime.artifacts = runtime.artifacts.map((artifact) => (
+    artifact.path === "runtime.json"
+      ? { ...artifact, sha256: "0".repeat(64) }
+      : artifact
+  ));
+
+  return `${JSON.stringify(runtime, null, 2)}\n`;
+}
+
 try {
   const result = await agentify("example.test", {
     fetchedAt: "2026-05-22T00:00:00.000Z",
@@ -160,8 +176,11 @@ try {
     system.routes.map((route) => route.path),
     ["/", "/about", "/app", "/docs"]
   );
-  assert.equal(system.generator.version, "0.6.0-alpha.3");
-  assert.equal(system.renderer, "static-html");
+  assert.equal(system.generator.version, "0.7.0-alpha.1");
+  assert.deepEqual(system.renderer, {
+    mode: "static-html",
+    javascriptExecuted: false,
+  });
   assert.equal(system.limitations.javascriptNotExecuted, true);
   assert.equal(system.limitations.recursiveCrawl, false);
   assert.equal(system.limitations.privateBehaviorInferred, false);
@@ -171,6 +190,11 @@ try {
   assert.equal(system.crawl.status, "partial");
   assert.equal(system.crawl.fetched, 4);
   assert.equal(system.crawl.failed, 1);
+  assert.equal(system.crawl.receipts.length, 4);
+  assert.equal(system.crawl.receipts[0].status, 200);
+  assert.equal(system.crawl.receipts[0].contentType, "text/html");
+  assert.equal(system.crawl.receipts[0].discoveredVia, "source");
+  assert.equal(system.crawl.receipts[1].discoveredVia, "homepage-anchor");
   assertFailures(system.crawl.failures, "system crawl");
   assert.equal(system.crawl.failures[0].status, 429);
   assert.ok(system.crawl.failures[0].url.endsWith("/rate-limited"));
@@ -188,8 +212,11 @@ try {
   assert.equal(context.generatedAt, "2026-05-22T00:00:00.000Z");
   assert.equal(context.artifactSchemaVersion, "0.1");
   assert.equal(context.sourceUrl, "https://example.test/");
-  assert.equal(context.generator.version, "0.6.0-alpha.3");
-  assert.equal(context.renderer, "static-html");
+  assert.equal(context.generator.version, "0.7.0-alpha.1");
+  assert.deepEqual(context.renderer, {
+    mode: "static-html",
+    javascriptExecuted: false,
+  });
   assert.equal(context.limitations.javascriptNotExecuted, true);
   assert.equal(context.routeCount, context.routes.length);
   assert.equal(context.failedRouteCount, 1);
@@ -207,6 +234,8 @@ try {
     title: "About",
     description: "About this example site.",
     headingCount: 2,
+    status: 200,
+    contentType: "text/html",
     javascriptRequired: false,
   });
   assert.deepEqual(
@@ -220,18 +249,26 @@ try {
     headings: ["About Example", "Purpose"],
     renderer: "static-html",
     javascriptRequired: false,
+    status: 200,
+    contentType: "text/html",
+    canonical: "",
+    discoveredVia: "homepage-anchor",
+    depth: 1,
   });
   assert.equal(context.routes[2].path, "/app");
   assert.equal(context.routes[2].javascriptRequired, true);
 
   assert.equal(runtime.generator.name, "agentify");
-  assert.equal(runtime.generator.version, "0.6.0-alpha.3");
+  assert.equal(runtime.generator.version, "0.7.0-alpha.1");
   assert.equal(runtime.artifactSchemaVersion, "0.1");
   assert.equal(runtime.generatedAt, "2026-05-22T00:00:00.000Z");
   assert.equal(runtime.sourceUrl, "https://example.test/");
   assert.equal(runtime.routeCount, context.routeCount);
   assert.equal(runtime.failedRouteCount, context.failedRouteCount);
-  assert.equal(runtime.renderer, "static-html");
+  assert.deepEqual(runtime.renderer, {
+    mode: "static-html",
+    javascriptExecuted: false,
+  });
   assert.equal(runtime.limitations.javascriptNotExecuted, true);
   assert.deepEqual(runtime.capabilities, expectedCapabilities);
   assert.equal(runtime.diagnostics.status, "partial");
@@ -244,6 +281,9 @@ try {
   assert.equal(runtime.crawl.status, "partial");
   assert.equal(runtime.crawl.fetched, 4);
   assert.equal(runtime.crawl.failed, 1);
+  assert.equal(runtime.crawl.receipts.length, 4);
+  assert.equal(runtime.crawl.receipts[0].path, "/");
+  assert.equal(runtime.crawl.receipts[0].status, 200);
   assertFailures(runtime.crawl.failures, "runtime crawl");
   assert.equal(runtime.crawl.failures[0].status, 429);
   assert.equal(runtime.crawl.sameOriginOnly, true);
@@ -264,7 +304,18 @@ try {
       Buffer.byteLength(contents, "utf8"),
       `${artifact.path} byte size should match`
     );
+    assert.equal(
+      artifact.sha256,
+      artifact.path === "runtime.json"
+        ? sha256(runtimeHashInput(contents))
+        : sha256(contents),
+      `${artifact.path} hash should match`
+    );
   }
+
+  const validation = validateAgentify(path.join(testRoot, "agent"));
+  assert.equal(validation.valid, true, validation.errors.join("\n"));
+  assert.deepEqual(validation.errors, []);
 
   assert.ok(llms.includes("# Example Site"));
   assert.ok(llms.includes("Generated by agentify."));

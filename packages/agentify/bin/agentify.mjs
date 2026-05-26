@@ -6,20 +6,31 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
-export const AGENTIFY_VERSION = "0.6.0-alpha.3";
+export const AGENTIFY_VERSION = "0.7.0-alpha.1";
 const ARTIFACT_SCHEMA_VERSION = "0.1";
 const DEFAULT_MAX_PAGES = 10;
 const DEFAULT_TIMEOUT_MS = 10000;
 const DEFAULT_DELAY_MS = 0;
 const DEFAULT_RETRIES = 0;
 const DEFAULT_USER_AGENT = "agentify/0.6";
-const RENDERER = "static-html";
+const RENDERER_MODE = "static-html";
+const RENDERER = {
+  mode: RENDERER_MODE,
+  javascriptExecuted: false,
+};
 const LIMITATIONS = {
   javascriptNotExecuted: true,
   recursiveCrawl: false,
   privateBehaviorInferred: false,
   robotsEnforced: false,
 };
+const REQUIRED_ARTIFACTS = [
+  "context.json",
+  "llms.txt",
+  "runtime.json",
+  "system.json",
+];
+const RUNTIME_HASH_PLACEHOLDER = "0".repeat(64);
 
 class AgentifyFetchError extends Error {
   constructor(message, details = {}) {
@@ -185,10 +196,36 @@ function extractInternalRoutes(html, sourceUrl) {
   return Array.from(routes).sort();
 }
 
+function extractCanonicalUrl(html, source) {
+  const linkTags = html.match(/<link\b[^>]*>/gi) ?? [];
+
+  for (const tag of linkTags) {
+    const rel = getAttribute(tag, "rel").toLowerCase();
+
+    if (rel.split(/\s+/).includes("canonical")) {
+      const href = getAttribute(tag, "href");
+
+      if (!href) {
+        return "";
+      }
+
+      try {
+        return new URL(href, source).href;
+      } catch {
+        return "";
+      }
+    }
+  }
+
+  return "";
+}
+
 function pageMetadata(pathname, html, source) {
+  const canonical = extractCanonicalUrl(html, new URL(pathname, source));
   const metadata = {
     path: pathname,
     url: new URL(pathname, source).href,
+    canonical,
     title: extractTitle(html),
     description: extractDescription(html),
     headings: extractHeadings(html),
@@ -196,7 +233,7 @@ function pageMetadata(pathname, html, source) {
 
   return {
     ...metadata,
-    renderer: RENDERER,
+    renderer: RENDERER_MODE,
     javascriptRequired: detectJavascriptRequired(html, metadata),
   };
 }
@@ -307,6 +344,10 @@ function byteLength(value) {
   return Buffer.byteLength(value, "utf8");
 }
 
+function sha256(value) {
+  return createHash("sha256").update(value).digest("hex");
+}
+
 function buildIdFor(outputs) {
   const hash = createHash("sha256");
 
@@ -320,6 +361,41 @@ function buildIdFor(outputs) {
   return hash.digest("hex").slice(0, 7);
 }
 
+function rendererMode(renderer) {
+  return typeof renderer === "string"
+    ? renderer
+    : renderer?.mode ?? "unknown";
+}
+
+function runtimeHashInput(runtimeText) {
+  const runtime = JSON.parse(runtimeText);
+  runtime.artifacts = (runtime.artifacts ?? []).map((artifact) => {
+    if (artifact.path !== "runtime.json") {
+      return artifact;
+    }
+
+    return {
+      ...artifact,
+      sha256: RUNTIME_HASH_PLACEHOLDER,
+    };
+  });
+
+  return `${JSON.stringify(runtime, null, 2)}\n`;
+}
+
+function artifactEntries(outputs) {
+  return Object.entries(outputs)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([name, contents]) => ({
+      path: name,
+      kind: name === "llms.txt" ? "agent-guide" : "agent-metadata",
+      bytes: byteLength(contents),
+      sha256: name === "runtime.json"
+        ? sha256(runtimeHashInput(contents))
+        : sha256(contents),
+    }));
+}
+
 function crawlStatus(failures) {
   return failures.length > 0 ? "partial" : "complete";
 }
@@ -330,8 +406,49 @@ function compactRouteSummary(page) {
     title: page.title,
     description: page.description,
     headingCount: page.headings.length,
+    status: page.receipt?.status ?? null,
+    contentType: page.receipt?.contentType ?? "",
     javascriptRequired: page.javascriptRequired,
   };
+}
+
+function routeReceipt(page) {
+  return {
+    path: page.path,
+    url: page.url,
+    finalUrl: page.receipt?.finalUrl ?? page.url,
+    status: page.receipt?.status ?? null,
+    statusText: page.receipt?.statusText ?? "",
+    contentType: page.receipt?.contentType ?? "",
+    timingMs: page.receipt?.timingMs ?? null,
+    redirected: page.receipt?.redirected ?? false,
+    redirectChain: page.receipt?.redirectChain ?? [],
+    canonical: page.canonical,
+    discoveredVia: page.discoveredVia ?? "",
+    depth: page.depth ?? 0,
+  };
+}
+
+function routeArtifact(page, includeUrl = false) {
+  const route = {
+    path: page.path,
+    title: page.title,
+    description: page.description,
+    headings: page.headings,
+    renderer: page.renderer,
+    javascriptRequired: page.javascriptRequired,
+    status: page.receipt?.status ?? null,
+    contentType: page.receipt?.contentType ?? "",
+    canonical: page.canonical,
+    discoveredVia: page.discoveredVia ?? "",
+    depth: page.depth ?? 0,
+  };
+
+  if (includeUrl) {
+    route.url = page.url;
+  }
+
+  return route;
 }
 
 function pageDiagnostics(page, isHomepage = false) {
@@ -432,7 +549,7 @@ function createLlmsText({
     `Generated at: ${fetchedAt}`,
     `Routes fetched: ${routes.length}`,
     `Routes failed: ${failures.length}`,
-    `Renderer: ${RENDERER}`,
+    `Renderer: ${rendererMode(RENDERER)}`,
     "",
     "## Routes",
     "",
@@ -451,7 +568,7 @@ function createLlmsText({
     "",
     "## Limits",
     "",
-    `This prototype uses the ${RENDERER} renderer: it fetches HTML, does not execute JavaScript, and crawls up to ${maxPages} same-origin pages linked from the homepage.`,
+    `This prototype uses the ${rendererMode(RENDERER)} renderer: it fetches HTML, does not execute JavaScript, and crawls up to ${maxPages} same-origin pages linked from the homepage.`,
     "Robots.txt is fetched for awareness only and is not enforced yet.",
   ];
 
@@ -522,6 +639,7 @@ function createBundle({
 
   const warnings = normalizedWarnings(diagnostics);
   const diagnosticsStatus = diagnosticsSummary(diagnostics, failures);
+  const receipts = pages.map(routeReceipt);
   const context = {
     artifactSchemaVersion: ARTIFACT_SCHEMA_VERSION,
     generatedAt: fetchedAt,
@@ -550,6 +668,7 @@ function createBundle({
       fetched: pages.length,
       failed: failures.length,
       failures,
+      receipts,
       sameOriginOnly: true,
       userAgent,
       robots,
@@ -559,14 +678,7 @@ function createBundle({
       description,
     },
     routeSummaries: pages.map(compactRouteSummary),
-    routes: pages.map((page) => ({
-      path: page.path,
-      title: page.title,
-      description: page.description,
-      headings: page.headings,
-      renderer: page.renderer,
-      javascriptRequired: page.javascriptRequired,
-    })),
+    routes: pages.map((page) => routeArtifact(page)),
     suggestedReadingOrder: [
       "llms.txt",
       "context.json",
@@ -595,15 +707,7 @@ function createBundle({
       title,
       description,
     },
-    routes: pages.map((page) => ({
-      path: page.path,
-      url: page.url,
-      title: page.title,
-      description: page.description,
-      headings: page.headings,
-      renderer: page.renderer,
-      javascriptRequired: page.javascriptRequired,
-    })),
+    routes: pages.map((page) => routeArtifact(page, true)),
     crawl: {
       status: crawlStatus(failures),
       maxDepth: 1,
@@ -614,6 +718,7 @@ function createBundle({
       fetched: pages.length,
       failed: failures.length,
       failures,
+      receipts,
       sameOriginOnly: true,
       userAgent,
       robots,
@@ -672,6 +777,7 @@ function createBundle({
       fetched: pages.length,
       failed: failures.length,
       failures,
+      receipts,
       sameOriginOnly: true,
       userAgent,
       robots,
@@ -687,11 +793,11 @@ function createBundle({
       ...partialOutputs,
       "runtime.json": runtimeOutput,
     };
-    const artifacts = Object.entries(outputs).map(([name, contents]) => ({
-      path: name,
-      kind: name === "llms.txt" ? "agent-guide" : "agent-metadata",
-      bytes: byteLength(contents),
-    }));
+    const artifacts = artifactEntries(outputs).map((artifact) => (
+      artifact.path === "runtime.json"
+        ? { ...artifact, sha256: RUNTIME_HASH_PLACEHOLDER }
+        : artifact
+    ));
     const nextRuntime = {
       ...runtime,
       artifacts,
@@ -707,6 +813,16 @@ function createBundle({
 
     runtimeOutput = nextRuntimeOutput;
   }
+
+  const finalArtifacts = artifactEntries({
+    ...partialOutputs,
+    "runtime.json": runtimeOutput,
+  });
+  runtime = {
+    ...runtime,
+    artifacts: finalArtifacts,
+  };
+  runtimeOutput = `${JSON.stringify(runtime, null, 2)}\n`;
 
   const outputs = {
     ...partialOutputs,
@@ -726,6 +842,7 @@ async function fetchText(url, userAgent, timeoutMs) {
   const timeout = setTimeout(() => {
     controller.abort();
   }, timeoutMs);
+  const startedAt = Date.now();
 
   try {
     const response = await fetch(url, {
@@ -750,6 +867,14 @@ async function fetchText(url, userAgent, timeoutMs) {
 
     return {
       contentType: response.headers.get("content-type") ?? "",
+      finalUrl: response.url || url,
+      redirected: Boolean(response.redirected),
+      redirectChain: response.url && response.url !== url
+        ? [url, response.url]
+        : [],
+      status: response.status,
+      statusText: response.statusText,
+      timingMs: Date.now() - startedAt,
       text: await response.text(),
     };
   } catch (error) {
@@ -800,7 +925,19 @@ async function fetchHtmlWithRetry(url, userAgent, timeoutMs, retries, delayMs) {
     );
   }
 
-  return response.text;
+  return {
+    html: response.text,
+    receipt: {
+      url,
+      finalUrl: response.finalUrl,
+      status: response.status,
+      statusText: response.statusText,
+      contentType: response.contentType,
+      timingMs: response.timingMs,
+      redirected: response.redirected,
+      redirectChain: response.redirectChain,
+    },
+  };
 }
 
 async function fetchHtml(url, userAgent, timeoutMs) {
@@ -816,6 +953,45 @@ async function fetchHtml(url, userAgent, timeoutMs) {
   }
 
   return response.text;
+}
+
+function normalizeFetchHtmlResult(url, result, startedAt) {
+  if (typeof result === "string") {
+    return {
+      html: result,
+      receipt: {
+        url,
+        finalUrl: url,
+        status: 200,
+        statusText: "OK",
+        contentType: "text/html",
+        timingMs: Date.now() - startedAt,
+        redirected: false,
+        redirectChain: [],
+      },
+    };
+  }
+
+  return {
+    html: result.html ?? result.text ?? "",
+    receipt: {
+      url,
+      finalUrl: result.receipt?.finalUrl ?? result.finalUrl ?? url,
+      status: result.receipt?.status ?? result.status ?? 200,
+      statusText: result.receipt?.statusText ?? result.statusText ?? "OK",
+      contentType: result.receipt?.contentType ?? result.contentType ?? "text/html",
+      timingMs: result.receipt?.timingMs ?? result.timingMs ?? Date.now() - startedAt,
+      redirected: result.receipt?.redirected ?? result.redirected ?? false,
+      redirectChain: result.receipt?.redirectChain ?? result.redirectChain ?? [],
+    },
+  };
+}
+
+async function fetchRouteHtml(fetcher, url) {
+  const startedAt = Date.now();
+  const result = await fetcher(url);
+
+  return normalizeFetchHtmlResult(url, result, startedAt);
 }
 
 async function fetchRobots(source, options) {
@@ -888,6 +1064,16 @@ async function crawlRoutes(sourceUrl, options) {
   const homepageRoute = routeFromUrl(source);
 
   let homepageHtml = options.html ?? "";
+  let homepageReceipt = {
+    url: source.href,
+    finalUrl: source.href,
+    status: 200,
+    statusText: "OK",
+    contentType: "text/html",
+    timingMs: 0,
+    redirected: false,
+    redirectChain: [],
+  };
 
   if (!homepageHtml) {
     try {
@@ -895,7 +1081,9 @@ async function crawlRoutes(sourceUrl, options) {
         console.log(`[agentify] fetch ${source.href}`);
       }
 
-      homepageHtml = await fetcher(source.href);
+      const fetched = await fetchRouteHtml(fetcher, source.href);
+      homepageHtml = fetched.html;
+      homepageReceipt = fetched.receipt;
     } catch (error) {
       const failure = failureFromError(source.href, error);
 
@@ -915,12 +1103,19 @@ async function crawlRoutes(sourceUrl, options) {
         pages,
         robots,
         timeoutMs,
+        delayMs,
+        retries,
         userAgent,
       };
     }
   }
 
-  const homepage = pageMetadata(homepageRoute, homepageHtml, source);
+  const homepage = {
+    ...pageMetadata(homepageRoute, homepageHtml, source),
+    depth: 0,
+    discoveredVia: "source",
+    receipt: homepageReceipt,
+  };
   pages.push(homepage);
   const discoveredRoutes = extractInternalRoutes(homepageHtml, source.href)
     .filter((route) => route !== homepage.path);
@@ -934,8 +1129,13 @@ async function crawlRoutes(sourceUrl, options) {
         console.log(`[agentify] fetch ${url.href}`);
       }
 
-      const html = await fetcher(url.href);
-      pages.push(pageMetadata(route, html, source));
+      const fetched = await fetchRouteHtml(fetcher, url.href);
+      pages.push({
+        ...pageMetadata(route, fetched.html, source),
+        depth: 1,
+        discoveredVia: "homepage-anchor",
+        receipt: fetched.receipt,
+      });
     } catch (error) {
       const failure = failureFromError(url.href, error);
 
@@ -1009,9 +1209,7 @@ export async function agentify(url, options = {}) {
 export function inspectAgentify(outputDir = path.join(process.cwd(), "agent")) {
   const runtimePath = path.join(outputDir, "runtime.json");
   const runtime = JSON.parse(fs.readFileSync(runtimePath, "utf8"));
-  const renderer = typeof runtime.renderer === "string"
-    ? runtime.renderer
-    : runtime.renderer?.type ?? "unknown";
+  const renderer = rendererMode(runtime.renderer);
 
   return {
     sourceUrl: runtime.sourceUrl ?? "",
@@ -1020,9 +1218,160 @@ export function inspectAgentify(outputDir = path.join(process.cwd(), "agent")) {
     failedRouteCount: runtime.failedRouteCount ?? runtime.crawl?.failed ?? 0,
     warnings: runtime.warnings ?? [],
     renderer,
-    javascriptExecuted: runtime.limitations?.javascriptNotExecuted === true
-      ? false
-      : null,
+    javascriptExecuted: typeof runtime.renderer?.javascriptExecuted === "boolean"
+      ? runtime.renderer.javascriptExecuted
+      : runtime.limitations?.javascriptNotExecuted === true
+        ? false
+        : null,
+  };
+}
+
+function readArtifact(outputDir, name) {
+  const filePath = path.join(outputDir, name);
+  const text = fs.readFileSync(filePath, "utf8");
+
+  return {
+    name,
+    path: filePath,
+    text,
+    json: name.endsWith(".json") ? JSON.parse(text) : null,
+  };
+}
+
+function isSha256(value) {
+  return typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
+}
+
+export function validateAgentify(outputDir = path.join(process.cwd(), "agent")) {
+  const errors = [];
+  const warnings = [];
+  const artifacts = new Map();
+
+  for (const name of REQUIRED_ARTIFACTS) {
+    try {
+      artifacts.set(name, readArtifact(outputDir, name));
+    } catch (error) {
+      errors.push(`${name} is missing or unreadable: ${
+        error instanceof Error ? error.message : String(error)
+      }`);
+    }
+  }
+
+  if (errors.length > 0) {
+    return {
+      errors,
+      valid: false,
+      warnings,
+    };
+  }
+
+  const context = artifacts.get("context.json").json;
+  const runtime = artifacts.get("runtime.json").json;
+  const system = artifacts.get("system.json").json;
+
+  for (const [name, artifact] of artifacts) {
+    if (name.endsWith(".json") &&
+      artifact.json?.artifactSchemaVersion !== ARTIFACT_SCHEMA_VERSION) {
+      errors.push(`${name} artifactSchemaVersion must be ${ARTIFACT_SCHEMA_VERSION}`);
+    }
+  }
+
+  for (const [name, artifact] of [
+    ["context.json", context],
+    ["runtime.json", runtime],
+    ["system.json", system],
+  ]) {
+    if (artifact?.generator?.name !== "agentify") {
+      errors.push(`${name} generator.name must be agentify`);
+    }
+
+    if (rendererMode(artifact?.renderer) !== RENDERER_MODE) {
+      errors.push(`${name} renderer.mode must be ${RENDERER_MODE}`);
+    }
+
+    if (artifact?.renderer?.javascriptExecuted !== false) {
+      errors.push(`${name} renderer.javascriptExecuted must be false`);
+    }
+  }
+
+  if (runtime.routeCount !== context.routeCount ||
+    runtime.routeCount !== system.routeCount) {
+    errors.push("routeCount must match across runtime, context, and system");
+  }
+
+  if (runtime.failedRouteCount !== context.failedRouteCount ||
+    runtime.failedRouteCount !== system.failedRouteCount) {
+    errors.push(
+      "failedRouteCount must match across runtime, context, and system"
+    );
+  }
+
+  const artifactEntriesByPath = new Map(
+    (runtime.artifacts ?? []).map((artifact) => [artifact.path, artifact])
+  );
+
+  for (const name of REQUIRED_ARTIFACTS) {
+    const artifact = artifactEntriesByPath.get(name);
+    const entry = artifacts.get(name);
+
+    if (!artifact) {
+      errors.push(`runtime.json artifacts must include ${name}`);
+      continue;
+    }
+
+    if (artifact.bytes !== byteLength(entry.text)) {
+      errors.push(`${name} byte count does not match runtime.json`);
+    }
+
+    if (!isSha256(artifact.sha256)) {
+      errors.push(`${name} sha256 must be a 64-character hex digest`);
+      continue;
+    }
+
+    const expectedHash = name === "runtime.json"
+      ? sha256(runtimeHashInput(entry.text))
+      : sha256(entry.text);
+
+    if (artifact.sha256 !== expectedHash) {
+      errors.push(`${name} sha256 does not match file contents`);
+    }
+  }
+
+  if ((runtime.crawl?.receipts ?? []).length !== runtime.routeCount) {
+    errors.push("runtime.json crawl.receipts length must match routeCount");
+  }
+
+  for (const receipt of runtime.crawl?.receipts ?? []) {
+    if (typeof receipt.url !== "string" || !receipt.url) {
+      errors.push("crawl receipt url is required");
+    }
+
+    if (typeof receipt.status !== "number") {
+      errors.push(`crawl receipt for ${receipt.path ?? "unknown"} needs status`);
+    }
+
+    if (typeof receipt.contentType !== "string") {
+      errors.push(
+        `crawl receipt for ${receipt.path ?? "unknown"} needs contentType`
+      );
+    }
+  }
+
+  if (runtime.artifactSchemaVersion !== context.artifactSchemaVersion ||
+    runtime.artifactSchemaVersion !== system.artifactSchemaVersion) {
+    errors.push("artifactSchemaVersion must match across JSON artifacts");
+  }
+
+  if (runtime.artifactSchemaVersion !== ARTIFACT_SCHEMA_VERSION) {
+    warnings.push(
+      `validator supports artifactSchemaVersion ${ARTIFACT_SCHEMA_VERSION}`
+    );
+  }
+
+  return {
+    errors,
+    valid: errors.length === 0,
+    warnings,
   };
 }
 
@@ -1093,6 +1442,7 @@ function printHelp() {
 Usage:
   agentify <url> [--out agent] [--max-pages 10] [--user-agent agentify/0.6] [--delay-ms 0] [--retries 0] [--verbose]
   agentify inspect [agent]
+  agentify validate [agent]
 
 Options:
   --out <dir>          Write artifacts to this directory
@@ -1164,6 +1514,30 @@ function printInspect(summary) {
   }
 }
 
+function printValidation(result) {
+  if (result.valid) {
+    console.log("[agentify] validation passed");
+  } else {
+    console.log("[agentify] validation failed");
+  }
+
+  if (result.errors.length > 0) {
+    console.log("[agentify] errors:");
+
+    for (const error of result.errors) {
+      console.log(`- ${error}`);
+    }
+  }
+
+  if (result.warnings.length > 0) {
+    console.log("[agentify] warnings:");
+
+    for (const warning of result.warnings) {
+      console.log(`- ${warning}`);
+    }
+  }
+}
+
 export async function main(argv = process.argv.slice(2)) {
   if (argv.includes("--help") || argv.includes("-h")) {
     printHelp();
@@ -1181,6 +1555,27 @@ export async function main(argv = process.argv.slice(2)) {
     } catch (error) {
       console.error(
         `[agentify] inspect failed: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
+      process.exit(1);
+    }
+
+    return;
+  }
+
+  if (argv[0] === "validate") {
+    try {
+      const result = validateAgentify(path.resolve(argv[1] ?? "agent"));
+
+      printValidation(result);
+
+      if (!result.valid) {
+        process.exit(1);
+      }
+    } catch (error) {
+      console.error(
+        `[agentify] validate failed: ${
           error instanceof Error ? error.message : String(error)
         }`
       );

@@ -106,7 +106,7 @@ try {
 
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
   assert.equal(packageJson.name, "@lautarogartner/agentify");
-  assert.equal(packageJson.version, "0.6.0-alpha.3");
+  assert.equal(packageJson.version, "0.7.0-alpha.1");
   assert.equal(packageJson.bin?.agentify, "bin/agentify.mjs");
 
   const readme = fs.readFileSync(packageReadmePath, "utf8");
@@ -154,7 +154,7 @@ try {
     cwd: appRoot,
   });
   assert.equal(version.status, 0, version.output);
-  assert.equal(version.output.trim(), "0.6.0-alpha.3");
+  assert.equal(version.output.trim(), "0.7.0-alpha.1");
 
   const server = http.createServer((request, response) => {
     if (request.url === "/robots.txt") {
@@ -245,11 +245,17 @@ try {
       fs.readFileSync(path.join(outputDir, "runtime.json"), "utf8")
     );
     assert.equal(runtime.generator.name, "agentify");
-    assert.equal(runtime.generator.version, "0.6.0-alpha.3");
-    assert.equal(runtime.renderer, "static-html");
+    assert.equal(runtime.generator.version, "0.7.0-alpha.1");
+    assert.deepEqual(runtime.renderer, {
+      mode: "static-html",
+      javascriptExecuted: false,
+    });
     assert.equal(runtime.crawl.status, "partial");
     assert.equal(runtime.routeCount, 2);
     assert.equal(runtime.crawl.failed, 1);
+    assert.equal(runtime.crawl.receipts.length, 2);
+    assert.equal(runtime.crawl.receipts[0].status, 200);
+    assert.match(runtime.artifacts[0].sha256, /^[a-f0-9]{64}$/);
 
     const inspect = await run(agentifyPath, ["inspect", outputDir], {
       cwd: appRoot,
@@ -270,6 +276,15 @@ try {
     assert.ok(
       inspect.output.includes("- javascript: disabled"),
       "inspect output should show renderer JavaScript mode"
+    );
+
+    const validate = await run(agentifyPath, ["validate", outputDir], {
+      cwd: appRoot,
+    });
+    assert.equal(validate.status, 0, validate.output);
+    assert.ok(
+      validate.output.includes("[agentify] validation passed"),
+      "validate output should confirm valid artifacts"
     );
   } finally {
     await close(server);
