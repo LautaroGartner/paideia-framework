@@ -20,6 +20,16 @@ llms.txt
 * `missing-metadata-site/`: static route missing title and description metadata.
 * `redirected-site/`: route receipt with redirect metadata and canonical URL.
 
+`protected-spa/` demonstrates a subtle but important distinction:
+
+```txt
+Transport: successful
+Machine readability: partial
+Reason: JavaScript-required shell plus missing static title and description metadata
+```
+
+The fixture fetched observable routes without hard errors, while preserving semantic warnings that a plain `200 OK` would hide.
+
 These fixtures are intended for:
 
 * regression tests

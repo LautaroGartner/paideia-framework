@@ -15,6 +15,8 @@ llms.txt
 
 Corpus-level classification lives in `corpus.json`. It records coarse machine-readability judgments beside validation expectations without adding new protocol fields to the runtime receipts.
 
+The key corpus distinction is that transport success and machine readability are separate. A site can return pages and still be only partially understandable to a static crawler because meaningful state requires JavaScript, authentication, complete metadata, or cleaner discovery files.
+
 ## Entries
 
 * `good-static-site/`: `https://www.iana.org/domains/reserved`, a stable public HTML site with multiple fetched routes and missing-description warnings.

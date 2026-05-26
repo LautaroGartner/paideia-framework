@@ -53,10 +53,21 @@ Protocol fixtures:
 fixtures/
   complete-static-site/
   partial-js-site/
+  protected-spa/
   rate-limited-site/
   missing-metadata-site/
   redirected-site/
 ```
+
+The `protected-spa` fixture is the canonical contrast case:
+
+```txt
+Transport: successful
+Machine readability: partial
+Reason: JavaScript-required shell plus missing static title and description metadata
+```
+
+Agentify keeps that distinction explicit. A crawl can fetch routes successfully and still warn that the static result is not a complete semantic representation of the site.
 
 Successful live example:
 
