@@ -6,7 +6,7 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
-export const AGENTIFY_VERSION = "0.7.1-alpha.1";
+export const AGENTIFY_VERSION = "0.7.1-alpha.2";
 const ARTIFACT_SCHEMA_VERSION = "0.1";
 const DEFAULT_MAX_PAGES = 10;
 const DEFAULT_TIMEOUT_MS = 10000;
@@ -220,6 +220,48 @@ function extractCanonicalUrl(html, source) {
   return "";
 }
 
+function extractSitemapLinks(html, source) {
+  const linkTags = html.match(/<link\b[^>]*>/gi) ?? [];
+  const urls = [];
+
+  for (const tag of linkTags) {
+    const rel = getAttribute(tag, "rel").toLowerCase();
+
+    if (!rel.split(/\s+/).includes("sitemap")) {
+      continue;
+    }
+
+    const href = getAttribute(tag, "href");
+
+    if (!href) {
+      continue;
+    }
+
+    try {
+      urls.push(new URL(href, source).href);
+    } catch {
+      // Ignore malformed discovery hints.
+    }
+  }
+
+  return urls;
+}
+
+function extractRobotsSitemaps(text, source) {
+  return String(text ?? "")
+    .split(/\r?\n/)
+    .map((line) => line.match(/^\s*sitemap\s*:\s*(.+?)\s*$/i)?.[1] ?? "")
+    .filter(Boolean)
+    .map((url) => {
+      try {
+        return new URL(url, source).href;
+      } catch {
+        return "";
+      }
+    })
+    .filter(Boolean);
+}
+
 function pageMetadata(pathname, html, source) {
   const canonical = extractCanonicalUrl(html, new URL(pathname, source));
   const metadata = {
@@ -429,6 +471,19 @@ function routeReceipt(page) {
   };
 }
 
+function textReceipt(url, response) {
+  return {
+    url,
+    finalUrl: response.finalUrl ?? url,
+    status: response.status ?? 200,
+    statusText: response.statusText ?? "OK",
+    contentType: response.contentType ?? "",
+    timingMs: response.timingMs ?? null,
+    redirected: response.redirected ?? false,
+    redirectChain: response.redirectChain ?? [],
+  };
+}
+
 function routeArtifact(page, includeUrl = false) {
   const route = {
     path: page.path,
@@ -604,6 +659,7 @@ function createBundle({
   pages,
   failures,
   robots,
+  sitemap,
   timeoutMs,
   delayMs,
   retries,
@@ -669,6 +725,7 @@ function createBundle({
       failed: failures.length,
       failures,
       receipts,
+      sitemap,
       sameOriginOnly: true,
       userAgent,
       robots,
@@ -719,6 +776,7 @@ function createBundle({
       failed: failures.length,
       failures,
       receipts,
+      sitemap,
       sameOriginOnly: true,
       userAgent,
       robots,
@@ -778,6 +836,7 @@ function createBundle({
       failed: failures.length,
       failures,
       receipts,
+      sitemap,
       sameOriginOnly: true,
       userAgent,
       robots,
@@ -996,9 +1055,13 @@ async function fetchRouteHtml(fetcher, url) {
 
 async function fetchRobots(source, options) {
   if (typeof options.robotsTxt === "string") {
+    const url = new URL("/robots.txt", source).href;
+
     return {
       status: "fetched",
-      url: new URL("/robots.txt", source).href,
+      url,
+      bytes: byteLength(options.robotsTxt),
+      sitemaps: extractRobotsSitemaps(options.robotsTxt, source),
       note: "robots.txt was provided by the caller.",
     };
   }
@@ -1029,6 +1092,8 @@ async function fetchRobots(source, options) {
       status: "fetched",
       url,
       bytes: byteLength(text ?? ""),
+      receipt: typeof result === "string" ? null : textReceipt(url, result),
+      sitemaps: extractRobotsSitemaps(text, source),
       note: "robots.txt was fetched for awareness only; v0.6 does not enforce directives yet.",
     };
   } catch (error) {
@@ -1039,6 +1104,77 @@ async function fetchRobots(source, options) {
       note: "robots.txt could not be fetched; v0.6 records this but does not enforce directives.",
     };
   }
+}
+
+async function fetchSitemap(source, homepageHtml, robots, options) {
+  const defaultUrl = new URL("/sitemap.xml", source).href;
+  const linkedUrls = extractSitemapLinks(homepageHtml, source);
+  const candidates = Array.from(new Set([
+    defaultUrl,
+    ...(robots.sitemaps ?? []),
+    ...linkedUrls,
+  ]));
+
+  if (typeof options.sitemapXml === "string") {
+    return {
+      status: "fetched",
+      url: candidates[0] ?? defaultUrl,
+      bytes: byteLength(options.sitemapXml),
+      candidateUrls: candidates,
+      discoveredVia: "provided",
+      note: "sitemap.xml was provided by the caller.",
+    };
+  }
+
+  if (options.skipSitemap) {
+    return {
+      status: "skipped",
+      url: defaultUrl,
+      candidateUrls: candidates,
+      note: "sitemap.xml fetch skipped.",
+    };
+  }
+
+  const textFetcher = options.textFetcher ??
+    ((targetUrl) => fetchTextWithRetry(
+      targetUrl,
+      options.userAgent ?? DEFAULT_USER_AGENT,
+      normalizeTimeoutMs(options.timeoutMs),
+      normalizeRetries(options.retries),
+      normalizeDelayMs(options.delayMs)
+    ));
+  let lastFailure = null;
+
+  for (const url of candidates) {
+    try {
+      const result = await textFetcher(url);
+      const text = typeof result === "string" ? result : result.text;
+
+      return {
+        status: "fetched",
+        url,
+        bytes: byteLength(text ?? ""),
+        candidateUrls: candidates,
+        discoveredVia: url === defaultUrl
+          ? "default"
+          : robots.sitemaps?.includes(url)
+            ? "robots.txt"
+            : "homepage-link",
+        receipt: typeof result === "string" ? null : textReceipt(url, result),
+        note: "sitemap.xml was fetched for discovery awareness.",
+      };
+    } catch (error) {
+      lastFailure = failureFromError(url, error);
+    }
+  }
+
+  return {
+    status: "unavailable",
+    url: candidates[0] ?? defaultUrl,
+    candidateUrls: candidates,
+    failure: lastFailure,
+    note: "sitemap.xml could not be fetched from discovered candidates.",
+  };
 }
 
 async function crawlRoutes(sourceUrl, options) {
@@ -1058,6 +1194,12 @@ async function crawlRoutes(sourceUrl, options) {
     delayMs,
     retries,
   });
+  let sitemap = {
+    status: "unavailable",
+    url: new URL("/sitemap.xml", source).href,
+    candidateUrls: [new URL("/sitemap.xml", source).href],
+    note: "sitemap.xml was not checked because the homepage was unavailable.",
+  };
   const pages = [];
   const failures = [];
   const diagnostics = [];
@@ -1102,6 +1244,7 @@ async function crawlRoutes(sourceUrl, options) {
         maxPages,
         pages,
         robots,
+        sitemap,
         timeoutMs,
         delayMs,
         retries,
@@ -1117,6 +1260,13 @@ async function crawlRoutes(sourceUrl, options) {
     receipt: homepageReceipt,
   };
   pages.push(homepage);
+  sitemap = await fetchSitemap(source, homepageHtml, robots, {
+    ...options,
+    timeoutMs,
+    userAgent,
+    delayMs,
+    retries,
+  });
   const discoveredRoutes = extractInternalRoutes(homepageHtml, source.href)
     .filter((route) => route !== homepage.path);
   const queue = [homepage.path, ...discoveredRoutes].slice(0, maxPages);
@@ -1162,6 +1312,7 @@ async function crawlRoutes(sourceUrl, options) {
     maxPages,
     pages,
     robots,
+    sitemap,
     timeoutMs,
     delayMs,
     retries,
@@ -1191,6 +1342,7 @@ export async function agentify(url, options = {}) {
     pages: crawled.pages,
     failures: crawled.failures,
     robots: crawled.robots,
+    sitemap: crawled.sitemap,
     timeoutMs: crawled.timeoutMs,
     delayMs: crawled.delayMs,
     retries: crawled.retries,
@@ -1389,7 +1541,7 @@ export function explainAgentify(outputDir = path.join(process.cwd(), "agent")) {
     },
     discovery: {
       robotsTxt: runtime.crawl?.robots?.status === "fetched",
-      sitemapXml: false,
+      sitemapXml: runtime.crawl?.sitemap?.status === "fetched",
     },
     renderer: {
       javascriptExecuted: typeof runtime.renderer?.javascriptExecuted === "boolean"

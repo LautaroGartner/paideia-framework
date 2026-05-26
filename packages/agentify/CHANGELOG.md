@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.1-alpha.2
+
+- Added sitemap discovery through `/sitemap.xml`, `robots.txt`, and homepage sitemap links.
+- Added sitemap discovery receipts to runtime artifacts.
+- Updated `agentify explain` discovery output to reflect recorded sitemap state.
+
 ## 0.7.1-alpha.1
 
 - Added `agentify explain [agent]`.

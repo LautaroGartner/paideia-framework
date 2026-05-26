@@ -133,6 +133,7 @@ try {
     maxPages: 10,
     outputDir: path.join(testRoot, "agent"),
     robotsTxt: "User-agent: *\nAllow: /\n",
+    sitemapXml: "<?xml version=\"1.0\"?><urlset></urlset>",
     userAgent: "agentify-test/1.0",
   });
 
@@ -176,7 +177,7 @@ try {
     system.routes.map((route) => route.path),
     ["/", "/about", "/app", "/docs"]
   );
-  assert.equal(system.generator.version, "0.7.1-alpha.1");
+  assert.equal(system.generator.version, "0.7.1-alpha.2");
   assert.deepEqual(system.renderer, {
     mode: "static-html",
     javascriptExecuted: false,
@@ -199,6 +200,8 @@ try {
   assert.equal(system.crawl.failures[0].status, 429);
   assert.ok(system.crawl.failures[0].url.endsWith("/rate-limited"));
   assert.equal(system.crawl.robots.status, "fetched");
+  assert.equal(system.crawl.sitemap.status, "fetched");
+  assert.equal(system.crawl.sitemap.discoveredVia, "provided");
   assert.equal(system.crawl.userAgent, "agentify-test/1.0");
   assert.deepEqual(system.capabilities, expectedCapabilities);
   assert.equal(system.diagnostics.status, "partial");
@@ -212,7 +215,7 @@ try {
   assert.equal(context.generatedAt, "2026-05-22T00:00:00.000Z");
   assert.equal(context.artifactSchemaVersion, "0.1");
   assert.equal(context.sourceUrl, "https://example.test/");
-  assert.equal(context.generator.version, "0.7.1-alpha.1");
+  assert.equal(context.generator.version, "0.7.1-alpha.2");
   assert.deepEqual(context.renderer, {
     mode: "static-html",
     javascriptExecuted: false,
@@ -259,7 +262,7 @@ try {
   assert.equal(context.routes[2].javascriptRequired, true);
 
   assert.equal(runtime.generator.name, "agentify");
-  assert.equal(runtime.generator.version, "0.7.1-alpha.1");
+  assert.equal(runtime.generator.version, "0.7.1-alpha.2");
   assert.equal(runtime.artifactSchemaVersion, "0.1");
   assert.equal(runtime.generatedAt, "2026-05-22T00:00:00.000Z");
   assert.equal(runtime.sourceUrl, "https://example.test/");
@@ -287,6 +290,8 @@ try {
   assertFailures(runtime.crawl.failures, "runtime crawl");
   assert.equal(runtime.crawl.failures[0].status, 429);
   assert.equal(runtime.crawl.sameOriginOnly, true);
+  assert.equal(runtime.crawl.sitemap.status, "fetched");
+  assert.ok(runtime.crawl.sitemap.candidateUrls.includes("https://example.test/sitemap.xml"));
   assert.equal(runtime.crawl.userAgent, "agentify-test/1.0");
   assert.deepEqual(
     runtime.artifacts.map((artifact) => artifact.path).sort(),

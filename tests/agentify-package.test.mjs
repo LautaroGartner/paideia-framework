@@ -106,7 +106,7 @@ try {
 
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
   assert.equal(packageJson.name, "@lautarogartner/agentify");
-  assert.equal(packageJson.version, "0.7.1-alpha.1");
+  assert.equal(packageJson.version, "0.7.1-alpha.2");
   assert.equal(packageJson.bin?.agentify, "bin/agentify.mjs");
 
   const readme = fs.readFileSync(packageReadmePath, "utf8");
@@ -154,12 +154,21 @@ try {
     cwd: appRoot,
   });
   assert.equal(version.status, 0, version.output);
-  assert.equal(version.output.trim(), "0.7.1-alpha.1");
+  assert.equal(version.output.trim(), "0.7.1-alpha.2");
 
   const server = http.createServer((request, response) => {
     if (request.url === "/robots.txt") {
       response.writeHead(200, { "content-type": "text/plain" });
-      response.end("User-agent: *\nAllow: /\n");
+      response.end("User-agent: *\nAllow: /\nSitemap: /sitemap.xml\n");
+      return;
+    }
+
+    if (request.url === "/sitemap.xml") {
+      response.writeHead(200, { "content-type": "application/xml" });
+      response.end(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>http://127.0.0.1/</loc></url>
+</urlset>`);
       return;
     }
 
@@ -245,7 +254,7 @@ try {
       fs.readFileSync(path.join(outputDir, "runtime.json"), "utf8")
     );
     assert.equal(runtime.generator.name, "agentify");
-    assert.equal(runtime.generator.version, "0.7.1-alpha.1");
+    assert.equal(runtime.generator.version, "0.7.1-alpha.2");
     assert.deepEqual(runtime.renderer, {
       mode: "static-html",
       javascriptExecuted: false,
@@ -254,6 +263,9 @@ try {
     assert.equal(runtime.routeCount, 2);
     assert.equal(runtime.crawl.failed, 1);
     assert.equal(runtime.crawl.receipts.length, 2);
+    assert.equal(runtime.crawl.sitemap.status, "fetched");
+    assert.equal(runtime.crawl.sitemap.discoveredVia, "default");
+    assert.equal(runtime.crawl.sitemap.receipt.status, 200);
     assert.equal(runtime.crawl.receipts[0].status, 200);
     assert.match(runtime.artifacts[0].sha256, /^[a-f0-9]{64}$/);
 
@@ -301,6 +313,10 @@ try {
     assert.ok(
       explain.output.includes("validation: passed"),
       "explain output should show validation status"
+    );
+    assert.ok(
+      explain.output.includes("sitemap.xml: yes"),
+      "explain output should show sitemap discovery"
     );
     assert.ok(
       explain.output.includes("runtime.json"),
