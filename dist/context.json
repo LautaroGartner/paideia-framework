@@ -24,6 +24,19 @@
   ],
   "posts": [
     {
+      "slug": "why-ai-agents-need-observable-runtime-receipts",
+      "path": "/why-ai-agents-need-observable-runtime-receipts",
+      "canonical": "https://lautarogartner.com/why-ai-agents-need-observable-runtime-receipts",
+      "title": "Why AI Agents Need Observable Runtime Receipts",
+      "topics": [
+        "agent-readable web",
+        "runtime receipts",
+        "crawler diagnostics"
+      ],
+      "publishedAt": "2026-05-26",
+      "tokenSummary": "Essay arguing that AI agents need observable runtime receipts because modern websites are shaped by bot protection, 429s, JavaScript-only rendering, hidden state, crawler ambiguity, and explicit diagnostics."
+    },
+    {
       "slug": "agent-readable-web",
       "path": "/agent-readable-web",
       "canonical": "https://lautarogartner.com/agent-readable-web",
@@ -77,8 +90,8 @@
     }
   ],
   "writing": {
-    "postCount": 4,
-    "latestPost": "agent-readable-web"
+    "postCount": 5,
+    "latestPost": "why-ai-agents-need-observable-runtime-receipts"
   },
   "generatedBy": {
     "name": "Paideia Framework",

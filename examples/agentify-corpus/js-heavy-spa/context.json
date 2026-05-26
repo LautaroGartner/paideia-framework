@@ -1,0 +1,181 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generatedAt": "2026-05-26T18:38:01.169Z",
+  "sourceUrl": "https://app.slack.com/",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.2"
+  },
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 1,
+  "failedRouteCount": 0,
+  "warningCodes": [
+    "js.required"
+  ],
+  "warnings": [
+    {
+      "code": "js.required",
+      "path": "/",
+      "message": "Homepage appears to require JavaScript for meaningful static content."
+    }
+  ],
+  "source": {
+    "url": "https://app.slack.com/",
+    "origin": "https://app.slack.com"
+  },
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 3,
+    "timeoutMs": 10000,
+    "delayMs": 500,
+    "retries": 1,
+    "fetched": 1,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/",
+        "url": "https://app.slack.com/",
+        "finalUrl": "https://app.slack.com/",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html; charset=utf-8",
+        "timingMs": 374,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "https://slack.com/",
+        "discoveredVia": "source",
+        "depth": 0
+      }
+    ],
+    "sitemap": {
+      "status": "fetched",
+      "url": "https://app.slack.com/sitemap.xml",
+      "bytes": 1122,
+      "candidateUrls": [
+        "https://app.slack.com/sitemap.xml",
+        "https://slack.com/sitemap.xml",
+        "https://slack.com/sitemap_marketplace.xml",
+        "https://slack.com/sitemaps/blog/news/sitemap.xml"
+      ],
+      "discoveredVia": "default",
+      "receipt": {
+        "url": "https://app.slack.com/sitemap.xml",
+        "finalUrl": "https://app.slack.com/sitemap.xml",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "application/xml",
+        "timingMs": 166,
+        "redirected": false,
+        "redirectChain": []
+      },
+      "note": "sitemap.xml was fetched for discovery awareness."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 corpus",
+    "robots": {
+      "status": "fetched",
+      "url": "https://app.slack.com/robots.txt",
+      "bytes": 535,
+      "receipt": {
+        "url": "https://app.slack.com/robots.txt",
+        "finalUrl": "https://app.slack.com/robots.txt",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/plain;charset=utf-8",
+        "timingMs": 304,
+        "redirected": false,
+        "redirectChain": []
+      },
+      "sitemaps": [
+        "https://slack.com/sitemap.xml",
+        "https://slack.com/sitemap_marketplace.xml",
+        "https://slack.com/sitemaps/blog/news/sitemap.xml"
+      ],
+      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
+    }
+  },
+  "site": {
+    "title": "Slack | AI Work Platform & Productivity Tools",
+    "description": "Boost productivity and save time with Slack‌ — ‌the AI work platform for managing projects, automating workflows, and connecting teams securely. Start working smarter today."
+  },
+  "routeSummaries": [
+    {
+      "path": "/",
+      "title": "Slack | AI Work Platform & Productivity Tools",
+      "description": "Boost productivity and save time with Slack‌ — ‌the AI work platform for managing projects, automating workflows, and connecting teams securely. Start working smarter today.",
+      "headingCount": 36,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "javascriptRequired": true
+    }
+  ],
+  "routes": [
+    {
+      "path": "/",
+      "title": "Slack | AI Work Platform & Productivity Tools",
+      "description": "Boost productivity and save time with Slack‌ — ‌the AI work platform for managing projects, automating workflows, and connecting teams securely. Start working smarter today.",
+      "headings": [
+        "All your people and AI agents working together.",
+        "Reimagine what’s possible with AI and agents.",
+        "What’s new in Slack",
+        "Slackbot Skills",
+        "Slackbot Email and Calendar Actions",
+        "Slackbot Scheduled Tasks",
+        "New Activity Tab",
+        "Generate AI Response Step in Workflow Builder",
+        "Slack Developer Kit for Agents",
+        "Slackbot Slack Actions",
+        "Slackbot In-Slack Awareness",
+        "Knowledge",
+        "People",
+        "Process",
+        "Platform",
+        "The most innovative companies run their business in Slack.",
+        "How OpenAI Connects with Customers and Expands ChatGPT with Slack",
+        "How Spotify Boosted Ad Sales and Streamlined Operations with Slack",
+        "To Seamlessly Serve Millions, ezCater Taps into Slack and Agentforce",
+        "How Signable leads the digital shift with signature Slack moves",
+        "How OpenAI Connects with Customers and Expands ChatGPT with Slack",
+        "How Spotify Boosted Ad Sales and Streamlined Operations with Slack",
+        "To Seamlessly Serve Millions, ezCater Taps into Slack and Agentforce",
+        "How Signable leads the digital shift with signature Slack moves",
+        "We’re in the business of growing businesses.",
+        "Millions of people love to work in Slack.",
+        "Your Slack deep dive starts here.",
+        "The Cost of Business as Usual in the AI Era.",
+        "Unlock Agentic Productivity for Every Employee",
+        "Agentforce 2.0: Agentforce Arrives in Slack",
+        "10 Ways to Replace Ineffective Meetings with Slack",
+        "The Cost of Business as Usual in the AI Era.",
+        "Unlock Agentic Productivity for Every Employee",
+        "Agentforce 2.0: Agentforce Arrives in Slack",
+        "10 Ways to Replace Ineffective Meetings with Slack",
+        "See all you can accomplish in Slack."
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "canonical": "https://slack.com/",
+      "discoveredVia": "source",
+      "depth": 0
+    }
+  ],
+  "suggestedReadingOrder": [
+    "llms.txt",
+    "context.json",
+    "system.json",
+    "runtime.json"
+  ]
+}

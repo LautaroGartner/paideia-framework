@@ -1,0 +1,175 @@
+{
+  "schemaVersion": "0.1",
+  "description": "Classification metadata for real-world Agentify crawl corpus entries.",
+  "entries": [
+    {
+      "id": "good-static-site",
+      "sourceUrl": "https://www.iana.org/domains/reserved",
+      "label": "Good static site",
+      "category": "static-site",
+      "classification": {
+        "machineReadability": "medium",
+        "requiresJavascript": false,
+        "requiresAuthentication": false,
+        "crawlability": "complete",
+        "metadataQuality": "partial",
+        "discoveryQuality": "partial"
+      },
+      "expectations": {
+        "crawlStatus": "complete",
+        "minFetched": 2,
+        "diagnosticCodes": [
+          "missing.description"
+        ],
+        "robotsStatus": "fetched",
+        "sitemapStatus": "unavailable"
+      },
+      "notes": "Stable public HTML with multiple observable routes, but missing descriptions reduce semantic quality."
+    },
+    {
+      "id": "protected-site",
+      "sourceUrl": "https://app.asana.com/",
+      "label": "Protected site",
+      "category": "defensive-infra",
+      "classification": {
+        "machineReadability": "low",
+        "requiresJavascript": null,
+        "requiresAuthentication": true,
+        "crawlability": "blocked",
+        "metadataQuality": "unknown",
+        "discoveryQuality": "partial"
+      },
+      "expectations": {
+        "crawlStatus": "partial",
+        "failureStatus": 403,
+        "diagnosticCodes": [
+          "crawl.partial",
+          "route.fetch_failed"
+        ],
+        "robotsStatus": "fetched",
+        "sitemapStatus": "unavailable"
+      },
+      "notes": "Application surface returned HTTP 403, preserving bot/protection boundary as an observable receipt."
+    },
+    {
+      "id": "js-heavy-spa",
+      "sourceUrl": "https://app.slack.com/",
+      "label": "JavaScript-heavy SPA",
+      "category": "runtime-opacity",
+      "classification": {
+        "machineReadability": "partial",
+        "requiresJavascript": true,
+        "requiresAuthentication": false,
+        "crawlability": "limited",
+        "metadataQuality": "partial",
+        "discoveryQuality": "high"
+      },
+      "expectations": {
+        "crawlStatus": "complete",
+        "minFetched": 1,
+        "diagnosticCodes": [
+          "js.required"
+        ],
+        "robotsStatus": "fetched",
+        "sitemapStatus": "fetched"
+      },
+      "notes": "Static fetch observes the app shell and discovery files, while meaningful runtime state requires JavaScript."
+    },
+    {
+      "id": "malformed-metadata",
+      "sourceUrl": "http://info.cern.ch/",
+      "label": "Sparse metadata",
+      "category": "degraded-semantics",
+      "classification": {
+        "machineReadability": "medium",
+        "requiresJavascript": false,
+        "requiresAuthentication": false,
+        "crawlability": "complete",
+        "metadataQuality": "low",
+        "discoveryQuality": "low"
+      },
+      "expectations": {
+        "crawlStatus": "complete",
+        "minFetched": 2,
+        "diagnosticCodes": [
+          "missing.description"
+        ],
+        "robotsStatus": "unavailable",
+        "sitemapStatus": "unavailable"
+      },
+      "notes": "Old public HTML remains crawlable, but missing metadata limits machine-readable semantics."
+    },
+    {
+      "id": "broken-or-missing-sitemap",
+      "sourceUrl": "https://example.com/",
+      "label": "Missing discovery files",
+      "category": "discovery-failure",
+      "classification": {
+        "machineReadability": "medium",
+        "requiresJavascript": false,
+        "requiresAuthentication": false,
+        "crawlability": "complete",
+        "metadataQuality": "partial",
+        "discoveryQuality": "low"
+      },
+      "expectations": {
+        "crawlStatus": "complete",
+        "minFetched": 1,
+        "diagnosticCodes": [
+          "missing.description"
+        ],
+        "robotsStatus": "unavailable",
+        "sitemapStatus": "unavailable"
+      },
+      "notes": "Simple public page is observable, but robots and sitemap discovery are unavailable."
+    },
+    {
+      "id": "redirect-loop-or-depth",
+      "sourceUrl": "https://httpbin.org/redirect/50",
+      "label": "Redirect depth failure",
+      "category": "traversal-pathology",
+      "classification": {
+        "machineReadability": "low",
+        "requiresJavascript": false,
+        "requiresAuthentication": false,
+        "crawlability": "failed",
+        "metadataQuality": "unknown",
+        "discoveryQuality": "partial"
+      },
+      "expectations": {
+        "crawlStatus": "partial",
+        "diagnosticCodes": [
+          "crawl.partial",
+          "route.fetch_failed"
+        ],
+        "robotsStatus": "fetched",
+        "sitemapStatus": "unavailable"
+      },
+      "notes": "Excessive redirect chain fails before route metadata can be observed."
+    },
+    {
+      "id": "auth-wall",
+      "sourceUrl": "https://github.com/settings/profile",
+      "label": "Auth wall",
+      "category": "inaccessible-state",
+      "classification": {
+        "machineReadability": "partial",
+        "requiresJavascript": true,
+        "requiresAuthentication": true,
+        "crawlability": "limited",
+        "metadataQuality": "partial",
+        "discoveryQuality": "partial"
+      },
+      "expectations": {
+        "crawlStatus": "complete",
+        "minFetched": 3,
+        "diagnosticCodes": [
+          "js.required"
+        ],
+        "robotsStatus": "fetched",
+        "sitemapStatus": "unavailable"
+      },
+      "notes": "Authenticated route redirects into login and signup surfaces; public static crawl sees the wall, not the private state."
+    }
+  ]
+}

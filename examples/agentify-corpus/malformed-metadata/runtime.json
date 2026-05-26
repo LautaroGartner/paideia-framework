@@ -1,0 +1,142 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.2"
+  },
+  "generatedAt": "2026-05-26T18:37:03.302Z",
+  "sourceUrl": "http://info.cern.ch/",
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 2,
+  "failedRouteCount": 0,
+  "buildId": "4ffbb60",
+  "artifacts": [
+    {
+      "path": "context.json",
+      "kind": "agent-metadata",
+      "bytes": 4255,
+      "sha256": "4c2646ae190e8afa253f70d7980486bf8fc51b2332c69a4a396f81b1afe3c867"
+    },
+    {
+      "path": "llms.txt",
+      "kind": "agent-guide",
+      "bytes": 821,
+      "sha256": "1ca4e31f7cd3e8f4f30d9b6de6795bc6daf9df624266dea985be4c888a143608"
+    },
+    {
+      "path": "runtime.json",
+      "kind": "agent-metadata",
+      "bytes": 3709,
+      "sha256": "0a010b4f019e91d66cb27fdcb55dcff53d9d691076cbf8b7099565da505c1935"
+    },
+    {
+      "path": "system.json",
+      "kind": "agent-metadata",
+      "bytes": 4311,
+      "sha256": "7446485ed600ca6be2b3316901ab092c67d931191d020c763898f3f33bf2b7ff"
+    }
+  ],
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 5,
+    "timeoutMs": 10000,
+    "delayMs": 250,
+    "retries": 1,
+    "fetched": 2,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/",
+        "url": "http://info.cern.ch/",
+        "finalUrl": "http://info.cern.ch/",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 504,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "source",
+        "depth": 0
+      },
+      {
+        "path": "/hypertext/WWW/TheProject.html",
+        "url": "http://info.cern.ch/hypertext/WWW/TheProject.html",
+        "finalUrl": "http://info.cern.ch/hypertext/WWW/TheProject.html",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 559,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "homepage-anchor",
+        "depth": 1
+      }
+    ],
+    "sitemap": {
+      "status": "unavailable",
+      "url": "http://info.cern.ch/sitemap.xml",
+      "candidateUrls": [
+        "http://info.cern.ch/sitemap.xml"
+      ],
+      "failure": {
+        "url": "http://info.cern.ch/sitemap.xml",
+        "status": 404,
+        "message": "Not Found"
+      },
+      "note": "sitemap.xml could not be fetched from discovered candidates."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 corpus",
+    "robots": {
+      "status": "unavailable",
+      "url": "http://info.cern.ch/robots.txt",
+      "failure": {
+        "url": "http://info.cern.ch/robots.txt",
+        "status": 404,
+        "message": "Not Found"
+      },
+      "note": "robots.txt could not be fetched; v0.7 records this but does not enforce directives."
+    }
+  },
+  "diagnostics": {
+    "status": "complete",
+    "warnings": 2,
+    "errors": 0,
+    "codes": [
+      "missing.description"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "missing.description",
+      "path": "/",
+      "message": "Homepage did not include a meta description."
+    },
+    {
+      "code": "missing.description",
+      "path": "/hypertext/WWW/TheProject.html",
+      "message": "Route /hypertext/WWW/TheProject.html did not include a meta description."
+    }
+  ]
+}

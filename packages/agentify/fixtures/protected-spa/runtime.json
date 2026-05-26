@@ -1,0 +1,187 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.2"
+  },
+  "generatedAt": "2026-05-26T18:41:43.146Z",
+  "sourceUrl": "https://x.com/",
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 3,
+  "failedRouteCount": 0,
+  "buildId": "8fde71d",
+  "artifacts": [
+    {
+      "path": "context.json",
+      "kind": "agent-metadata",
+      "bytes": 8205,
+      "sha256": "6ee520fdef81ab99b52df0c4f051719f60799700c132e3f297f883bba1bbcfcf"
+    },
+    {
+      "path": "llms.txt",
+      "kind": "agent-guide",
+      "bytes": 815,
+      "sha256": "dc516e671288c72fb1942eb5f0578143285ece59618afa16f3dd6b9cb92eebe8"
+    },
+    {
+      "path": "runtime.json",
+      "kind": "agent-metadata",
+      "bytes": 4861,
+      "sha256": "ddf080b1c57e1d16cceefb5aa58fe9281d2d304a14dfb556e6fc1209fc88436f"
+    },
+    {
+      "path": "system.json",
+      "kind": "agent-metadata",
+      "bytes": 7876,
+      "sha256": "bf68ac8a0d71ea05eca338ae75840a9d90e0d98beadf7cdfca0df5f24e9388bf"
+    }
+  ],
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 10,
+    "timeoutMs": 10000,
+    "delayMs": 500,
+    "retries": 1,
+    "fetched": 3,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/",
+        "url": "https://x.com/",
+        "finalUrl": "https://x.com/",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html; charset=utf-8",
+        "timingMs": 180,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "source",
+        "depth": 0
+      },
+      {
+        "path": "/privacy",
+        "url": "https://x.com/privacy",
+        "finalUrl": "https://x.com/en/privacy",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 403,
+        "redirected": true,
+        "redirectChain": [
+          "https://x.com/privacy",
+          "https://x.com/en/privacy"
+        ],
+        "canonical": "https://x.com/en/privacy",
+        "discoveredVia": "homepage-anchor",
+        "depth": 1
+      },
+      {
+        "path": "/tos",
+        "url": "https://x.com/tos",
+        "finalUrl": "https://x.com/en/tos",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 334,
+        "redirected": true,
+        "redirectChain": [
+          "https://x.com/tos",
+          "https://x.com/en/tos"
+        ],
+        "canonical": "https://x.com/en/tos",
+        "discoveredVia": "homepage-anchor",
+        "depth": 1
+      }
+    ],
+    "sitemap": {
+      "status": "fetched",
+      "url": "https://x.com/sitemap.xml",
+      "bytes": 269560,
+      "candidateUrls": [
+        "https://x.com/sitemap.xml",
+        "https://twitter.com/sitemap.xml"
+      ],
+      "discoveredVia": "default",
+      "receipt": {
+        "url": "https://x.com/sitemap.xml",
+        "finalUrl": "https://x.com/sitemap.xml",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html; charset=utf-8",
+        "timingMs": 187,
+        "redirected": false,
+        "redirectChain": []
+      },
+      "note": "sitemap.xml was fetched for discovery awareness."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 fixture",
+    "robots": {
+      "status": "fetched",
+      "url": "https://x.com/robots.txt",
+      "bytes": 2514,
+      "receipt": {
+        "url": "https://x.com/robots.txt",
+        "finalUrl": "https://x.com/robots.txt",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/plain;charset=utf-8",
+        "timingMs": 262,
+        "redirected": false,
+        "redirectChain": []
+      },
+      "sitemaps": [
+        "https://x.com/sitemap.xml",
+        "https://twitter.com/sitemap.xml"
+      ],
+      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
+    }
+  },
+  "diagnostics": {
+    "status": "complete",
+    "warnings": 3,
+    "errors": 0,
+    "codes": [
+      "js.required",
+      "missing.description",
+      "missing.title"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "missing.title",
+      "path": "/",
+      "message": "Homepage did not include a title."
+    },
+    {
+      "code": "missing.description",
+      "path": "/",
+      "message": "Homepage did not include a meta description."
+    },
+    {
+      "code": "js.required",
+      "path": "/",
+      "message": "Homepage appears to require JavaScript for meaningful static content."
+    }
+  ]
+}

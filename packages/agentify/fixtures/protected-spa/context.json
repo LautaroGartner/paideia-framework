@@ -1,0 +1,290 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generatedAt": "2026-05-26T18:41:43.146Z",
+  "sourceUrl": "https://x.com/",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.2"
+  },
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 3,
+  "failedRouteCount": 0,
+  "warningCodes": [
+    "js.required",
+    "missing.description",
+    "missing.title"
+  ],
+  "warnings": [
+    {
+      "code": "missing.title",
+      "path": "/",
+      "message": "Homepage did not include a title."
+    },
+    {
+      "code": "missing.description",
+      "path": "/",
+      "message": "Homepage did not include a meta description."
+    },
+    {
+      "code": "js.required",
+      "path": "/",
+      "message": "Homepage appears to require JavaScript for meaningful static content."
+    }
+  ],
+  "source": {
+    "url": "https://x.com/",
+    "origin": "https://x.com"
+  },
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 10,
+    "timeoutMs": 10000,
+    "delayMs": 500,
+    "retries": 1,
+    "fetched": 3,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/",
+        "url": "https://x.com/",
+        "finalUrl": "https://x.com/",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html; charset=utf-8",
+        "timingMs": 180,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "source",
+        "depth": 0
+      },
+      {
+        "path": "/privacy",
+        "url": "https://x.com/privacy",
+        "finalUrl": "https://x.com/en/privacy",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 403,
+        "redirected": true,
+        "redirectChain": [
+          "https://x.com/privacy",
+          "https://x.com/en/privacy"
+        ],
+        "canonical": "https://x.com/en/privacy",
+        "discoveredVia": "homepage-anchor",
+        "depth": 1
+      },
+      {
+        "path": "/tos",
+        "url": "https://x.com/tos",
+        "finalUrl": "https://x.com/en/tos",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 334,
+        "redirected": true,
+        "redirectChain": [
+          "https://x.com/tos",
+          "https://x.com/en/tos"
+        ],
+        "canonical": "https://x.com/en/tos",
+        "discoveredVia": "homepage-anchor",
+        "depth": 1
+      }
+    ],
+    "sitemap": {
+      "status": "fetched",
+      "url": "https://x.com/sitemap.xml",
+      "bytes": 269560,
+      "candidateUrls": [
+        "https://x.com/sitemap.xml",
+        "https://twitter.com/sitemap.xml"
+      ],
+      "discoveredVia": "default",
+      "receipt": {
+        "url": "https://x.com/sitemap.xml",
+        "finalUrl": "https://x.com/sitemap.xml",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html; charset=utf-8",
+        "timingMs": 187,
+        "redirected": false,
+        "redirectChain": []
+      },
+      "note": "sitemap.xml was fetched for discovery awareness."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 fixture",
+    "robots": {
+      "status": "fetched",
+      "url": "https://x.com/robots.txt",
+      "bytes": 2514,
+      "receipt": {
+        "url": "https://x.com/robots.txt",
+        "finalUrl": "https://x.com/robots.txt",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/plain;charset=utf-8",
+        "timingMs": 262,
+        "redirected": false,
+        "redirectChain": []
+      },
+      "sitemaps": [
+        "https://x.com/sitemap.xml",
+        "https://twitter.com/sitemap.xml"
+      ],
+      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
+    }
+  },
+  "site": {
+    "title": "",
+    "description": ""
+  },
+  "routeSummaries": [
+    {
+      "path": "/",
+      "title": "",
+      "description": "",
+      "headingCount": 1,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "javascriptRequired": true
+    },
+    {
+      "path": "/privacy",
+      "title": "X Privacy Policy",
+      "description": "Read X's Privacy Policy to learn about the information we collect, how it’s used, and the control you have over it.",
+      "headingCount": 18,
+      "status": 200,
+      "contentType": "text/html",
+      "javascriptRequired": false
+    },
+    {
+      "path": "/tos",
+      "title": "X Terms of Service",
+      "description": "Read X's Terms of Service to understand the rules governing your access of all Twitter services.",
+      "headingCount": 37,
+      "status": 200,
+      "contentType": "text/html",
+      "javascriptRequired": false
+    }
+  ],
+  "routes": [
+    {
+      "path": "/",
+      "title": "",
+      "description": "",
+      "headings": [
+        "JavaScript is not available."
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "canonical": "",
+      "discoveredVia": "source",
+      "depth": 0
+    },
+    {
+      "path": "/privacy",
+      "title": "X Privacy Policy",
+      "description": "Read X's Privacy Policy to learn about the information we collect, how it’s used, and the control you have over it.",
+      "headings": [
+        "X Privacy Policy",
+        "Before you scroll, read this",
+        "1. Information We Collect",
+        "2. How We Use Information",
+        "3. Sharing Information",
+        "4. How Long We Keep Information",
+        "5. Take Control",
+        "6. Your Rights And Ours",
+        "7. X's Audience",
+        "8. Changes To This Privacy Policy",
+        "9. General",
+        "10. How To Contact X",
+        "Take control of your privacy",
+        "X platform",
+        "X Corp.",
+        "Help",
+        "Developer resources",
+        "Business resources"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html",
+      "canonical": "https://x.com/en/privacy",
+      "discoveredVia": "homepage-anchor",
+      "depth": 1
+    },
+    {
+      "path": "/tos",
+      "title": "X Terms of Service",
+      "description": "Read X's Terms of Service to understand the rules governing your access of all Twitter services.",
+      "headings": [
+        "Terms of Service",
+        "Summary of our Terms",
+        "X Terms of Service",
+        "If you live outside the European Union, EFTA States, or the United Kingdom, including if you live in the United States",
+        "1. Who May Use the Services",
+        "2. Privacy",
+        "3. Content on the Services",
+        "Your Rights and Grant of Rights in the Content",
+        "4. Using the Services",
+        "Your Account",
+        "Your License to Use the Services",
+        "Misuse of the Services",
+        "Ending These Terms",
+        "5. Disclaimers and Limitations of Liability",
+        "The Services are Available \"AS-IS\"",
+        "Limitation of Liability",
+        "Liquidated Damages",
+        "6. General",
+        "X Terms of Service",
+        "If you live in the European Union, EFTA States, or the United Kingdom",
+        "1. Who May Use the Services",
+        "2. Privacy",
+        "3. Content on the Services",
+        "Your Rights and Grant of Rights in the Content",
+        "4. Using the Services",
+        "Your Account",
+        "Your License to Use the Services",
+        "Misuse of the Services",
+        "Ending These Terms",
+        "5. Limitations of Liability",
+        "Liquidated Damages",
+        "6. General",
+        "X platform",
+        "X Corp.",
+        "Help",
+        "Developer resources",
+        "Business resources"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html",
+      "canonical": "https://x.com/en/tos",
+      "discoveredVia": "homepage-anchor",
+      "depth": 1
+    }
+  ],
+  "suggestedReadingOrder": [
+    "llms.txt",
+    "context.json",
+    "system.json",
+    "runtime.json"
+  ]
+}

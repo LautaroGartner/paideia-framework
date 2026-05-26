@@ -1,0 +1,123 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.2"
+  },
+  "generatedAt": "2026-05-26T18:37:24.791Z",
+  "sourceUrl": "https://example.com/",
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 1,
+  "failedRouteCount": 0,
+  "buildId": "4d0097e",
+  "artifacts": [
+    {
+      "path": "context.json",
+      "kind": "agent-metadata",
+      "bytes": 2915,
+      "sha256": "dfc1def0b0cfe2229967f1ed3b830eadd3ac1b863b16a5dbac00cc8b8be9b896"
+    },
+    {
+      "path": "llms.txt",
+      "kind": "agent-guide",
+      "bytes": 750,
+      "sha256": "a2dc39739862492a200b04b5c6d588f2579eb52f777d84de1bf66c3770ed3285"
+    },
+    {
+      "path": "runtime.json",
+      "kind": "agent-metadata",
+      "bytes": 3052,
+      "sha256": "433128c56255aa1a0f6c39cc7a308f9802cfab2bf80e1a1b0971164ef5ee1193"
+    },
+    {
+      "path": "system.json",
+      "kind": "agent-metadata",
+      "bytes": 3155,
+      "sha256": "6d5b5fa2d7b2cbfaa69252f9557c4e146c2485f9d2950a17e13c98b422d35988"
+    }
+  ],
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 5,
+    "timeoutMs": 10000,
+    "delayMs": 250,
+    "retries": 1,
+    "fetched": 1,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/",
+        "url": "https://example.com/",
+        "finalUrl": "https://example.com/",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 45,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "source",
+        "depth": 0
+      }
+    ],
+    "sitemap": {
+      "status": "unavailable",
+      "url": "https://example.com/sitemap.xml",
+      "candidateUrls": [
+        "https://example.com/sitemap.xml"
+      ],
+      "failure": {
+        "url": "https://example.com/sitemap.xml",
+        "status": 404,
+        "message": "Not Found"
+      },
+      "note": "sitemap.xml could not be fetched from discovered candidates."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 corpus",
+    "robots": {
+      "status": "unavailable",
+      "url": "https://example.com/robots.txt",
+      "failure": {
+        "url": "https://example.com/robots.txt",
+        "status": 404,
+        "message": "Not Found"
+      },
+      "note": "robots.txt could not be fetched; v0.7 records this but does not enforce directives."
+    }
+  },
+  "diagnostics": {
+    "status": "complete",
+    "warnings": 1,
+    "errors": 0,
+    "codes": [
+      "missing.description"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "missing.description",
+      "path": "/",
+      "message": "Homepage did not include a meta description."
+    }
+  ]
+}

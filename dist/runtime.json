@@ -4,10 +4,10 @@
     "version": "1.8.1"
   },
   "build": {
-    "id": "c78ddab",
-    "generatedAt": "2026-05-26T18:05:30.563Z",
+    "id": "0754c32",
+    "generatedAt": "2026-05-26T18:31:22.515Z",
     "mode": "production",
-    "artifactCount": 14
+    "artifactCount": 15
   },
   "capabilities": [
     "site.static",
@@ -26,12 +26,17 @@
     {
       "path": "index.html",
       "kind": "page",
-      "bytes": 11412
+      "bytes": 11825
     },
     {
       "path": "about/index.html",
       "kind": "page",
       "bytes": 16804
+    },
+    {
+      "path": "why-ai-agents-need-observable-runtime-receipts/index.html",
+      "kind": "post",
+      "bytes": 17880
     },
     {
       "path": "agent-readable-web/index.html",
@@ -71,32 +76,32 @@
     {
       "path": "sitemap.xml",
       "kind": "seo",
-      "bytes": 711
+      "bytes": 851
     },
     {
       "path": "system.json",
       "kind": "contract",
-      "bytes": 5246
+      "bytes": 6201
     },
     {
       "path": "context.json",
       "kind": "agent-context",
-      "bytes": 3498
+      "bytes": 4211
     },
     {
       "path": "runtime.json",
       "kind": "runtime-identity",
-      "bytes": 1991
+      "bytes": 2122
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 1858
+      "bytes": 2166
     }
   ],
   "site": {
     "pages": 2,
-    "posts": 4
+    "posts": 5
   },
   "runtime": {
     "inspectable": true,

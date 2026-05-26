@@ -1,0 +1,123 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.2"
+  },
+  "generatedAt": "2026-05-26T18:37:24.792Z",
+  "sourceUrl": "https://httpbin.org/redirect/50",
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 0,
+  "failedRouteCount": 1,
+  "buildId": "5f30942",
+  "artifacts": [
+    {
+      "path": "context.json",
+      "kind": "agent-metadata",
+      "bytes": 2356,
+      "sha256": "0511f875665ffd6834c8f563661ffc7e4fe943700bfd3d24d7796443737d2b57"
+    },
+    {
+      "path": "llms.txt",
+      "kind": "agent-guide",
+      "bytes": 849,
+      "sha256": "92dbfae597d18268b67eb9c2ad9b039817634257adfc67e84d3cdd1471948174"
+    },
+    {
+      "path": "runtime.json",
+      "kind": "agent-metadata",
+      "bytes": 3045,
+      "sha256": "7ce6a61a1805e1b412a6868fff92b3d97f39ba83e31ebbcc1ca15220f8d9bf4f"
+    },
+    {
+      "path": "system.json",
+      "kind": "agent-metadata",
+      "bytes": 2766,
+      "sha256": "0f22025244935a007a56509e61f3f2b6f964b51f6419d62b05800c95efb9c03a"
+    }
+  ],
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "crawl": {
+    "status": "partial",
+    "maxDepth": 1,
+    "maxPages": 5,
+    "timeoutMs": 10000,
+    "delayMs": 250,
+    "retries": 1,
+    "fetched": 0,
+    "failed": 1,
+    "failures": [
+      {
+        "url": "https://httpbin.org/redirect/50",
+        "status": null,
+        "message": "fetch failed"
+      }
+    ],
+    "receipts": [],
+    "sitemap": {
+      "status": "unavailable",
+      "url": "https://httpbin.org/sitemap.xml",
+      "candidateUrls": [
+        "https://httpbin.org/sitemap.xml"
+      ],
+      "note": "sitemap.xml was not checked because the homepage was unavailable."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 corpus",
+    "robots": {
+      "status": "fetched",
+      "url": "https://httpbin.org/robots.txt",
+      "bytes": 30,
+      "receipt": {
+        "url": "https://httpbin.org/robots.txt",
+        "finalUrl": "https://httpbin.org/robots.txt",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/plain",
+        "timingMs": 863,
+        "redirected": false,
+        "redirectChain": []
+      },
+      "sitemaps": [],
+      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
+    }
+  },
+  "diagnostics": {
+    "status": "partial",
+    "warnings": 2,
+    "errors": 0,
+    "codes": [
+      "crawl.partial",
+      "route.fetch_failed"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "route.fetch_failed",
+      "path": "/redirect/50",
+      "message": "fetch failed",
+      "status": null
+    },
+    {
+      "code": "crawl.partial",
+      "path": "*",
+      "message": "One or more discovered routes failed to fetch."
+    }
+  ]
+}

@@ -1,0 +1,317 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generatedAt": "2026-05-26T18:36:48.527Z",
+  "sourceUrl": "https://www.iana.org/domains/reserved",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.2"
+  },
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 5,
+  "failedRouteCount": 0,
+  "warningCodes": [
+    "missing.description"
+  ],
+  "warnings": [
+    {
+      "code": "missing.description",
+      "path": "/domains/reserved",
+      "message": "Homepage did not include a meta description."
+    },
+    {
+      "code": "missing.description",
+      "path": "/",
+      "message": "Route / did not include a meta description."
+    },
+    {
+      "code": "missing.description",
+      "path": "/about",
+      "message": "Route /about did not include a meta description."
+    },
+    {
+      "code": "missing.description",
+      "path": "/about/excellence",
+      "message": "Route /about/excellence did not include a meta description."
+    },
+    {
+      "code": "missing.description",
+      "path": "/abuse",
+      "message": "Route /abuse did not include a meta description."
+    }
+  ],
+  "source": {
+    "url": "https://www.iana.org/domains/reserved",
+    "origin": "https://www.iana.org"
+  },
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 5,
+    "timeoutMs": 10000,
+    "delayMs": 250,
+    "retries": 1,
+    "fetched": 5,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/domains/reserved",
+        "url": "https://www.iana.org/domains/reserved",
+        "finalUrl": "https://www.iana.org/domains/reserved",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html; charset=UTF-8",
+        "timingMs": 507,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "source",
+        "depth": 0
+      },
+      {
+        "path": "/",
+        "url": "https://www.iana.org/",
+        "finalUrl": "https://www.iana.org/",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html; charset=UTF-8",
+        "timingMs": 514,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "https://iana.org/",
+        "discoveredVia": "homepage-anchor",
+        "depth": 1
+      },
+      {
+        "path": "/about",
+        "url": "https://www.iana.org/about",
+        "finalUrl": "https://www.iana.org/about",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html; charset=UTF-8",
+        "timingMs": 524,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "homepage-anchor",
+        "depth": 1
+      },
+      {
+        "path": "/about/excellence",
+        "url": "https://www.iana.org/about/excellence",
+        "finalUrl": "https://www.iana.org/about/excellence",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html; charset=UTF-8",
+        "timingMs": 509,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "homepage-anchor",
+        "depth": 1
+      },
+      {
+        "path": "/abuse",
+        "url": "https://www.iana.org/abuse",
+        "finalUrl": "https://www.iana.org/abuse",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html; charset=UTF-8",
+        "timingMs": 513,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "homepage-anchor",
+        "depth": 1
+      }
+    ],
+    "sitemap": {
+      "status": "unavailable",
+      "url": "https://www.iana.org/sitemap.xml",
+      "candidateUrls": [
+        "https://www.iana.org/sitemap.xml"
+      ],
+      "failure": {
+        "url": "https://www.iana.org/sitemap.xml",
+        "status": 404,
+        "message": "Not Found"
+      },
+      "note": "sitemap.xml could not be fetched from discovered candidates."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 corpus",
+    "robots": {
+      "status": "fetched",
+      "url": "https://www.iana.org/robots.txt",
+      "bytes": 24,
+      "receipt": {
+        "url": "https://www.iana.org/robots.txt",
+        "finalUrl": "https://www.iana.org/robots.txt",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/plain; charset=UTF-8",
+        "timingMs": 880,
+        "redirected": false,
+        "redirectChain": []
+      },
+      "sitemaps": [],
+      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
+    }
+  },
+  "site": {
+    "title": "IANA-managed Reserved Domains",
+    "description": ""
+  },
+  "routeSummaries": [
+    {
+      "path": "/domains/reserved",
+      "title": "IANA-managed Reserved Domains",
+      "description": "",
+      "headingCount": 6,
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "javascriptRequired": false
+    },
+    {
+      "path": "/",
+      "title": "Internet Assigned Numbers Authority",
+      "description": "",
+      "headingCount": 4,
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "javascriptRequired": false
+    },
+    {
+      "path": "/about",
+      "title": "About us",
+      "description": "",
+      "headingCount": 4,
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "javascriptRequired": false
+    },
+    {
+      "path": "/about/excellence",
+      "title": "Business Excellence and Quality Management",
+      "description": "",
+      "headingCount": 2,
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "javascriptRequired": false
+    },
+    {
+      "path": "/abuse",
+      "title": "Abuse Issues",
+      "description": "",
+      "headingCount": 2,
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "javascriptRequired": false
+    }
+  ],
+  "routes": [
+    {
+      "path": "/domains/reserved",
+      "title": "IANA-managed Reserved Domains",
+      "description": "",
+      "headings": [
+        "IANA-managed Reserved Domains",
+        "Example domains",
+        "Test IDN top-level domains",
+        "Policy-reserved domains",
+        "Other Special-Use Domains",
+        "Domain Names"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "canonical": "",
+      "discoveredVia": "source",
+      "depth": 0
+    },
+    {
+      "path": "/",
+      "title": "Internet Assigned Numbers Authority",
+      "description": "",
+      "headings": [
+        "Internet Assigned Numbers Authority",
+        "Domain Names",
+        "Number Resources",
+        "Protocol Assignments"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "canonical": "https://iana.org/",
+      "discoveredVia": "homepage-anchor",
+      "depth": 1
+    },
+    {
+      "path": "/about",
+      "title": "About us",
+      "description": "",
+      "headings": [
+        "About us",
+        "Mission Statement",
+        "Our Policy Remit",
+        "About us"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "canonical": "",
+      "discoveredVia": "homepage-anchor",
+      "depth": 1
+    },
+    {
+      "path": "/about/excellence",
+      "title": "Business Excellence and Quality Management",
+      "description": "",
+      "headings": [
+        "Business Excellence and Quality Management",
+        "About us"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "canonical": "",
+      "discoveredVia": "homepage-anchor",
+      "depth": 1
+    },
+    {
+      "path": "/abuse",
+      "title": "Abuse Issues",
+      "description": "",
+      "headings": [
+        "Does it look like we’re attacking you?",
+        "Number Resources"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "canonical": "",
+      "discoveredVia": "homepage-anchor",
+      "depth": 1
+    }
+  ],
+  "suggestedReadingOrder": [
+    "llms.txt",
+    "context.json",
+    "system.json",
+    "runtime.json"
+  ]
+}

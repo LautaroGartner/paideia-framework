@@ -1,0 +1,123 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.2"
+  },
+  "generatedAt": "2026-05-26T18:38:01.172Z",
+  "sourceUrl": "https://app.asana.com/",
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 0,
+  "failedRouteCount": 1,
+  "buildId": "8eea486",
+  "artifacts": [
+    {
+      "path": "context.json",
+      "kind": "agent-metadata",
+      "bytes": 2324,
+      "sha256": "f05cf9687d5d1e2d0159b6d9abb2d101703da38a599ee2395331a07fbe87b08f"
+    },
+    {
+      "path": "llms.txt",
+      "kind": "agent-guide",
+      "bytes": 821,
+      "sha256": "4e6d9ad82d6d16649e89b6890b4efd385b664f93e99e9260e83b3e3af4898c3f"
+    },
+    {
+      "path": "runtime.json",
+      "kind": "agent-metadata",
+      "bytes": 3020,
+      "sha256": "93db1aea33faa9a5af110fba41cb83923cd2c3c37c2d9fae14cf299bfdc7b9ec"
+    },
+    {
+      "path": "system.json",
+      "kind": "agent-metadata",
+      "bytes": 2734,
+      "sha256": "193bf04d0215265cbb2b4bdbbe21481f1dcac2c723e2ceb32275b43e430c3fa5"
+    }
+  ],
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "crawl": {
+    "status": "partial",
+    "maxDepth": 1,
+    "maxPages": 3,
+    "timeoutMs": 10000,
+    "delayMs": 500,
+    "retries": 1,
+    "fetched": 0,
+    "failed": 1,
+    "failures": [
+      {
+        "url": "https://app.asana.com/",
+        "status": 403,
+        "message": "Forbidden"
+      }
+    ],
+    "receipts": [],
+    "sitemap": {
+      "status": "unavailable",
+      "url": "https://app.asana.com/sitemap.xml",
+      "candidateUrls": [
+        "https://app.asana.com/sitemap.xml"
+      ],
+      "note": "sitemap.xml was not checked because the homepage was unavailable."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 corpus",
+    "robots": {
+      "status": "fetched",
+      "url": "https://app.asana.com/robots.txt",
+      "bytes": 1337,
+      "receipt": {
+        "url": "https://app.asana.com/robots.txt",
+        "finalUrl": "https://app.asana.com/robots.txt",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/plain",
+        "timingMs": 247,
+        "redirected": false,
+        "redirectChain": []
+      },
+      "sitemaps": [],
+      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
+    }
+  },
+  "diagnostics": {
+    "status": "partial",
+    "warnings": 2,
+    "errors": 0,
+    "codes": [
+      "crawl.partial",
+      "route.fetch_failed"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "route.fetch_failed",
+      "path": "/",
+      "message": "Forbidden",
+      "status": 403
+    },
+    {
+      "code": "crawl.partial",
+      "path": "*",
+      "message": "One or more discovered routes failed to fetch."
+    }
+  ]
+}

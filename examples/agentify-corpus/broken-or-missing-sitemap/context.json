@@ -1,0 +1,125 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generatedAt": "2026-05-26T18:37:24.791Z",
+  "sourceUrl": "https://example.com/",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.2"
+  },
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 1,
+  "failedRouteCount": 0,
+  "warningCodes": [
+    "missing.description"
+  ],
+  "warnings": [
+    {
+      "code": "missing.description",
+      "path": "/",
+      "message": "Homepage did not include a meta description."
+    }
+  ],
+  "source": {
+    "url": "https://example.com/",
+    "origin": "https://example.com"
+  },
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 5,
+    "timeoutMs": 10000,
+    "delayMs": 250,
+    "retries": 1,
+    "fetched": 1,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/",
+        "url": "https://example.com/",
+        "finalUrl": "https://example.com/",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 45,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "source",
+        "depth": 0
+      }
+    ],
+    "sitemap": {
+      "status": "unavailable",
+      "url": "https://example.com/sitemap.xml",
+      "candidateUrls": [
+        "https://example.com/sitemap.xml"
+      ],
+      "failure": {
+        "url": "https://example.com/sitemap.xml",
+        "status": 404,
+        "message": "Not Found"
+      },
+      "note": "sitemap.xml could not be fetched from discovered candidates."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 corpus",
+    "robots": {
+      "status": "unavailable",
+      "url": "https://example.com/robots.txt",
+      "failure": {
+        "url": "https://example.com/robots.txt",
+        "status": 404,
+        "message": "Not Found"
+      },
+      "note": "robots.txt could not be fetched; v0.7 records this but does not enforce directives."
+    }
+  },
+  "site": {
+    "title": "Example Domain",
+    "description": ""
+  },
+  "routeSummaries": [
+    {
+      "path": "/",
+      "title": "Example Domain",
+      "description": "",
+      "headingCount": 1,
+      "status": 200,
+      "contentType": "text/html",
+      "javascriptRequired": false
+    }
+  ],
+  "routes": [
+    {
+      "path": "/",
+      "title": "Example Domain",
+      "description": "",
+      "headings": [
+        "Example Domain"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html",
+      "canonical": "",
+      "discoveredVia": "source",
+      "depth": 0
+    }
+  ],
+  "suggestedReadingOrder": [
+    "llms.txt",
+    "context.json",
+    "system.json",
+    "runtime.json"
+  ]
+}

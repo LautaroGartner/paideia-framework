@@ -15,6 +15,7 @@ llms.txt
 
 * `complete-static-site/`: complete static crawl with two fetched routes and no warnings.
 * `partial-js-site/`: JavaScript-required app shell with explicit static-renderer limitations.
+* `protected-spa/`: real-world protected SPA surface that exposes legal/help routes while preserving JavaScript and metadata warnings.
 * `rate-limited-site/`: partial crawl with an HTTP 429 failed route.
 * `missing-metadata-site/`: static route missing title and description metadata.
 * `redirected-site/`: route receipt with redirect metadata and canonical URL.

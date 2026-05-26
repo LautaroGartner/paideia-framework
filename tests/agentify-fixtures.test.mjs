@@ -13,6 +13,7 @@ const expectedFixtures = [
   "complete-static-site",
   "missing-metadata-site",
   "partial-js-site",
+  "protected-spa",
   "rate-limited-site",
   "redirected-site",
 ];
@@ -59,6 +60,14 @@ assert.equal(complete.crawl.sitemap.status, "fetched");
 const partialJs = readRuntime("partial-js-site");
 assert.equal(partialJs.crawl.status, "complete");
 assert.ok(partialJs.diagnostics.codes.includes("js.required"));
+
+const protectedSpa = readRuntime("protected-spa");
+assert.equal(protectedSpa.crawl.status, "complete");
+assert.equal(protectedSpa.crawl.failed, 0);
+assert.equal(protectedSpa.crawl.receipts.length, 3);
+assert.ok(protectedSpa.diagnostics.codes.includes("js.required"));
+assert.ok(protectedSpa.diagnostics.codes.includes("missing.title"));
+assert.ok(protectedSpa.diagnostics.codes.includes("missing.description"));
 
 const rateLimited = readRuntime("rate-limited-site");
 assert.equal(rateLimited.crawl.status, "partial");

@@ -1,0 +1,164 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.2"
+  },
+  "generatedAt": "2026-05-26T18:37:03.302Z",
+  "sourceUrl": "http://info.cern.ch/",
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 2,
+  "failedRouteCount": 0,
+  "source": {
+    "url": "http://info.cern.ch/",
+    "origin": "http://info.cern.ch"
+  },
+  "site": {
+    "title": "http://info.cern.ch",
+    "description": ""
+  },
+  "routes": [
+    {
+      "path": "/",
+      "title": "http://info.cern.ch",
+      "description": "",
+      "headings": [
+        "http://info.cern.ch - home of the first website"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html",
+      "canonical": "",
+      "discoveredVia": "source",
+      "depth": 0,
+      "url": "http://info.cern.ch/"
+    },
+    {
+      "path": "/hypertext/WWW/TheProject.html",
+      "title": "The World Wide Web project",
+      "description": "",
+      "headings": [
+        "World Wide Web"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html",
+      "canonical": "",
+      "discoveredVia": "homepage-anchor",
+      "depth": 1,
+      "url": "http://info.cern.ch/hypertext/WWW/TheProject.html"
+    }
+  ],
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 5,
+    "timeoutMs": 10000,
+    "delayMs": 250,
+    "retries": 1,
+    "fetched": 2,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/",
+        "url": "http://info.cern.ch/",
+        "finalUrl": "http://info.cern.ch/",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 504,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "source",
+        "depth": 0
+      },
+      {
+        "path": "/hypertext/WWW/TheProject.html",
+        "url": "http://info.cern.ch/hypertext/WWW/TheProject.html",
+        "finalUrl": "http://info.cern.ch/hypertext/WWW/TheProject.html",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html",
+        "timingMs": 559,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "homepage-anchor",
+        "depth": 1
+      }
+    ],
+    "sitemap": {
+      "status": "unavailable",
+      "url": "http://info.cern.ch/sitemap.xml",
+      "candidateUrls": [
+        "http://info.cern.ch/sitemap.xml"
+      ],
+      "failure": {
+        "url": "http://info.cern.ch/sitemap.xml",
+        "status": 404,
+        "message": "Not Found"
+      },
+      "note": "sitemap.xml could not be fetched from discovered candidates."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 corpus",
+    "robots": {
+      "status": "unavailable",
+      "url": "http://info.cern.ch/robots.txt",
+      "failure": {
+        "url": "http://info.cern.ch/robots.txt",
+        "status": 404,
+        "message": "Not Found"
+      },
+      "note": "robots.txt could not be fetched; v0.7 records this but does not enforce directives."
+    }
+  },
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "diagnostics": {
+    "status": "complete",
+    "warnings": 2,
+    "errors": 0,
+    "codes": [
+      "missing.description"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "missing.description",
+      "path": "/",
+      "message": "Homepage did not include a meta description."
+    },
+    {
+      "code": "missing.description",
+      "path": "/hypertext/WWW/TheProject.html",
+      "message": "Route /hypertext/WWW/TheProject.html did not include a meta description."
+    }
+  ],
+  "caveats": [
+    "Only the homepage and same-origin pages linked from it were fetched.",
+    "Routes were discovered from homepage anchor href values.",
+    "No recursive crawl beyond depth 1 was performed.",
+    "JavaScript was not executed.",
+    "No private backend behavior was inferred."
+  ]
+}

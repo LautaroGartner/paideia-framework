@@ -1,0 +1,223 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generatedAt": "2026-05-26T18:37:24.792Z",
+  "sourceUrl": "https://github.com/settings/profile",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.2"
+  },
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 3,
+  "failedRouteCount": 0,
+  "warningCodes": [
+    "js.required"
+  ],
+  "warnings": [
+    {
+      "code": "js.required",
+      "path": "/password_reset",
+      "message": "Route /password_reset appears to require JavaScript for meaningful static content."
+    },
+    {
+      "code": "js.required",
+      "path": "/signup?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Fprofile&amp;source=login",
+      "message": "Route /signup?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Fprofile&amp;source=login appears to require JavaScript for meaningful static content."
+    }
+  ],
+  "source": {
+    "url": "https://github.com/settings/profile",
+    "origin": "https://github.com"
+  },
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 5,
+    "timeoutMs": 10000,
+    "delayMs": 500,
+    "retries": 1,
+    "fetched": 3,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/settings/profile",
+        "url": "https://github.com/settings/profile",
+        "finalUrl": "https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Fprofile",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html; charset=utf-8",
+        "timingMs": 531,
+        "redirected": true,
+        "redirectChain": [
+          "https://github.com/settings/profile",
+          "https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Fprofile"
+        ],
+        "canonical": "https://github.com/login",
+        "discoveredVia": "source",
+        "depth": 0
+      },
+      {
+        "path": "/password_reset",
+        "url": "https://github.com/password_reset",
+        "finalUrl": "https://github.com/password_reset",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html; charset=utf-8",
+        "timingMs": 367,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "homepage-anchor",
+        "depth": 1
+      },
+      {
+        "path": "/signup?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Fprofile&amp;source=login",
+        "url": "https://github.com/signup?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Fprofile&amp;source=login",
+        "finalUrl": "https://github.com/signup?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Fprofile&amp;source=login",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html; charset=utf-8",
+        "timingMs": 318,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "",
+        "discoveredVia": "homepage-anchor",
+        "depth": 1
+      }
+    ],
+    "sitemap": {
+      "status": "unavailable",
+      "url": "https://github.com/sitemap.xml",
+      "candidateUrls": [
+        "https://github.com/sitemap.xml"
+      ],
+      "failure": {
+        "url": "https://github.com/sitemap.xml",
+        "status": 406,
+        "message": "Not Acceptable"
+      },
+      "note": "sitemap.xml could not be fetched from discovered candidates."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 corpus",
+    "robots": {
+      "status": "fetched",
+      "url": "https://github.com/robots.txt",
+      "bytes": 2274,
+      "receipt": {
+        "url": "https://github.com/robots.txt",
+        "finalUrl": "https://github.com/robots.txt",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/plain",
+        "timingMs": 187,
+        "redirected": false,
+        "redirectChain": []
+      },
+      "sitemaps": [],
+      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
+    }
+  },
+  "site": {
+    "title": "Sign in to GitHub · GitHub",
+    "description": "GitHub is where people build software. More than 150 million people use GitHub to discover, fork, and contribute to over 420 million projects."
+  },
+  "routeSummaries": [
+    {
+      "path": "/settings/profile",
+      "title": "Sign in to GitHub · GitHub",
+      "description": "GitHub is where people build software. More than 150 million people use GitHub to discover, fork, and contribute to over 420 million projects.",
+      "headingCount": 2,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "javascriptRequired": false
+    },
+    {
+      "path": "/password_reset",
+      "title": "Forgot your password? · GitHub",
+      "description": "GitHub is where people build software. More than 150 million people use GitHub to discover, fork, and contribute to over 420 million projects.",
+      "headingCount": 2,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "javascriptRequired": true
+    },
+    {
+      "path": "/signup?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Fprofile&amp;source=login",
+      "title": "Sign up for GitHub · GitHub",
+      "description": "GitHub is where people build software. More than 150 million people use GitHub to discover, fork, and contribute to over 420 million projects.",
+      "headingCount": 6,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "javascriptRequired": true
+    }
+  ],
+  "routes": [
+    {
+      "path": "/settings/profile",
+      "title": "Sign in to GitHub · GitHub",
+      "description": "GitHub is where people build software. More than 150 million people use GitHub to discover, fork, and contribute to over 420 million projects.",
+      "headings": [
+        "Sign in to GitHub",
+        "Uh oh!"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": false,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "canonical": "https://github.com/login",
+      "discoveredVia": "source",
+      "depth": 0
+    },
+    {
+      "path": "/password_reset",
+      "title": "Forgot your password? · GitHub",
+      "description": "GitHub is where people build software. More than 150 million people use GitHub to discover, fork, and contribute to over 420 million projects.",
+      "headings": [
+        "Reset your password",
+        "Verify your account"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "canonical": "",
+      "discoveredVia": "homepage-anchor",
+      "depth": 1
+    },
+    {
+      "path": "/signup?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Fprofile&amp;source=login",
+      "title": "Sign up for GitHub · GitHub",
+      "description": "GitHub is where people build software. More than 150 million people use GitHub to discover, fork, and contribute to over 420 million projects.",
+      "headings": [
+        "Create your free account",
+        "Sign up for GitHub",
+        "Select Country/Region",
+        "Sorry, something went wrong.",
+        "No results found",
+        "Verify your account"
+      ],
+      "renderer": "static-html",
+      "javascriptRequired": true,
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "canonical": "",
+      "discoveredVia": "homepage-anchor",
+      "depth": 1
+    }
+  ],
+  "suggestedReadingOrder": [
+    "llms.txt",
+    "context.json",
+    "system.json",
+    "runtime.json"
+  ]
+}

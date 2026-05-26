@@ -1,0 +1,144 @@
+{
+  "artifactSchemaVersion": "0.1",
+  "generator": {
+    "name": "agentify",
+    "version": "0.7.2-alpha.2"
+  },
+  "generatedAt": "2026-05-26T18:38:01.169Z",
+  "sourceUrl": "https://app.slack.com/",
+  "renderer": {
+    "mode": "static-html",
+    "javascriptExecuted": false
+  },
+  "limitations": {
+    "javascriptNotExecuted": true,
+    "recursiveCrawl": false,
+    "privateBehaviorInferred": false,
+    "robotsEnforced": false
+  },
+  "routeCount": 1,
+  "failedRouteCount": 0,
+  "buildId": "020e8ed",
+  "artifacts": [
+    {
+      "path": "context.json",
+      "kind": "agent-metadata",
+      "bytes": 6276,
+      "sha256": "400ceacf16d19df90ba074957ec5cc37802617ae96229e54e0d97974ec999510"
+    },
+    {
+      "path": "llms.txt",
+      "kind": "agent-guide",
+      "bytes": 964,
+      "sha256": "3d3c38da0a9e31883bd979931ddc7c36a3bf259617ed00f2a3e8bb8b6b3aa6a2"
+    },
+    {
+      "path": "runtime.json",
+      "kind": "agent-metadata",
+      "bytes": 3863,
+      "sha256": "e3b1717c0a5a2aa78bf3dda4a5cbe6224f049c1823585637cfd6189366b80eae"
+    },
+    {
+      "path": "system.json",
+      "kind": "agent-metadata",
+      "bytes": 6293,
+      "sha256": "7835d5572f42564205a928fec95fbf0e0cbccbf0f8ffff12d34b4928c1d7f271"
+    }
+  ],
+  "capabilities": [
+    "site.crawled",
+    "routes.discovered",
+    "metadata.extracted",
+    "agent.context",
+    "agent.guide",
+    "crawl.receipts"
+  ],
+  "crawl": {
+    "status": "complete",
+    "maxDepth": 1,
+    "maxPages": 3,
+    "timeoutMs": 10000,
+    "delayMs": 500,
+    "retries": 1,
+    "fetched": 1,
+    "failed": 0,
+    "failures": [],
+    "receipts": [
+      {
+        "path": "/",
+        "url": "https://app.slack.com/",
+        "finalUrl": "https://app.slack.com/",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/html; charset=utf-8",
+        "timingMs": 374,
+        "redirected": false,
+        "redirectChain": [],
+        "canonical": "https://slack.com/",
+        "discoveredVia": "source",
+        "depth": 0
+      }
+    ],
+    "sitemap": {
+      "status": "fetched",
+      "url": "https://app.slack.com/sitemap.xml",
+      "bytes": 1122,
+      "candidateUrls": [
+        "https://app.slack.com/sitemap.xml",
+        "https://slack.com/sitemap.xml",
+        "https://slack.com/sitemap_marketplace.xml",
+        "https://slack.com/sitemaps/blog/news/sitemap.xml"
+      ],
+      "discoveredVia": "default",
+      "receipt": {
+        "url": "https://app.slack.com/sitemap.xml",
+        "finalUrl": "https://app.slack.com/sitemap.xml",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "application/xml",
+        "timingMs": 166,
+        "redirected": false,
+        "redirectChain": []
+      },
+      "note": "sitemap.xml was fetched for discovery awareness."
+    },
+    "sameOriginOnly": true,
+    "userAgent": "agentify/0.7 corpus",
+    "robots": {
+      "status": "fetched",
+      "url": "https://app.slack.com/robots.txt",
+      "bytes": 535,
+      "receipt": {
+        "url": "https://app.slack.com/robots.txt",
+        "finalUrl": "https://app.slack.com/robots.txt",
+        "status": 200,
+        "statusText": "OK",
+        "contentType": "text/plain;charset=utf-8",
+        "timingMs": 304,
+        "redirected": false,
+        "redirectChain": []
+      },
+      "sitemaps": [
+        "https://slack.com/sitemap.xml",
+        "https://slack.com/sitemap_marketplace.xml",
+        "https://slack.com/sitemaps/blog/news/sitemap.xml"
+      ],
+      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
+    }
+  },
+  "diagnostics": {
+    "status": "complete",
+    "warnings": 1,
+    "errors": 0,
+    "codes": [
+      "js.required"
+    ]
+  },
+  "warnings": [
+    {
+      "code": "js.required",
+      "path": "/",
+      "message": "Homepage appears to require JavaScript for meaningful static content."
+    }
+  ]
+}
