@@ -63,6 +63,30 @@ assert.ok(
   "post page should include the Vercel Speed Insights script"
 );
 assert.ok(
+  homeHtml.includes('<meta property="og:type" content="website">'),
+  "home page should include Open Graph website metadata"
+);
+assert.ok(
+  homeHtml.includes('<meta name="twitter:card" content="summary">'),
+  "home page should include Twitter card metadata"
+);
+assert.ok(
+  homeHtml.includes('<script type="application/ld+json">'),
+  "home page should include structured data"
+);
+assert.ok(
+  postHtml.includes('<meta property="og:type" content="article">'),
+  "post page should include Open Graph article metadata"
+);
+assert.ok(
+  postHtml.includes('<meta property="article:published_time" content="2026-05-20">'),
+  "post page should include published time metadata"
+);
+assert.ok(
+  postHtml.includes('"@type":"BlogPosting"'),
+  "post page should include BlogPosting structured data"
+);
+assert.ok(
   homeHtml.includes('<a href="/about">About</a>'),
   "home page should link to the about page"
 );

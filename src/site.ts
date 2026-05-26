@@ -25,6 +25,7 @@ export type SiteDefinition = {
   description: string;
   url?: string;
   author?: string;
+  authorUrl?: string;
   language?: string;
   pages: SitePage[];
   posts: WritingPost[];
@@ -39,6 +40,7 @@ export const site = defineSite({
   description: "Building Paideia Framework: self-describing software systems.",
   url: "https://lautarogartner.com",
   author: "Lautaro Gärtner",
+  authorUrl: "https://x.com/lautyxgr",
   language: "en",
   posts,
   pages: [

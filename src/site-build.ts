@@ -48,11 +48,22 @@ function canonicalUrl(
   return `${base}${normalized}`;
 }
 
+function jsonLd(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026");
+}
+
 function renderHead(options: {
   site: SiteDefinition;
   path: string;
   title: string;
   description: string;
+  type?: "website" | "article";
+  publishedAt?: string;
+  topics?: string[];
+  structuredData?: unknown;
 }): string {
   const canonical = canonicalUrl(
     options.site,
@@ -64,12 +75,33 @@ function renderHead(options: {
   const canonicalLink = canonical
     ? `\n    <link rel="canonical" href="${escapeHtml(canonical)}">`
     : "";
+  const socialUrl = canonical
+    ? `\n    <meta property="og:url" content="${escapeHtml(canonical)}">`
+    : "";
+  const articleMeta = options.type === "article"
+    ? `${options.publishedAt
+        ? `\n    <meta property="article:published_time" content="${escapeHtml(options.publishedAt)}">`
+        : ""}${(options.topics ?? [])
+        .map((topic) => `\n    <meta property="article:tag" content="${escapeHtml(topic)}">`)
+        .join("")}`
+    : "";
+  const structuredData = options.structuredData
+    ? `\n    <script type="application/ld+json">${jsonLd(options.structuredData)}</script>`
+    : "";
 
   return `<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>${escapeHtml(options.title)}</title>
     <meta name="description" content="${escapeHtml(options.description)}">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">${author}${canonicalLink}
+    <meta name="robots" content="index,follow">
+    <meta property="og:site_name" content="${escapeHtml(options.site.title)}">
+    <meta property="og:type" content="${options.type === "article" ? "article" : "website"}">
+    <meta property="og:title" content="${escapeHtml(options.title)}">
+    <meta property="og:description" content="${escapeHtml(options.description)}">${socialUrl}${articleMeta}
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="${escapeHtml(options.title)}">
+    <meta name="twitter:description" content="${escapeHtml(options.description)}">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">${author}${canonicalLink}${structuredData}
     <script>
       (() => {
         const localHosts = new Set(["localhost", "127.0.0.1", "::1"]);
@@ -663,6 +695,10 @@ function renderLayout(options: {
   title: string;
   description: string;
   body: string;
+  type?: "website" | "article";
+  publishedAt?: string;
+  topics?: string[];
+  structuredData?: unknown;
 }): string {
   return `<!doctype html>
 <html lang="${escapeHtml(siteLanguage(options.site))}">
@@ -672,6 +708,10 @@ function renderLayout(options: {
       path: options.path,
       title: options.title,
       description: options.description,
+      type: options.type,
+      publishedAt: options.publishedAt,
+      topics: options.topics,
+      structuredData: options.structuredData,
     })}
     <style>
       ${renderStyles()}
@@ -768,6 +808,22 @@ export function generateSitePage(
     normalizePath(page.path) === "/"
       ? renderPostList(site.posts)
       : "";
+  const canonical = canonicalUrl(site, page.path);
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": isAbout ? "AboutPage" : "WebSite",
+    name: title,
+    description,
+    url: canonical ?? undefined,
+    inLanguage: siteLanguage(site),
+    author: site.author
+      ? {
+          "@type": "Person",
+          name: site.author,
+          url: site.authorUrl ?? site.url ?? undefined,
+        }
+      : undefined,
+  };
 
   return renderLayout({
     site,
@@ -776,6 +832,7 @@ export function generateSitePage(
     description,
     body: `${pageBody}
 ${postList}`,
+    structuredData,
   });
 }
 
@@ -783,11 +840,35 @@ export function generatePostPage(
   site: SiteDefinition,
   post: WritingPost
 ): string {
+  const canonical = canonicalUrl(site, postPath(post));
+
   return renderLayout({
     site,
     path: postPath(post),
     title: `${post.title} - ${AUTHOR_NAME}`,
     description: post.description,
+    type: "article",
+    publishedAt: post.publishedAt,
+    topics: post.topics,
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: post.title,
+      description: post.description,
+      datePublished: post.publishedAt,
+      url: canonical ?? undefined,
+      mainEntityOfPage: canonical ?? undefined,
+      keywords: post.topics ?? [],
+      author: {
+        "@type": "Person",
+        name: site.author ?? AUTHOR_NAME,
+        url: site.authorUrl ?? site.url ?? undefined,
+      },
+      publisher: {
+        "@type": "Person",
+        name: site.author ?? AUTHOR_NAME,
+      },
+    },
     body: `        <h1 class="post-title">${escapeHtml(post.title)}</h1>
         <div class="meta"><a href="${escapeHtml(X_PROFILE_URL)}" rel="me">${escapeHtml(AUTHOR_USERNAME)}</a> | <time datetime="${escapeHtml(post.publishedAt)}">${escapeHtml(formatDate(post.publishedAt))}</time> | ${escapeHtml(formatRelativeDate(post.publishedAt))}</div>
         <p class="description">${escapeHtml(post.description)}</p>
