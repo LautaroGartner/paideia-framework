@@ -17,6 +17,14 @@ Corpus-level classification lives in `corpus.json`. It records coarse machine-re
 
 The key corpus distinction is that transport success and machine readability are separate. A site can return pages and still be only partially understandable to a static crawler because meaningful state requires JavaScript, authentication, complete metadata, or cleaner discovery files.
 
+A crawl can fetch routes successfully while still producing warnings such as:
+
+* `missing.title`
+* `missing.description`
+* `js.required`
+
+This means the site was reachable, but its static content was not meaningfully observable.
+
 ## Entries
 
 * `good-static-site/`: `https://www.iana.org/domains/reserved`, a stable public HTML site with multiple fetched routes and missing-description warnings.

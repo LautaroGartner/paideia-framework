@@ -91,6 +91,16 @@ Current crawl behavior:
 
 Failures are preserved in `crawl.failures`. Successful page fetches are preserved in `crawl.receipts`. Sitemap discovery is preserved in `crawl.sitemap`.
 
+Transport success is not the same as machine readability.
+
+A crawl can fetch routes successfully while still producing warnings such as:
+
+* `missing.title`
+* `missing.description`
+* `js.required`
+
+This means the site was reachable, but its static content was not meaningfully observable. Consumers should read crawl status together with warnings, renderer metadata, and limitations instead of treating `complete` as proof of complete semantic understanding.
+
 ## 5. Warning Taxonomy
 
 Warnings are informational diagnostics with severity `warning`. They are designed to preserve trust by making incomplete observations visible.
