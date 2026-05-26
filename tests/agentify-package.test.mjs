@@ -106,7 +106,7 @@ try {
 
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
   assert.equal(packageJson.name, "@lautarogartner/agentify");
-  assert.equal(packageJson.version, "0.6.0-alpha.2");
+  assert.equal(packageJson.version, "0.6.0-alpha.3");
   assert.equal(packageJson.bin?.agentify, "bin/agentify.mjs");
 
   const readme = fs.readFileSync(packageReadmePath, "utf8");
@@ -154,12 +154,18 @@ try {
     cwd: appRoot,
   });
   assert.equal(version.status, 0, version.output);
-  assert.equal(version.output.trim(), "0.6.0-alpha.2");
+  assert.equal(version.output.trim(), "0.6.0-alpha.3");
 
   const server = http.createServer((request, response) => {
     if (request.url === "/robots.txt") {
       response.writeHead(200, { "content-type": "text/plain" });
       response.end("User-agent: *\nAllow: /\n");
+      return;
+    }
+
+    if (request.url === "/rate-limited") {
+      response.writeHead(429, { "content-type": "text/plain" });
+      response.end("Too Many Requests");
       return;
     }
 
@@ -186,6 +192,7 @@ try {
   <body>
     <h1>Package fixture</h1>
     <a href="/about">About</a>
+    <a href="/rate-limited">Rate limited</a>
   </body>
 </html>`);
   });
@@ -208,6 +215,18 @@ try {
       }
     );
     assert.equal(crawl.status, 0, crawl.output);
+    assert.ok(
+      crawl.output.includes("[agentify] warnings:"),
+      "crawl output should show warnings"
+    );
+    assert.ok(
+      crawl.output.includes("- http.429 (Too Many Requests)"),
+      "crawl output should show HTTP 429 warning"
+    );
+    assert.ok(
+      crawl.output.includes("[agentify] output:"),
+      "crawl output should group written artifacts"
+    );
 
     for (const name of [
       "system.json",
@@ -226,10 +245,32 @@ try {
       fs.readFileSync(path.join(outputDir, "runtime.json"), "utf8")
     );
     assert.equal(runtime.generator.name, "agentify");
-    assert.equal(runtime.generator.version, "0.6.0-alpha.2");
+    assert.equal(runtime.generator.version, "0.6.0-alpha.3");
     assert.equal(runtime.renderer, "static-html");
-    assert.equal(runtime.crawl.status, "complete");
+    assert.equal(runtime.crawl.status, "partial");
     assert.equal(runtime.routeCount, 2);
+    assert.equal(runtime.crawl.failed, 1);
+
+    const inspect = await run(agentifyPath, ["inspect", outputDir], {
+      cwd: appRoot,
+    });
+    assert.equal(inspect.status, 0, inspect.output);
+    assert.ok(
+      inspect.output.includes("Source: "),
+      "inspect output should show source"
+    );
+    assert.ok(
+      inspect.output.includes("Status: partial"),
+      "inspect output should show crawl status"
+    );
+    assert.ok(
+      inspect.output.includes("- http.429 (Too Many Requests)"),
+      "inspect output should show HTTP 429 warning"
+    );
+    assert.ok(
+      inspect.output.includes("- javascript: disabled"),
+      "inspect output should show renderer JavaScript mode"
+    );
   } finally {
     await close(server);
   }

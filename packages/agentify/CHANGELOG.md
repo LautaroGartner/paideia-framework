@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.0-alpha.3
+
+- Normalized bare domains to HTTPS URLs
+- Printed warning details directly in CLI output
+- Added `agentify inspect`
+
 ## 0.6.0-alpha.2
 
 - Added `--delay-ms`

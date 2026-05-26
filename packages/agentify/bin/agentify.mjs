@@ -6,7 +6,7 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
-export const AGENTIFY_VERSION = "0.6.0-alpha.2";
+export const AGENTIFY_VERSION = "0.6.0-alpha.3";
 const ARTIFACT_SCHEMA_VERSION = "0.1";
 const DEFAULT_MAX_PAGES = 10;
 const DEFAULT_TIMEOUT_MS = 10000;
@@ -239,6 +239,49 @@ function normalizeRetries(value) {
   }
 
   return Math.floor(numberValue);
+}
+
+function normalizeSourceUrl(value) {
+  const input = String(value ?? "").trim();
+
+  if (!input) {
+    throw new TypeError("URL is required");
+  }
+
+  return new URL(/^[a-z][a-z\d+.-]*:\/\//i.test(input)
+    ? input
+    : `https://${input}`).href;
+}
+
+function diagnosticLabel(diagnostic) {
+  if (diagnostic.status) {
+    return `http.${diagnostic.status}`;
+  }
+
+  return diagnostic.code;
+}
+
+function formatWarning(diagnostic) {
+  const label = diagnosticLabel(diagnostic);
+  const detail = diagnostic.status === 429
+    ? "Too Many Requests"
+    : diagnostic.message;
+
+  return detail ? `${label} (${detail})` : label;
+}
+
+function warningDiagnostics(diagnostics) {
+  return diagnostics.filter((item) => item.severity === "warning");
+}
+
+function errorDiagnostics(diagnostics) {
+  return diagnostics.filter((item) => item.severity === "error");
+}
+
+function uniqueWarningLines(diagnostics) {
+  return Array.from(
+    new Set(warningDiagnostics(diagnostics).map(formatWarning))
+  );
 }
 
 function sleep(ms) {
@@ -937,7 +980,7 @@ function writeBundle(outputDir, outputs) {
 }
 
 export async function agentify(url, options = {}) {
-  const sourceUrl = new URL(url).href;
+  const sourceUrl = normalizeSourceUrl(url);
   const outputDir = options.outputDir ?? path.join(process.cwd(), "agent");
   const fetchedAt = options.fetchedAt ?? new Date().toISOString();
   const crawled = await crawlRoutes(sourceUrl, options);
@@ -960,6 +1003,26 @@ export async function agentify(url, options = {}) {
   return {
     ...bundle,
     outputDir,
+  };
+}
+
+export function inspectAgentify(outputDir = path.join(process.cwd(), "agent")) {
+  const runtimePath = path.join(outputDir, "runtime.json");
+  const runtime = JSON.parse(fs.readFileSync(runtimePath, "utf8"));
+  const renderer = typeof runtime.renderer === "string"
+    ? runtime.renderer
+    : runtime.renderer?.type ?? "unknown";
+
+  return {
+    sourceUrl: runtime.sourceUrl ?? "",
+    status: runtime.crawl?.status ?? runtime.diagnostics?.status ?? "unknown",
+    routeCount: runtime.routeCount ?? 0,
+    failedRouteCount: runtime.failedRouteCount ?? runtime.crawl?.failed ?? 0,
+    warnings: runtime.warnings ?? [],
+    renderer,
+    javascriptExecuted: runtime.limitations?.javascriptNotExecuted === true
+      ? false
+      : null,
   };
 }
 
@@ -1029,6 +1092,7 @@ function printHelp() {
 
 Usage:
   agentify <url> [--out agent] [--max-pages 10] [--user-agent agentify/0.6] [--delay-ms 0] [--retries 0] [--verbose]
+  agentify inspect [agent]
 
 Options:
   --out <dir>          Write artifacts to this directory
@@ -1039,6 +1103,65 @@ Options:
   --verbose            Print each fetch attempt
   --version            Show agentify version
   --help               Show this help`);
+}
+
+function printOutputPaths(outputDir) {
+  console.log("[agentify] output:");
+
+  for (const name of [
+    "system.json",
+    "runtime.json",
+    "context.json",
+    "llms.txt",
+  ]) {
+    console.log(`- ${path.join(outputDir, name)}`);
+  }
+}
+
+function printDiagnostics(diagnostics) {
+  const warnings = uniqueWarningLines(diagnostics);
+  const errors = errorDiagnostics(diagnostics);
+
+  if (warnings.length > 0) {
+    console.log("[agentify] warnings:");
+
+    for (const warning of warnings) {
+      console.log(`- ${warning}`);
+    }
+  } else {
+    console.log("[agentify] warnings: 0");
+  }
+
+  console.log(`[agentify] errors: ${errors.length}`);
+}
+
+function printInspect(summary) {
+  console.log(`Source: ${summary.sourceUrl}`);
+  console.log(`Status: ${summary.status}`);
+  console.log("");
+  console.log("Routes:");
+  console.log(`- discovered: ${summary.routeCount}`);
+  console.log(`- failed: ${summary.failedRouteCount}`);
+  console.log("");
+  console.log("Warnings:");
+
+  if (summary.warnings.length > 0) {
+    for (const warning of summary.warnings) {
+      console.log(`- ${formatWarning(warning)}`);
+    }
+  } else {
+    console.log("- none");
+  }
+
+  console.log("");
+  console.log("Renderer:");
+  console.log(`- ${summary.renderer}`);
+
+  if (summary.javascriptExecuted !== null) {
+    console.log(
+      `- javascript: ${summary.javascriptExecuted ? "enabled" : "disabled"}`
+    );
+  }
 }
 
 export async function main(argv = process.argv.slice(2)) {
@@ -1052,6 +1175,21 @@ export async function main(argv = process.argv.slice(2)) {
     return;
   }
 
+  if (argv[0] === "inspect") {
+    try {
+      printInspect(inspectAgentify(path.resolve(argv[1] ?? "agent")));
+    } catch (error) {
+      console.error(
+        `[agentify] inspect failed: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
+      process.exit(1);
+    }
+
+    return;
+  }
+
   const { options, url } = parseArgs(argv);
 
   if (!url) {
@@ -1061,29 +1199,10 @@ export async function main(argv = process.argv.slice(2)) {
 
   try {
     const result = await agentify(url, options);
-    const warnings = result.diagnostics.filter(
-      (item) => item.severity === "warning"
-    ).length;
-    const errors = result.diagnostics.filter(
-      (item) => item.severity === "error"
-    ).length;
 
     console.log(`[agentify] fetched ${result.routes.length} pages`);
-
-    for (const name of [
-      "system.json",
-      "runtime.json",
-      "context.json",
-      "llms.txt",
-    ]) {
-      console.log(
-        `[agentify] wrote ${path.join(result.outputDir, name)}`
-      );
-    }
-
-    console.log(
-      `[agentify] diagnostics: ${warnings} warnings, ${errors} errors`
-    );
+    printDiagnostics(result.diagnostics);
+    printOutputPaths(result.outputDir);
   } catch (error) {
     console.error(
       `[agentify] failed: ${

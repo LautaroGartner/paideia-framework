@@ -10,6 +10,7 @@ import { main as runAgentify } from "../packages/agentify/bin/agentify.mjs";
 export {
   AGENTIFY_VERSION,
   agentify,
+  inspectAgentify,
   main,
 } from "../packages/agentify/bin/agentify.mjs";
 
