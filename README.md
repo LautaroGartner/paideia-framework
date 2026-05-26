@@ -50,6 +50,8 @@ dist/
   <post>/index.html
   404.html
   favicon.svg
+  robots.txt
+  sitemap.xml
   runtime.json
   system.json
   context.json
@@ -90,6 +92,8 @@ Routes
 
 Artifacts
   index.html                                    page             10.2 KB
+  robots.txt                                   seo              71 B
+  sitemap.xml                                  seo              711 B
   runtime.json                                  runtime-identity 1.7 KB
   system.json                                   contract         4.3 KB
   context.json                                  agent-context    2.9 KB
@@ -169,6 +173,8 @@ The goal is software that can explain itself.
 * generated navigation
 * `404.html`
 * `favicon.svg`
+* `robots.txt`
+* `sitemap.xml`
 * `system.json`
 * `runtime.json`
 * `context.json`
@@ -216,6 +222,8 @@ dist/
   <post>/index.html
   404.html
   favicon.svg
+  robots.txt
+  sitemap.xml
   system.json
   runtime.json
   context.json
@@ -331,7 +339,7 @@ agent/
 Successful live output:
 
 ```txt
-0.7.1-alpha.2
+0.7.2-alpha.2
 [agentify] fetched 6 pages
 [agentify] warnings: 0
 [agentify] errors: 0
@@ -596,6 +604,8 @@ Current checks include:
 * `system.json`
 * `runtime.json`
 * `context.json`
+* `robots.txt`
+* `sitemap.xml`
 * writing runtime structure
 * generated pages
 * generated post pages

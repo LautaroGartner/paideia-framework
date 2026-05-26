@@ -130,6 +130,8 @@ assert.ok(inspect.stdout.includes("Routes"));
 assert.ok(inspect.stdout.includes("/about"));
 assert.ok(inspect.stdout.includes("Artifacts"));
 assert.ok(inspect.stdout.includes("runtime.json"));
+assert.ok(inspect.stdout.includes("robots.txt"));
+assert.ok(inspect.stdout.includes("sitemap.xml"));
 assert.ok(inspect.stdout.includes("Capabilities"));
 assert.ok(inspect.stdout.includes("- runtime.identity"));
 assert.ok(inspect.stdout.includes("Manifest       normalized"));

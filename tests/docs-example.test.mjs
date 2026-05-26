@@ -114,6 +114,8 @@ for (const relativePath of [
   "dist/getting-started/index.html",
   "dist/runtime-artifacts/index.html",
   "dist/runtime.json",
+  "dist/robots.txt",
+  "dist/sitemap.xml",
 ]) {
   assert.equal(
     fs.existsSync(path.join(exampleRoot, relativePath)),
@@ -133,6 +135,8 @@ assert.ok(inspected.stdout.includes("Paideia Runtime Inspect"));
 assert.ok(inspected.stdout.includes("/getting-started"));
 assert.ok(inspected.stdout.includes("/runtime-artifacts"));
 assert.ok(inspected.stdout.includes("runtime.json"));
+assert.ok(inspected.stdout.includes("robots.txt"));
+assert.ok(inspected.stdout.includes("sitemap.xml"));
 assert.ok(inspected.stdout.includes("Pages          2"));
 assert.ok(inspected.stdout.includes("Posts          2"));
 assert.ok(inspected.stdout.includes("Status         passing"));

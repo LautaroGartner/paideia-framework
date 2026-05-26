@@ -25,7 +25,7 @@ README.md
 ## Successful live output
 
 ```txt
-0.7.1-alpha.2
+0.7.2-alpha.2
 [agentify] fetched 6 pages
 [agentify] warnings: 0
 [agentify] errors: 0

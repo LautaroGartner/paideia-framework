@@ -37,4 +37,6 @@ dist/
   system.json
   context.json
   llms.txt
+  robots.txt
+  sitemap.xml
 ```

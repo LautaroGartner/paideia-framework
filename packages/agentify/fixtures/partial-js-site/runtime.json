@@ -2,7 +2,7 @@
   "artifactSchemaVersion": "0.1",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.1"
+    "version": "0.7.2-alpha.2"
   },
   "generatedAt": "2026-05-26T00:00:00.000Z",
   "sourceUrl": "https://js.fixture.agentify.test/",
@@ -18,13 +18,13 @@
   },
   "routeCount": 1,
   "failedRouteCount": 0,
-  "buildId": "1a7d1c0",
+  "buildId": "581a5bd",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
       "bytes": 3069,
-      "sha256": "61856bc0951ad4fae82c6c4eafb86bd920b47461558ac70562aa6284f2d778a6"
+      "sha256": "9da1f0e83b2d4b5371242fd9825f2c2c51f861e1a9786cd3338ccae0582bb437"
     },
     {
       "path": "llms.txt",
@@ -36,13 +36,13 @@
       "path": "runtime.json",
       "kind": "agent-metadata",
       "bytes": 3260,
-      "sha256": "f0c78c48ffa409eb086357e2e8319a6c9cc0c813c7e67442cd6d6c0abc59f537"
+      "sha256": "6357eb4d606beb13029e71976d241a4eaa7601c1aca6ab29dee5775060a84ca1"
     },
     {
       "path": "system.json",
       "kind": "agent-metadata",
       "bytes": 3341,
-      "sha256": "e75a44581faed40b696f299a7008d6ff1b40fb0b300e72d014002d7454fed4c4"
+      "sha256": "bd6dcc14e6beaf04e8d207046627ef646e304f006bd766991499839111cf2077"
     }
   ],
   "capabilities": [

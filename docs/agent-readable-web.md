@@ -32,6 +32,8 @@ dist/
   runtime.json
   context.json
   llms.txt
+  robots.txt
+  sitemap.xml
 ```
 
 `system.json` describes the generated system contract.
@@ -67,6 +69,8 @@ The current release produces:
 * `runtime.json`
 * `context.json`
 * `llms.txt`
+* `robots.txt`
+* `sitemap.xml`
 * `paideia doctor`
 * `paideia inspect`
 

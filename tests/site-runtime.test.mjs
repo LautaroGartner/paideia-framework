@@ -29,6 +29,8 @@ assertFileExists(
 );
 assertFileExists("dist/404.html");
 assertFileExists("dist/favicon.svg");
+assertFileExists("dist/robots.txt");
+assertFileExists("dist/sitemap.xml");
 assertFileExists("dist/llms.txt");
 assertFileExists("dist/context.json");
 
@@ -49,7 +51,7 @@ assert.ok(postHtml.includes("Building Paideia"));
 assert.ok(postHtml.includes("@lautyxgr"));
 assert.ok(postHtml.includes("May 20, 2026"));
 assert.ok(
-  postHtml.includes("1d ago"),
+  /\|\s+\d+d ago<\/div>/.test(postHtml),
   "post page should include a build-date relative label"
 );
 assert.ok(
@@ -70,6 +72,9 @@ assert.ok(
 );
 
 const system = readJson("dist/system.json");
+const runtime = readJson("dist/runtime.json");
+const robots = readText("dist/robots.txt");
+const sitemap = readText("dist/sitemap.xml");
 
 assert.equal(
   typeof system.site,
@@ -80,6 +85,31 @@ assert.equal(
   Array.isArray(system.site?.posts),
   true,
   "system.json.site.posts should exist"
+);
+
+assert.ok(
+  system.runtime?.generatedArtifacts?.includes("robots.txt"),
+  "system.json should list robots.txt as a generated artifact"
+);
+assert.ok(
+  system.runtime?.generatedArtifacts?.includes("sitemap.xml"),
+  "system.json should list sitemap.xml as a generated artifact"
+);
+assert.ok(
+  runtime.artifacts.some((artifact) => artifact.path === "robots.txt"),
+  "runtime.json should include robots.txt in the artifact inventory"
+);
+assert.ok(
+  runtime.artifacts.some((artifact) => artifact.path === "sitemap.xml"),
+  "runtime.json should include sitemap.xml in the artifact inventory"
+);
+assert.ok(
+  robots.includes("Sitemap:"),
+  "robots.txt should advertise the sitemap"
+);
+assert.ok(
+  sitemap.includes("<urlset"),
+  "sitemap.xml should include a urlset"
 );
 
 console.log("site runtime tests passed");

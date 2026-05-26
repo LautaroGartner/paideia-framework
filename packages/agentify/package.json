@@ -1,6 +1,6 @@
 {
   "name": "@lautarogartner/agentify",
-  "version": "0.7.2-alpha.1",
+  "version": "0.7.2-alpha.2",
   "type": "module",
   "bin": {
     "agentify": "bin/agentify.mjs"

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.7.2-alpha.2
+
+- Updated package docs and smoke assertions for the next alpha cut.
+- Documented `--delay-ms` and `--retries` in package examples.
+- Refreshed current-version fixtures and package smoke expectations.
+
 ## 0.7.2-alpha.1
 
 - Added canonical protocol fixtures.

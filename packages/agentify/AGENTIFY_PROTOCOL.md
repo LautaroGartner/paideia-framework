@@ -1,6 +1,6 @@
 # Agentify Protocol
 
-Status: alpha. This document describes the `0.1` artifact schema emitted by `@lautarogartner/agentify@0.7.2-alpha.1`.
+Status: alpha. This document describes the `0.1` artifact schema emitted by `@lautarogartner/agentify@0.7.2-alpha.2`.
 
 ## 1. Purpose
 

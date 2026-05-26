@@ -1,6 +1,6 @@
 # agentify package roadmap
 
-Current: 0.6.0-alpha.1
+Current: 0.7.2-alpha.2
 
 Status: package-ready alpha, not npm-published yet
 

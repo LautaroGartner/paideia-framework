@@ -6,6 +6,7 @@ Generate agent-readable runtime artifacts for a website.
 
 ```bash
 npx @lautarogartner/agentify https://example.com
+npx @lautarogartner/agentify https://example.com --delay-ms 250 --retries 2
 ```
 
 Install from npm:
@@ -13,6 +14,7 @@ Install from npm:
 ```bash
 npm install -g @lautarogartner/agentify
 agentify https://example.com
+agentify https://example.com --delay-ms 250 --retries 2
 ```
 
 Or from the Paideia repository (during incubation):
@@ -66,7 +68,7 @@ npx @lautarogartner/agentify@alpha validate ./agent
 ```
 
 ```txt
-0.7.1-alpha.2
+0.7.2-alpha.2
 [agentify] fetched 6 pages
 [agentify] warnings: 0
 [agentify] errors: 0

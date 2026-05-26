@@ -6,13 +6,13 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
-export const AGENTIFY_VERSION = "0.7.2-alpha.1";
+export const AGENTIFY_VERSION = "0.7.2-alpha.2";
 const ARTIFACT_SCHEMA_VERSION = "0.1";
 const DEFAULT_MAX_PAGES = 10;
 const DEFAULT_TIMEOUT_MS = 10000;
 const DEFAULT_DELAY_MS = 0;
 const DEFAULT_RETRIES = 0;
-const DEFAULT_USER_AGENT = "agentify/0.6";
+const DEFAULT_USER_AGENT = "agentify/0.7";
 const RENDERER_MODE = "static-html";
 const RENDERER = {
   mode: RENDERER_MODE,
@@ -1094,14 +1094,14 @@ async function fetchRobots(source, options) {
       bytes: byteLength(text ?? ""),
       receipt: typeof result === "string" ? null : textReceipt(url, result),
       sitemaps: extractRobotsSitemaps(text, source),
-      note: "robots.txt was fetched for awareness only; v0.6 does not enforce directives yet.",
+      note: "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet.",
     };
   } catch (error) {
     return {
       status: "unavailable",
       url,
       failure: failureFromError(url, error),
-      note: "robots.txt could not be fetched; v0.6 records this but does not enforce directives.",
+      note: "robots.txt could not be fetched; v0.7 records this but does not enforce directives.",
     };
   }
 }
@@ -1620,7 +1620,7 @@ function printHelp() {
   console.log(`agentify ${AGENTIFY_VERSION}
 
 Usage:
-  agentify <url> [--out agent] [--max-pages 10] [--user-agent agentify/0.6] [--delay-ms 0] [--retries 0] [--verbose]
+  agentify <url> [--out agent] [--max-pages 10] [--user-agent agentify/0.7] [--delay-ms 0] [--retries 0] [--verbose]
   agentify explain [agent]
   agentify inspect [agent]
   agentify validate [agent]
