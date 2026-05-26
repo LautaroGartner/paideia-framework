@@ -6,7 +6,7 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
-export const AGENTIFY_VERSION = "0.7.0-alpha.1";
+export const AGENTIFY_VERSION = "0.7.1-alpha.1";
 const ARTIFACT_SCHEMA_VERSION = "0.1";
 const DEFAULT_MAX_PAGES = 10;
 const DEFAULT_TIMEOUT_MS = 10000;
@@ -1375,6 +1375,34 @@ export function validateAgentify(outputDir = path.join(process.cwd(), "agent")) 
   };
 }
 
+export function explainAgentify(outputDir = path.join(process.cwd(), "agent")) {
+  const runtime = readArtifact(outputDir, "runtime.json").json;
+  const validation = validateAgentify(outputDir);
+
+  return {
+    artifacts: REQUIRED_ARTIFACTS,
+    artifactSchemaVersion: runtime.artifactSchemaVersion ?? "",
+    crawl: {
+      failed: runtime.crawl?.failed ?? runtime.failedRouteCount ?? 0,
+      fetched: runtime.crawl?.fetched ?? runtime.routeCount ?? 0,
+      status: runtime.crawl?.status ?? runtime.diagnostics?.status ?? "unknown",
+    },
+    discovery: {
+      robotsTxt: runtime.crawl?.robots?.status === "fetched",
+      sitemapXml: false,
+    },
+    renderer: {
+      javascriptExecuted: typeof runtime.renderer?.javascriptExecuted === "boolean"
+        ? runtime.renderer.javascriptExecuted
+        : null,
+      mode: rendererMode(runtime.renderer),
+    },
+    sourceUrl: runtime.sourceUrl ?? "",
+    validation,
+    warnings: runtime.warnings ?? [],
+  };
+}
+
 function parseArgs(argv) {
   const options = {
     maxPages: DEFAULT_MAX_PAGES,
@@ -1441,6 +1469,7 @@ function printHelp() {
 
 Usage:
   agentify <url> [--out agent] [--max-pages 10] [--user-agent agentify/0.6] [--delay-ms 0] [--retries 0] [--verbose]
+  agentify explain [agent]
   agentify inspect [agent]
   agentify validate [agent]
 
@@ -1538,6 +1567,57 @@ function printValidation(result) {
   }
 }
 
+function yesNo(value) {
+  return value ? "yes" : "no";
+}
+
+function printExplain(summary) {
+  console.log("Agentify Runtime Explanation");
+  console.log("----------------------------");
+  console.log("");
+  console.log("Source");
+  console.log(`  ${summary.sourceUrl}`);
+  console.log("");
+  console.log("Renderer");
+  console.log(`  ${summary.renderer.mode}`);
+  console.log(
+    `  javascript executed: ${yesNo(summary.renderer.javascriptExecuted)}`
+  );
+  console.log("");
+  console.log("Crawl");
+  console.log(`  status: ${summary.crawl.status}`);
+  console.log(`  pages fetched: ${summary.crawl.fetched}`);
+  console.log(`  failed routes: ${summary.crawl.failed}`);
+  console.log("");
+  console.log("Discovery");
+  console.log(`  robots.txt: ${yesNo(summary.discovery.robotsTxt)}`);
+  console.log(`  sitemap.xml: ${yesNo(summary.discovery.sitemapXml)}`);
+  console.log("");
+  console.log("Warnings");
+
+  if (summary.warnings.length > 0) {
+    for (const warning of summary.warnings) {
+      console.log(`  - ${formatWarning(warning)}`);
+    }
+  } else {
+    console.log("  none");
+  }
+
+  console.log("");
+  console.log("Artifacts");
+
+  for (const artifact of summary.artifacts) {
+    console.log(`  ${artifact}`);
+  }
+
+  console.log("");
+  console.log("Integrity");
+  console.log(
+    `  validation: ${summary.validation.valid ? "passed" : "failed"}`
+  );
+  console.log(`  artifact schema: ${summary.artifactSchemaVersion}`);
+}
+
 export async function main(argv = process.argv.slice(2)) {
   if (argv.includes("--help") || argv.includes("-h")) {
     printHelp();
@@ -1546,6 +1626,27 @@ export async function main(argv = process.argv.slice(2)) {
 
   if (argv.includes("--version") || argv.includes("-v")) {
     console.log(AGENTIFY_VERSION);
+    return;
+  }
+
+  if (argv[0] === "explain") {
+    try {
+      const summary = explainAgentify(path.resolve(argv[1] ?? "agent"));
+
+      printExplain(summary);
+
+      if (!summary.validation.valid) {
+        process.exit(1);
+      }
+    } catch (error) {
+      console.error(
+        `[agentify] explain failed: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
+      process.exit(1);
+    }
+
     return;
   }
 

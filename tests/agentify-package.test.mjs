@@ -106,7 +106,7 @@ try {
 
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
   assert.equal(packageJson.name, "@lautarogartner/agentify");
-  assert.equal(packageJson.version, "0.7.0-alpha.1");
+  assert.equal(packageJson.version, "0.7.1-alpha.1");
   assert.equal(packageJson.bin?.agentify, "bin/agentify.mjs");
 
   const readme = fs.readFileSync(packageReadmePath, "utf8");
@@ -154,7 +154,7 @@ try {
     cwd: appRoot,
   });
   assert.equal(version.status, 0, version.output);
-  assert.equal(version.output.trim(), "0.7.0-alpha.1");
+  assert.equal(version.output.trim(), "0.7.1-alpha.1");
 
   const server = http.createServer((request, response) => {
     if (request.url === "/robots.txt") {
@@ -245,7 +245,7 @@ try {
       fs.readFileSync(path.join(outputDir, "runtime.json"), "utf8")
     );
     assert.equal(runtime.generator.name, "agentify");
-    assert.equal(runtime.generator.version, "0.7.0-alpha.1");
+    assert.equal(runtime.generator.version, "0.7.1-alpha.1");
     assert.deepEqual(runtime.renderer, {
       mode: "static-html",
       javascriptExecuted: false,
@@ -276,6 +276,35 @@ try {
     assert.ok(
       inspect.output.includes("- javascript: disabled"),
       "inspect output should show renderer JavaScript mode"
+    );
+
+    const explain = await run(agentifyPath, ["explain", outputDir], {
+      cwd: appRoot,
+    });
+    assert.equal(explain.status, 0, explain.output);
+    assert.ok(
+      explain.output.includes("Agentify Runtime Explanation"),
+      "explain output should have a title"
+    );
+    assert.ok(
+      explain.output.includes("Renderer\n  static-html"),
+      "explain output should show renderer mode"
+    );
+    assert.ok(
+      explain.output.includes("javascript executed: no"),
+      "explain output should show JavaScript execution"
+    );
+    assert.ok(
+      explain.output.includes("status: partial"),
+      "explain output should show crawl status"
+    );
+    assert.ok(
+      explain.output.includes("validation: passed"),
+      "explain output should show validation status"
+    );
+    assert.ok(
+      explain.output.includes("runtime.json"),
+      "explain output should list runtime artifact"
     );
 
     const validate = await run(agentifyPath, ["validate", outputDir], {

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.1-alpha.1
+
+- Added `agentify explain [agent]`.
+- Added a human-readable runtime explanation for source, renderer, crawl, discovery, warnings, artifacts, and validation status.
+
 ## 0.7.0-alpha.1
 
 - Added `agentify validate [agent]`.
