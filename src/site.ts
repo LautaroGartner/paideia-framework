@@ -38,7 +38,7 @@ export function defineSite(site: SiteDefinition): SiteDefinition {
 export const site = defineSite({
   title: "Lautaro Gärtner's blog",
   description: "Building Paideia Framework: self-describing software systems.",
-  url: "https://lautarogartner.com",
+  url: "https://www.lautarogartner.com",
   author: "Lautaro Gärtner",
   authorUrl: "https://x.com/lautyxgr",
   language: "en",

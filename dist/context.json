@@ -2,21 +2,21 @@
   "site": {
     "title": "Lautaro Gärtner's blog",
     "description": "Building Paideia Framework: self-describing software systems.",
-    "url": "https://lautarogartner.com",
+    "url": "https://www.lautarogartner.com",
     "author": "Lautaro Gärtner",
     "language": "en"
   },
   "pages": [
     {
       "path": "/",
-      "canonical": "https://lautarogartner.com/",
+      "canonical": "https://www.lautarogartner.com/",
       "title": "Lautaro Gärtner's blog",
       "description": "Personal site for Lautaro Gärtner and Paideia Framework.",
       "tokenSummary": "Minimal article index for Lautaro Gärtner's blog about Paideia Framework and self-describing systems."
     },
     {
       "path": "/about",
-      "canonical": "https://lautarogartner.com/about",
+      "canonical": "https://www.lautarogartner.com/about",
       "title": "About",
       "description": "About Lautaro Gärtner, Paideia, and this site.",
       "tokenSummary": "About page explaining Paideia Framework as an experiment in self-describing generated software and linking the generated context files."
@@ -26,7 +26,7 @@
     {
       "slug": "why-ai-agents-need-observable-runtime-receipts",
       "path": "/why-ai-agents-need-observable-runtime-receipts",
-      "canonical": "https://lautarogartner.com/why-ai-agents-need-observable-runtime-receipts",
+      "canonical": "https://www.lautarogartner.com/why-ai-agents-need-observable-runtime-receipts",
       "title": "Why AI Agents Need Observable Runtime Receipts",
       "topics": [
         "agent-readable web",
@@ -39,7 +39,7 @@
     {
       "slug": "agent-readable-web",
       "path": "/agent-readable-web",
-      "canonical": "https://lautarogartner.com/agent-readable-web",
+      "canonical": "https://www.lautarogartner.com/agent-readable-web",
       "title": "The Agent-Readable Web",
       "topics": [
         "agent-readable web",
@@ -52,7 +52,7 @@
     {
       "slug": "framework-becomes-a-tool",
       "path": "/framework-becomes-a-tool",
-      "canonical": "https://lautarogartner.com/framework-becomes-a-tool",
+      "canonical": "https://www.lautarogartner.com/framework-becomes-a-tool",
       "title": "The Moment a Framework Becomes a Tool",
       "topics": [
         "project notes",
@@ -65,7 +65,7 @@
     {
       "slug": "generated-systems-should-explain-themselves",
       "path": "/generated-systems-should-explain-themselves",
-      "canonical": "https://lautarogartner.com/generated-systems-should-explain-themselves",
+      "canonical": "https://www.lautarogartner.com/generated-systems-should-explain-themselves",
       "title": "Why Generated Systems Should Explain Themselves",
       "topics": [
         "runtime identity",
@@ -78,7 +78,7 @@
     {
       "slug": "building-paideia",
       "path": "/building-paideia",
-      "canonical": "https://lautarogartner.com/building-paideia",
+      "canonical": "https://www.lautarogartner.com/building-paideia",
       "title": "Building Paideia: Software That Explains Itself",
       "topics": [
         "inspectability",

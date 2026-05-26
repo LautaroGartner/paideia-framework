@@ -12,7 +12,7 @@ Useful agent entrypoints:
 
 Building Paideia Framework: self-describing software systems.
 
-Canonical site URL: https://lautarogartner.com
+Canonical site URL: https://www.lautarogartner.com
 
 Author: Lautaro Gärtner
 Language: en
