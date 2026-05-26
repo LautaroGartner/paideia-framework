@@ -105,9 +105,9 @@ try {
   assert.equal(fs.existsSync(packageReadmePath), true, "README should exist");
 
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
-  assert.equal(packageJson.name, "agentify");
-  assert.equal(packageJson.version, "0.6.0-alpha.1");
-  assert.equal(packageJson.bin?.agentify, "./bin/agentify.mjs");
+  assert.equal(packageJson.name, "@lautarogartner/agentify");
+  assert.equal(packageJson.version, "0.6.0-alpha.2");
+  assert.equal(packageJson.bin?.agentify, "bin/agentify.mjs");
 
   const readme = fs.readFileSync(packageReadmePath, "utf8");
   assert.ok(readme.includes("system.json"), "README should mention system.json");
@@ -154,7 +154,7 @@ try {
     cwd: appRoot,
   });
   assert.equal(version.status, 0, version.output);
-  assert.equal(version.output.trim(), "0.6.0-alpha.1");
+  assert.equal(version.output.trim(), "0.6.0-alpha.2");
 
   const server = http.createServer((request, response) => {
     if (request.url === "/robots.txt") {
@@ -226,7 +226,7 @@ try {
       fs.readFileSync(path.join(outputDir, "runtime.json"), "utf8")
     );
     assert.equal(runtime.generator.name, "agentify");
-    assert.equal(runtime.generator.version, "0.6.0-alpha.1");
+    assert.equal(runtime.generator.version, "0.6.0-alpha.2");
     assert.equal(runtime.renderer, "static-html");
     assert.equal(runtime.crawl.status, "complete");
     assert.equal(runtime.routeCount, 2);
