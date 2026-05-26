@@ -22,6 +22,7 @@
     "prepack": "npm run build",
     "dev": "node cli.mjs dev",
     "build": "node cli.mjs build",
+    "social:screenshots": "node scripts/social-screenshots.mjs",
     "start": "node cli.mjs start",
     "doctor": "node cli.mjs doctor",
     "paideia": "node cli.mjs",

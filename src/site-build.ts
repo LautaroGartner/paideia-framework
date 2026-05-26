@@ -11,6 +11,8 @@ const AUTHOR_NAME = "Lautaro Gärtner";
 const AUTHOR_USERNAME = "@lautyxgr";
 const X_PROFILE_URL = "https://x.com/lautyxgr";
 const SOURCE_URL = "https://github.com/LautaroGartner/paideia-framework";
+const SOCIAL_IMAGE_WIDTH = 1200;
+const SOCIAL_IMAGE_HEIGHT = 630;
 
 function normalizePath(pagePath: string): string {
   if (pagePath === "/") {
@@ -48,6 +50,20 @@ function canonicalUrl(
   return `${base}${normalized}`;
 }
 
+function siteAssetUrl(
+  site: SiteDefinition,
+  assetPath: string
+): string | null {
+  if (!site.url) {
+    return null;
+  }
+
+  const base = site.url.replace(/\/+$/g, "");
+  const normalized = `/${assetPath.replace(/^\/+/g, "")}`;
+
+  return `${base}${normalized}`;
+}
+
 function jsonLd(value: unknown): string {
   return JSON.stringify(value)
     .replace(/</g, "\\u003c")
@@ -60,6 +76,7 @@ function renderHead(options: {
   path: string;
   title: string;
   description: string;
+  imagePath?: string;
   type?: "website" | "article";
   publishedAt?: string;
   topics?: string[];
@@ -77,6 +94,16 @@ function renderHead(options: {
     : "";
   const socialUrl = canonical
     ? `\n    <meta property="og:url" content="${escapeHtml(canonical)}">`
+    : "";
+  const imageUrl = options.imagePath
+    ? siteAssetUrl(options.site, options.imagePath)
+    : null;
+  const socialImage = imageUrl
+    ? `
+    <meta property="og:image" content="${escapeHtml(imageUrl)}">
+    <meta property="og:image:width" content="${SOCIAL_IMAGE_WIDTH}">
+    <meta property="og:image:height" content="${SOCIAL_IMAGE_HEIGHT}">
+    <meta name="twitter:image" content="${escapeHtml(imageUrl)}">`
     : "";
   const articleMeta = options.type === "article"
     ? `${options.publishedAt
@@ -97,14 +124,14 @@ function renderHead(options: {
     <meta property="og:site_name" content="${escapeHtml(options.site.title)}">
     <meta property="og:type" content="${options.type === "article" ? "article" : "website"}">
     <meta property="og:title" content="${escapeHtml(options.title)}">
-    <meta property="og:description" content="${escapeHtml(options.description)}">${socialUrl}${articleMeta}
-    <meta name="twitter:card" content="summary">
+    <meta property="og:description" content="${escapeHtml(options.description)}">${socialUrl}${socialImage}${articleMeta}
+    <meta name="twitter:card" content="${imageUrl ? "summary_large_image" : "summary"}">
     <meta name="twitter:title" content="${escapeHtml(options.title)}">
     <meta name="twitter:description" content="${escapeHtml(options.description)}">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">${author}${canonicalLink}${structuredData}
     <script>
       (() => {
-        const localHosts = new Set(["localhost", "127.0.0.1", "::1"]);
+        const localHosts = new Set(["", "localhost", "127.0.0.1", "::1"]);
 
         if (localHosts.has(window.location.hostname)) {
           return;
@@ -695,6 +722,7 @@ function renderLayout(options: {
   title: string;
   description: string;
   body: string;
+  imagePath?: string;
   type?: "website" | "article";
   publishedAt?: string;
   topics?: string[];
@@ -708,6 +736,7 @@ function renderLayout(options: {
       path: options.path,
       title: options.title,
       description: options.description,
+      imagePath: options.imagePath,
       type: options.type,
       publishedAt: options.publishedAt,
       topics: options.topics,
@@ -838,7 +867,10 @@ ${postList}`,
 
 export function generatePostPage(
   site: SiteDefinition,
-  post: WritingPost
+  post: WritingPost,
+  options: {
+    imagePath?: string;
+  } = {}
 ): string {
   const canonical = canonicalUrl(site, postPath(post));
 
@@ -847,6 +879,7 @@ export function generatePostPage(
     path: postPath(post),
     title: `${post.title} - ${AUTHOR_NAME}`,
     description: post.description,
+    imagePath: options.imagePath,
     type: "article",
     publishedAt: post.publishedAt,
     topics: post.topics,

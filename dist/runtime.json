@@ -4,10 +4,10 @@
     "version": "1.8.1"
   },
   "build": {
-    "id": "9102807",
-    "generatedAt": "2026-05-26T19:05:58.729Z",
+    "id": "7cc0d43",
+    "generatedAt": "2026-05-26T19:26:04.816Z",
     "mode": "production",
-    "artifactCount": 15
+    "artifactCount": 20
   },
   "capabilities": [
     "site.static",
@@ -26,47 +26,72 @@
     {
       "path": "index.html",
       "kind": "page",
-      "bytes": 12821
+      "bytes": 12825
     },
     {
       "path": "about/index.html",
       "kind": "page",
-      "bytes": 17775
+      "bytes": 17779
     },
     {
       "path": "why-ai-agents-need-observable-runtime-receipts/index.html",
       "kind": "post",
-      "bytes": 19812
+      "bytes": 20193
     },
     {
       "path": "agent-readable-web/index.html",
       "kind": "post",
-      "bytes": 25287
+      "bytes": 25612
     },
     {
       "path": "framework-becomes-a-tool/index.html",
       "kind": "post",
-      "bytes": 18611
+      "bytes": 18948
     },
     {
       "path": "generated-systems-should-explain-themselves/index.html",
       "kind": "post",
-      "bytes": 16212
+      "bytes": 16587
     },
     {
       "path": "building-paideia/index.html",
       "kind": "post",
-      "bytes": 19387
+      "bytes": 19708
     },
     {
       "path": "404.html",
       "kind": "fallback",
-      "bytes": 10601
+      "bytes": 10605
     },
     {
       "path": "favicon.svg",
       "kind": "asset",
       "bytes": 264
+    },
+    {
+      "path": "social/agent-readable-web.png",
+      "kind": "social-image",
+      "bytes": 102502
+    },
+    {
+      "path": "social/building-paideia.png",
+      "kind": "social-image",
+      "bytes": 106106
+    },
+    {
+      "path": "social/framework-becomes-a-tool.png",
+      "kind": "social-image",
+      "bytes": 88031
+    },
+    {
+      "path": "social/generated-systems-should-explain-themselves.png",
+      "kind": "social-image",
+      "bytes": 94310
+    },
+    {
+      "path": "social/why-ai-agents-need-observable-runtime-receipts.png",
+      "kind": "social-image",
+      "bytes": 95365
     },
     {
       "path": "robots.txt",
@@ -91,7 +116,7 @@
     {
       "path": "runtime.json",
       "kind": "runtime-identity",
-      "bytes": 2123
+      "bytes": 2737
     },
     {
       "path": "llms.txt",

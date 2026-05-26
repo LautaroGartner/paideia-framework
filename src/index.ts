@@ -1,5 +1,8 @@
 import {
+  existsSync,
   mkdirSync,
+  readFileSync,
+  readdirSync,
   rmSync,
   writeFileSync,
 } from "fs";
@@ -77,6 +80,18 @@ const runtimeCapabilities = [
   "agent.guide",
 ];
 
+const socialAssetsRoot = path.join("assets", "social");
+const socialArtifacts = existsSync(socialAssetsRoot)
+  ? readdirSync(socialAssetsRoot)
+      .filter((entry) => entry.endsWith(".png"))
+      .sort()
+      .map((entry) => ({
+        path: `social/${entry}`,
+        kind: "social-image",
+        sourcePath: path.join(socialAssetsRoot, entry),
+      }))
+  : [];
+
 const artifacts = [
   ...site.pages.map((page) => ({
     path: getSiteOutputPath(page),
@@ -94,6 +109,7 @@ const artifacts = [
     path: "favicon.svg",
     kind: "asset",
   },
+  ...socialArtifacts,
   {
     path: "robots.txt",
     kind: "seo",
@@ -124,9 +140,9 @@ const contentArtifacts = artifacts.filter(
   (artifact) => artifact.path !== "runtime.json"
 );
 
-const outputs = new Map<string, string>();
+const outputs = new Map<string, string | Buffer>();
 
-function writeArtifact(relativePath: string, contents: string): void {
+function writeArtifact(relativePath: string, contents: string | Buffer): void {
   const outputPath = path.join("dist", relativePath);
 
   mkdirSync(path.dirname(outputPath), {
@@ -136,7 +152,7 @@ function writeArtifact(relativePath: string, contents: string): void {
   writeFileSync(outputPath, contents);
 }
 
-function addArtifact(relativePath: string, contents: string): void {
+function addArtifact(relativePath: string, contents: string | Buffer): void {
   outputs.set(relativePath, contents);
 }
 
@@ -156,12 +172,26 @@ function byteLength(value: string): number {
   return Buffer.byteLength(value, "utf8");
 }
 
+function artifactByteLength(value: string | Buffer): number {
+  return Buffer.isBuffer(value)
+    ? value.length
+    : byteLength(value);
+}
+
 function artifactInventory() {
   return artifacts.map((artifact) => ({
     path: artifact.path,
     kind: artifact.kind,
-    bytes: byteLength(outputs.get(artifact.path) ?? ""),
+    bytes: artifactByteLength(outputs.get(artifact.path) ?? ""),
   }));
+}
+
+function postSocialImagePath(slug: string): string | undefined {
+  const imagePath = `social/${slug}.png`;
+
+  return outputs.has(imagePath)
+    ? imagePath
+    : undefined;
 }
 
 function addRuntimeIdentity(): void {
@@ -190,6 +220,10 @@ function addRuntimeIdentity(): void {
   addArtifact("runtime.json", runtimeIdentity);
 }
 
+for (const artifact of socialArtifacts) {
+  addArtifact(artifact.path, readFileSync(artifact.sourcePath));
+}
+
 for (const page of site.pages) {
   addArtifact(
     getSiteOutputPath(page),
@@ -200,12 +234,15 @@ for (const page of site.pages) {
 for (const post of site.posts) {
   addArtifact(
     getPostOutputPath(post),
-    generatePostPage(site, post)
+    generatePostPage(site, post, {
+      imagePath: postSocialImagePath(post.slug),
+    })
   );
 }
 
 addArtifact("404.html", generateNotFoundPage(site));
 addArtifact("favicon.svg", generateFaviconSvg());
+
 addArtifact(
   "system.json",
   generateSiteManifestWithCapabilities(site, runtimeCapabilities)

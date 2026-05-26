@@ -29,6 +29,7 @@ assertFileExists(
 );
 assertFileExists("dist/404.html");
 assertFileExists("dist/favicon.svg");
+assertFileExists("dist/social/building-paideia.png");
 assertFileExists("dist/robots.txt");
 assertFileExists("dist/sitemap.xml");
 assertFileExists("dist/llms.txt");
@@ -77,6 +78,14 @@ assert.ok(
 assert.ok(
   postHtml.includes('<meta property="og:type" content="article">'),
   "post page should include Open Graph article metadata"
+);
+assert.ok(
+  postHtml.includes('<meta property="og:image" content="https://www.lautarogartner.com/social/building-paideia.png">'),
+  "post page should include a social preview image"
+);
+assert.ok(
+  postHtml.includes('<meta name="twitter:card" content="summary_large_image">'),
+  "post page should use a large Twitter card when an image is available"
 );
 assert.ok(
   postHtml.includes('<meta property="article:published_time" content="2026-05-20">'),
