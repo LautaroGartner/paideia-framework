@@ -2,7 +2,7 @@
   "artifactSchemaVersion": "0.1",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "generatedAt": "2026-05-26T18:37:24.791Z",
   "sourceUrl": "https://example.com/",
@@ -14,35 +14,35 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 1,
   "failedRouteCount": 0,
-  "buildId": "4d0097e",
+  "buildId": "7ca689e",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 2915,
-      "sha256": "dfc1def0b0cfe2229967f1ed3b830eadd3ac1b863b16a5dbac00cc8b8be9b896"
+      "bytes": 2992,
+      "sha256": "470431082703f167cc1772396cbea4e4ab725a40000fd521cf6a1d3288d56190"
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 750,
-      "sha256": "a2dc39739862492a200b04b5c6d588f2579eb52f777d84de1bf66c3770ed3285"
+      "bytes": 777,
+      "sha256": "b0c13b8f52dcb4c1adb00f5852931ac216383a570e42b9806706e62e308237e1"
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 3052,
-      "sha256": "433128c56255aa1a0f6c39cc7a308f9802cfab2bf80e1a1b0971164ef5ee1193"
+      "bytes": 3129,
+      "sha256": "1ce27f2ea4d305cb28efd5cf2dcbdfe5f2a9f27592ad1ac6789f7712964d1f57"
     },
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 3155,
-      "sha256": "6d5b5fa2d7b2cbfaa69252f9557c4e146c2485f9d2950a17e13c98b422d35988"
+      "bytes": 3232,
+      "sha256": "280318873c48a73b28ffe8bc861014b9bd22b8ed898946d2519c7659630c77f2"
     }
   ],
   "capabilities": [
@@ -102,8 +102,11 @@
         "status": 404,
         "message": "Not Found"
       },
-      "note": "robots.txt could not be fetched; v0.7 records this but does not enforce directives."
-    }
+      "note": "robots.txt could not be fetched; no directives were available to enforce.",
+      "enforced": false,
+      "rules": []
+    },
+    "skipped": 0
   },
   "diagnostics": {
     "status": "complete",
@@ -119,5 +122,6 @@
       "path": "/",
       "message": "Homepage did not include a meta description."
     }
-  ]
+  ],
+  "skippedRouteCount": 0
 }

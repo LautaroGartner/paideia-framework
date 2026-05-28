@@ -184,7 +184,7 @@ assert(
   agentifyVersion
 );
 assert(
-  agentifyVersion.output.trim() === "0.7.2-alpha.2",
+  agentifyVersion.output.trim() === "0.7.3-alpha.1",
   "agentify --version should print the agentify version",
   agentifyVersion
 );

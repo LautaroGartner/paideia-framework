@@ -24,6 +24,7 @@ const pages = new Map([
     <a href="/about">About</a>
     <a href="/docs/">Docs</a>
     <a href="/app">App</a>
+    <a href="/private">Private</a>
     <a href="/rate-limited">Rate limited</a>
     <a href="https://external.example/ignored">External</a>
     <a href="#fragment">Fragment</a>
@@ -116,11 +117,16 @@ function runtimeHashInput(value) {
 }
 
 try {
+  let privateAttempts = 0;
   const result = await agentify("example.test", {
     fetchedAt: "2026-05-22T00:00:00.000Z",
     fetcher: async (url) => {
       const route = new URL(url).pathname.replace(/\/$/, "") || "/";
       const html = pages.get(route);
+
+      if (route === "/private") {
+        privateAttempts += 1;
+      }
 
       if (!html) {
         const error = new Error("Too Many Requests");
@@ -132,12 +138,13 @@ try {
     },
     maxPages: 10,
     outputDir: path.join(testRoot, "agent"),
-    robotsTxt: "User-agent: *\nAllow: /\n",
+    robotsTxt: "User-agent: *\nDisallow: /private\nAllow: /\n",
     sitemapXml: "<?xml version=\"1.0\"?><urlset></urlset>",
     userAgent: "agentify-test/1.0",
   });
 
   assert.equal(result.routes.length, 4);
+  assert.equal(privateAttempts, 0);
 
   for (const relativePath of [
     "agent/system.json",
@@ -177,7 +184,7 @@ try {
     system.routes.map((route) => route.path),
     ["/", "/about", "/app", "/docs"]
   );
-  assert.equal(system.generator.version, "0.7.2-alpha.2");
+  assert.equal(system.generator.version, "0.7.3-alpha.1");
   assert.deepEqual(system.renderer, {
     mode: "static-html",
     javascriptExecuted: false,
@@ -185,13 +192,15 @@ try {
   assert.equal(system.limitations.javascriptNotExecuted, true);
   assert.equal(system.limitations.recursiveCrawl, false);
   assert.equal(system.limitations.privateBehaviorInferred, false);
-  assert.equal(system.limitations.robotsEnforced, false);
+  assert.equal(system.limitations.robotsEnforced, true);
   assert.equal(system.crawl.maxDepth, 1);
   assert.equal(system.crawl.maxPages, 10);
   assert.equal(system.crawl.status, "partial");
   assert.equal(system.crawl.fetched, 4);
   assert.equal(system.crawl.failed, 1);
-  assert.equal(system.crawl.receipts.length, 4);
+  assert.equal(system.crawl.skipped, 1);
+  assert.equal(system.skippedRouteCount, 1);
+  assert.equal(system.crawl.receipts.length, 5);
   assert.equal(system.crawl.receipts[0].status, 200);
   assert.equal(system.crawl.receipts[0].contentType, "text/html");
   assert.equal(system.crawl.receipts[0].discoveredVia, "source");
@@ -200,6 +209,17 @@ try {
   assert.equal(system.crawl.failures[0].status, 429);
   assert.ok(system.crawl.failures[0].url.endsWith("/rate-limited"));
   assert.equal(system.crawl.robots.status, "fetched");
+  assert.equal(system.crawl.robots.enforced, true);
+  assert.deepEqual(system.crawl.robots.rules, [
+    {
+      directive: "disallow",
+      path: "/private",
+    },
+    {
+      directive: "allow",
+      path: "/",
+    },
+  ]);
   assert.equal(system.crawl.sitemap.status, "fetched");
   assert.equal(system.crawl.sitemap.discoveredVia, "provided");
   assert.equal(system.crawl.userAgent, "agentify-test/1.0");
@@ -208,6 +228,7 @@ try {
   assert.equal(system.diagnostics.warnings, system.warnings.length);
   assert.ok(system.diagnostics.codes.includes("crawl.partial"));
   assert.ok(system.diagnostics.codes.includes("js.required"));
+  assert.ok(system.diagnostics.codes.includes("robots.disallowed"));
   assertWarnings(system.warnings, "system");
   assert.ok(system.warnings.some((item) => item.code === "crawl.partial"));
   assert.ok(system.warnings.some((item) => item.code === "js.required"));
@@ -215,7 +236,7 @@ try {
   assert.equal(context.generatedAt, "2026-05-22T00:00:00.000Z");
   assert.equal(context.artifactSchemaVersion, "0.1");
   assert.equal(context.sourceUrl, "https://example.test/");
-  assert.equal(context.generator.version, "0.7.2-alpha.2");
+  assert.equal(context.generator.version, "0.7.3-alpha.1");
   assert.deepEqual(context.renderer, {
     mode: "static-html",
     javascriptExecuted: false,
@@ -223,9 +244,11 @@ try {
   assert.equal(context.limitations.javascriptNotExecuted, true);
   assert.equal(context.routeCount, context.routes.length);
   assert.equal(context.failedRouteCount, 1);
+  assert.equal(context.skippedRouteCount, 1);
   assert.equal(context.failedRouteCount, context.crawl.failures.length);
   assert.ok(context.warningCodes.includes("crawl.partial"));
   assert.ok(context.warningCodes.includes("js.required"));
+  assert.ok(context.warningCodes.includes("robots.disallowed"));
   assertWarnings(context.warnings, "context");
   assert.deepEqual(
     context.warningCodes,
@@ -262,12 +285,13 @@ try {
   assert.equal(context.routes[2].javascriptRequired, true);
 
   assert.equal(runtime.generator.name, "agentify");
-  assert.equal(runtime.generator.version, "0.7.2-alpha.2");
+  assert.equal(runtime.generator.version, "0.7.3-alpha.1");
   assert.equal(runtime.artifactSchemaVersion, "0.1");
   assert.equal(runtime.generatedAt, "2026-05-22T00:00:00.000Z");
   assert.equal(runtime.sourceUrl, "https://example.test/");
   assert.equal(runtime.routeCount, context.routeCount);
   assert.equal(runtime.failedRouteCount, context.failedRouteCount);
+  assert.equal(runtime.skippedRouteCount, context.skippedRouteCount);
   assert.deepEqual(runtime.renderer, {
     mode: "static-html",
     javascriptExecuted: false,
@@ -277,6 +301,7 @@ try {
   assert.equal(runtime.diagnostics.status, "partial");
   assert.ok(runtime.diagnostics.codes.includes("crawl.partial"));
   assert.ok(runtime.diagnostics.codes.includes("js.required"));
+  assert.ok(runtime.diagnostics.codes.includes("robots.disallowed"));
   assert.ok(runtime.diagnostics.codes.includes("missing.title"));
   assert.ok(runtime.diagnostics.codes.includes("missing.description"));
   assert.equal(runtime.diagnostics.warnings, runtime.warnings.length);
@@ -284,11 +309,15 @@ try {
   assert.equal(runtime.crawl.status, "partial");
   assert.equal(runtime.crawl.fetched, 4);
   assert.equal(runtime.crawl.failed, 1);
-  assert.equal(runtime.crawl.receipts.length, 4);
+  assert.equal(runtime.crawl.skipped, 1);
+  assert.equal(runtime.crawl.receipts.length, 5);
   assert.equal(runtime.crawl.receipts[0].path, "/");
   assert.equal(runtime.crawl.receipts[0].status, 200);
   assertFailures(runtime.crawl.failures, "runtime crawl");
   assert.equal(runtime.crawl.failures[0].status, 429);
+  assert.equal(runtime.crawl.receipts[4].path, "/private");
+  assert.equal(runtime.crawl.receipts[4].skipped, true);
+  assert.equal(runtime.crawl.receipts[4].robotsRule.path, "/private");
   assert.equal(runtime.crawl.sameOriginOnly, true);
   assert.equal(runtime.crawl.sitemap.status, "fetched");
   assert.ok(runtime.crawl.sitemap.candidateUrls.includes("https://example.test/sitemap.xml"));
@@ -327,6 +356,7 @@ try {
   assert.ok(llms.includes("## Site Summary"));
   assert.ok(llms.includes("## Crawl Status"));
   assert.ok(llms.includes("Status: partial"));
+  assert.ok(llms.includes("Routes skipped: 1"));
   assert.ok(llms.includes("Renderer: static-html"));
   assert.ok(llms.includes("- /about"));
   assert.ok(llms.includes("- /app"));
@@ -335,7 +365,44 @@ try {
   assert.ok(llms.includes("- js.required"));
   assert.ok(llms.includes("## Crawl Failures"));
   assert.ok(llms.includes("HTTP 429"));
+  assert.ok(llms.includes("## Crawl Skips"));
+  assert.ok(llms.includes("https://example.test/private"));
   assert.ok(!llms.includes("external.example"));
+
+  let sitemapAttempts = 0;
+  const sitemapSkipped = await agentify("https://sitemap-blocked.example/", {
+    fetchedAt: "2026-05-22T00:00:00.000Z",
+    html: pages.get("/"),
+    maxPages: 1,
+    outputDir: path.join(testRoot, "agent-sitemap-skipped"),
+    textFetcher: async (url) => {
+      const pathname = new URL(url).pathname;
+
+      if (pathname === "/robots.txt") {
+        return "User-agent: *\nDisallow: /sitemap.xml\nAllow: /\n";
+      }
+
+      if (pathname === "/sitemap.xml") {
+        sitemapAttempts += 1;
+      }
+
+      throw new Error(`unexpected fetch ${url}`);
+    },
+    userAgent: "agentify-test/1.0",
+  });
+
+  assert.equal(sitemapAttempts, 0);
+  assert.equal(sitemapSkipped.outputs["runtime.json"].includes("robots.disallowed"), true);
+  assert.equal(sitemapSkipped.routes.length, 1);
+
+  const sitemapSkippedRuntime = JSON.parse(
+    sitemapSkipped.outputs["runtime.json"]
+  );
+  assert.equal(sitemapSkippedRuntime.crawl.sitemap.status, "skipped");
+  assert.equal(
+    sitemapSkippedRuntime.crawl.sitemap.skippedCandidates[0].url,
+    "https://sitemap-blocked.example/sitemap.xml"
+  );
 
   const originalFetch = globalThis.fetch;
 

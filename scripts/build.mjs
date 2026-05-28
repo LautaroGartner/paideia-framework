@@ -23,6 +23,12 @@ const BUILD_ENTRY = path.join(
   "index.js"
 );
 
+const SOCIAL_SCREENSHOTS_ENTRY = path.join(
+  packageRoot,
+  "scripts",
+  "social-screenshots.mjs"
+);
+
 const TSCONFIG_PATH = path.join(
   packageRoot,
   "tsconfig.json"
@@ -119,15 +125,31 @@ try {
     );
   }
 
+  const buildEnv = {
+    NODE_ENV: "production",
+    ...(!isPackageCheckout
+      ? { PAIDEIA_SITE_ENTRY: APP_SITE_ENTRY }
+      : {}),
+    PAIDEIA_APP_ROOT: appRoot,
+    PAIDEIA_PACKAGE_ROOT: packageRoot,
+  };
+
   await run(process.execPath, [BUILD_ENTRY], {
     cwd: appRoot,
     env: {
-      NODE_ENV: "production",
-      ...(!isPackageCheckout
-        ? { PAIDEIA_SITE_ENTRY: APP_SITE_ENTRY }
-        : {}),
-      PAIDEIA_PACKAGE_ROOT: packageRoot,
+      ...buildEnv,
+      PAIDEIA_ALLOW_MISSING_SOCIAL: "1",
     },
+  });
+
+  await run(process.execPath, [SOCIAL_SCREENSHOTS_ENTRY], {
+    cwd: appRoot,
+    env: buildEnv,
+  });
+
+  await run(process.execPath, [BUILD_ENTRY], {
+    cwd: appRoot,
+    env: buildEnv,
   });
 } catch (error) {
   console.error(

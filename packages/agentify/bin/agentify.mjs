@@ -6,7 +6,7 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
-export const AGENTIFY_VERSION = "0.7.2-alpha.2";
+export const AGENTIFY_VERSION = "0.7.3-alpha.1";
 const ARTIFACT_SCHEMA_VERSION = "0.1";
 const DEFAULT_MAX_PAGES = 10;
 const DEFAULT_TIMEOUT_MS = 10000;
@@ -22,7 +22,7 @@ const LIMITATIONS = {
   javascriptNotExecuted: true,
   recursiveCrawl: false,
   privateBehaviorInferred: false,
-  robotsEnforced: false,
+  robotsEnforced: true,
 };
 const REQUIRED_ARTIFACTS = [
   "context.json",
@@ -262,6 +262,124 @@ function extractRobotsSitemaps(text, source) {
     .filter(Boolean);
 }
 
+function cleanRobotsLine(line) {
+  return line.replace(/#.*$/g, "").trim();
+}
+
+function parseRobotsTxt(text, userAgent = DEFAULT_USER_AGENT) {
+  const groups = [];
+  let currentGroup = null;
+
+  for (const rawLine of String(text ?? "").split(/\r?\n/)) {
+    const line = cleanRobotsLine(rawLine);
+
+    if (!line) {
+      currentGroup = null;
+      continue;
+    }
+
+    const match = line.match(/^([a-z-]+)\s*:\s*(.*?)\s*$/i);
+
+    if (!match) {
+      continue;
+    }
+
+    const field = match[1].toLowerCase();
+    const value = match[2];
+
+    if (field === "user-agent") {
+      if (!currentGroup || currentGroup.rules.length > 0) {
+        currentGroup = {
+          agents: [],
+          rules: [],
+        };
+        groups.push(currentGroup);
+      }
+
+      currentGroup.agents.push(value.toLowerCase());
+      continue;
+    }
+
+    if ((field === "allow" || field === "disallow") && currentGroup) {
+      currentGroup.rules.push({
+        directive: field,
+        path: value,
+      });
+    }
+  }
+
+  const normalizedUserAgent = userAgent.toLowerCase();
+  const matchingGroups = groups.filter((group) =>
+    group.agents.some((agent) =>
+      agent === "*" || normalizedUserAgent.includes(agent)
+    )
+  );
+  const exactGroups = matchingGroups.filter((group) =>
+    group.agents.some((agent) => agent !== "*")
+  );
+  const selectedGroups = exactGroups.length > 0
+    ? exactGroups
+    : matchingGroups;
+
+  return selectedGroups.flatMap((group) => group.rules);
+}
+
+function robotsPatternToRegExp(pattern) {
+  const escaped = pattern
+    .split("")
+    .map((char) => {
+      if (char === "*") return ".*";
+      if (char === "$") return "$";
+
+      return char.replace(/[|\\{}()[\]^$+?.]/g, "\\$&");
+    })
+    .join("");
+
+  return new RegExp(`^${escaped}`);
+}
+
+function robotsAllowed(robots, targetUrl) {
+  const rules = robots?.rules ?? [];
+
+  if (rules.length === 0) {
+    return {
+      allowed: true,
+      rule: null,
+    };
+  }
+
+  const target = new URL(targetUrl);
+  const pathAndSearch = `${target.pathname}${target.search}`;
+  let winningRule = null;
+
+  for (const rule of rules) {
+    if (rule.directive === "disallow" && rule.path === "") {
+      continue;
+    }
+
+    if (!robotsPatternToRegExp(rule.path).test(pathAndSearch)) {
+      continue;
+    }
+
+    if (
+      !winningRule ||
+      rule.path.length > winningRule.path.length ||
+      (
+        rule.path.length === winningRule.path.length &&
+        rule.directive === "allow" &&
+        winningRule.directive !== "allow"
+      )
+    ) {
+      winningRule = rule;
+    }
+  }
+
+  return {
+    allowed: winningRule?.directive !== "disallow",
+    rule: winningRule,
+  };
+}
+
 function pageMetadata(pathname, html, source) {
   const canonical = extractCanonicalUrl(html, new URL(pathname, source));
   const metadata = {
@@ -347,6 +465,16 @@ function formatWarning(diagnostic) {
     : diagnostic.message;
 
   return detail ? `${label} (${detail})` : label;
+}
+
+function robotsDisallowedDiagnostic({ path, url, message }) {
+  return {
+    severity: "warning",
+    code: "robots.disallowed",
+    path,
+    url,
+    message,
+  };
 }
 
 function warningDiagnostics(diagnostics) {
@@ -438,8 +566,8 @@ function artifactEntries(outputs) {
     }));
 }
 
-function crawlStatus(failures) {
-  return failures.length > 0 ? "partial" : "complete";
+function crawlStatus(failures, skipped = []) {
+  return failures.length > 0 || skipped.length > 0 ? "partial" : "complete";
 }
 
 function compactRouteSummary(page) {
@@ -468,6 +596,31 @@ function routeReceipt(page) {
     canonical: page.canonical,
     discoveredVia: page.discoveredVia ?? "",
     depth: page.depth ?? 0,
+  };
+}
+
+function skippedRouteReceipt({ route, url, discoveredVia, depth, reason, rule }) {
+  return {
+    path: route,
+    url,
+    finalUrl: url,
+    status: null,
+    statusText: "Skipped",
+    contentType: "",
+    timingMs: null,
+    redirected: false,
+    redirectChain: [],
+    canonical: "",
+    discoveredVia,
+    depth,
+    skipped: true,
+    reason,
+    robotsRule: rule
+      ? {
+        directive: rule.directive,
+        path: rule.path,
+      }
+      : null,
   };
 }
 
@@ -558,15 +711,19 @@ function normalizedWarnings(diagnostics) {
         warning.status = item.status;
       }
 
+      if (typeof item.url !== "undefined") {
+        warning.url = item.url;
+      }
+
       return warning;
     });
 }
 
-function diagnosticsSummary(diagnostics, failures) {
+function diagnosticsSummary(diagnostics, failures, skipped = []) {
   return {
     status: diagnostics.some((item) => item.severity === "error")
       ? "failing"
-      : crawlStatus(failures),
+      : crawlStatus(failures, skipped),
     warnings: diagnostics.filter((item) => item.severity === "warning").length,
     errors: diagnostics.filter((item) => item.severity === "error").length,
     codes: diagnosticCodes(diagnostics),
@@ -580,10 +737,11 @@ function createLlmsText({
   routes,
   maxPages,
   failures,
+  skipped = [],
   fetchedAt,
   diagnostics,
 }) {
-  const status = crawlStatus(failures);
+  const status = crawlStatus(failures, skipped);
   const codes = diagnosticCodes(diagnostics);
   const lines = [
     `# ${title || sourceUrl}`,
@@ -604,6 +762,7 @@ function createLlmsText({
     `Generated at: ${fetchedAt}`,
     `Routes fetched: ${routes.length}`,
     `Routes failed: ${failures.length}`,
+    `Routes skipped: ${skipped.length}`,
     `Renderer: ${rendererMode(RENDERER)}`,
     "",
     "## Routes",
@@ -624,7 +783,7 @@ function createLlmsText({
     "## Limits",
     "",
     `This prototype uses the ${rendererMode(RENDERER)} renderer: it fetches HTML, does not execute JavaScript, and crawls up to ${maxPages} same-origin pages linked from the homepage.`,
-    "Robots.txt is fetched for awareness only and is not enforced yet.",
+    "Robots.txt directives are enforced for matching route and sitemap fetches.",
   ];
 
   if (codes.length > 0) {
@@ -649,6 +808,16 @@ function createLlmsText({
     }
   }
 
+  if (skipped.length > 0) {
+    lines.push("");
+    lines.push("## Crawl Skips");
+    lines.push("");
+
+    for (const skip of skipped) {
+      lines.push(`- ${skip.url}: ${skip.reason}`);
+    }
+  }
+
   return `${lines.join("\n")}\n`;
 }
 
@@ -658,6 +827,8 @@ function createBundle({
   maxPages,
   pages,
   failures,
+  skipped = [],
+  receipts: crawlReceipts = [],
   robots,
   sitemap,
   timeoutMs,
@@ -694,8 +865,10 @@ function createBundle({
   }
 
   const warnings = normalizedWarnings(diagnostics);
-  const diagnosticsStatus = diagnosticsSummary(diagnostics, failures);
-  const receipts = pages.map(routeReceipt);
+  const diagnosticsStatus = diagnosticsSummary(diagnostics, failures, skipped);
+  const receipts = crawlReceipts.length > 0
+    ? crawlReceipts
+    : pages.map(routeReceipt);
   const context = {
     artifactSchemaVersion: ARTIFACT_SCHEMA_VERSION,
     generatedAt: fetchedAt,
@@ -708,6 +881,7 @@ function createBundle({
     limitations: LIMITATIONS,
     routeCount: pages.length,
     failedRouteCount: failures.length,
+    skippedRouteCount: skipped.length,
     warningCodes: diagnosticCodes(diagnostics),
     warnings,
     source: {
@@ -715,7 +889,7 @@ function createBundle({
       origin: parsedUrl.origin,
     },
     crawl: {
-      status: crawlStatus(failures),
+      status: crawlStatus(failures, skipped),
       maxDepth: 1,
       maxPages,
       timeoutMs,
@@ -723,6 +897,7 @@ function createBundle({
       retries,
       fetched: pages.length,
       failed: failures.length,
+      skipped: skipped.length,
       failures,
       receipts,
       sitemap,
@@ -756,6 +931,7 @@ function createBundle({
     limitations: LIMITATIONS,
     routeCount: pages.length,
     failedRouteCount: failures.length,
+    skippedRouteCount: skipped.length,
     source: {
       url: parsedUrl.href,
       origin: parsedUrl.origin,
@@ -766,7 +942,7 @@ function createBundle({
     },
     routes: pages.map((page) => routeArtifact(page, true)),
     crawl: {
-      status: crawlStatus(failures),
+      status: crawlStatus(failures, skipped),
       maxDepth: 1,
       maxPages,
       timeoutMs,
@@ -774,6 +950,7 @@ function createBundle({
       retries,
       fetched: pages.length,
       failed: failures.length,
+      skipped: skipped.length,
       failures,
       receipts,
       sitemap,
@@ -800,6 +977,7 @@ function createBundle({
     routes: pages,
     maxPages,
     failures,
+    skipped,
     fetchedAt,
     diagnostics,
   });
@@ -822,11 +1000,12 @@ function createBundle({
     limitations: LIMITATIONS,
     routeCount: pages.length,
     failedRouteCount: failures.length,
+    skippedRouteCount: skipped.length,
     buildId: buildIdFor(partialOutputs),
     artifacts: [],
     capabilities,
     crawl: {
-      status: crawlStatus(failures),
+      status: crawlStatus(failures, skipped),
       maxDepth: 1,
       maxPages,
       timeoutMs,
@@ -834,6 +1013,7 @@ function createBundle({
       retries,
       fetched: pages.length,
       failed: failures.length,
+      skipped: skipped.length,
       failures,
       receipts,
       sitemap,
@@ -1061,6 +1241,8 @@ async function fetchRobots(source, options) {
       status: "fetched",
       url,
       bytes: byteLength(options.robotsTxt),
+      enforced: true,
+      rules: parseRobotsTxt(options.robotsTxt, options.userAgent ?? DEFAULT_USER_AGENT),
       sitemaps: extractRobotsSitemaps(options.robotsTxt, source),
       note: "robots.txt was provided by the caller.",
     };
@@ -1070,6 +1252,8 @@ async function fetchRobots(source, options) {
     return {
       status: "skipped",
       url: new URL("/robots.txt", source).href,
+      enforced: false,
+      rules: [],
       note: "robots.txt fetch skipped.",
     };
   }
@@ -1093,15 +1277,19 @@ async function fetchRobots(source, options) {
       url,
       bytes: byteLength(text ?? ""),
       receipt: typeof result === "string" ? null : textReceipt(url, result),
+      enforced: true,
+      rules: parseRobotsTxt(text, options.userAgent ?? DEFAULT_USER_AGENT),
       sitemaps: extractRobotsSitemaps(text, source),
-      note: "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet.",
+      note: "robots.txt was fetched and matching directives are enforced.",
     };
   } catch (error) {
     return {
       status: "unavailable",
       url,
+      enforced: false,
+      rules: [],
       failure: failureFromError(url, error),
-      note: "robots.txt could not be fetched; v0.7 records this but does not enforce directives.",
+      note: "robots.txt could not be fetched; no directives were available to enforce.",
     };
   }
 }
@@ -1144,8 +1332,23 @@ async function fetchSitemap(source, homepageHtml, robots, options) {
       normalizeDelayMs(options.delayMs)
     ));
   let lastFailure = null;
+  const skippedCandidates = [];
 
   for (const url of candidates) {
+    const access = robotsAllowed(robots, url);
+
+    if (!access.allowed) {
+      skippedCandidates.push({
+        url,
+        reason: "Blocked by robots.txt",
+        robotsRule: {
+          directive: access.rule.directive,
+          path: access.rule.path,
+        },
+      });
+      continue;
+    }
+
     try {
       const result = await textFetcher(url);
       const text = typeof result === "string" ? result : result.text;
@@ -1168,10 +1371,21 @@ async function fetchSitemap(source, homepageHtml, robots, options) {
     }
   }
 
+  if (skippedCandidates.length === candidates.length && candidates.length > 0) {
+    return {
+      status: "skipped",
+      url: candidates[0],
+      candidateUrls: candidates,
+      skippedCandidates,
+      note: "sitemap.xml fetch skipped because robots.txt disallows all discovered sitemap candidates.",
+    };
+  }
+
   return {
     status: "unavailable",
     url: candidates[0] ?? defaultUrl,
     candidateUrls: candidates,
+    skippedCandidates,
     failure: lastFailure,
     note: "sitemap.xml could not be fetched from discovered candidates.",
   };
@@ -1202,8 +1416,11 @@ async function crawlRoutes(sourceUrl, options) {
   };
   const pages = [];
   const failures = [];
+  const skipped = [];
+  const receipts = [];
   const diagnostics = [];
   const homepageRoute = routeFromUrl(source);
+  const homepageAccess = robotsAllowed(robots, source.href);
 
   let homepageHtml = options.html ?? "";
   let homepageReceipt = {
@@ -1216,6 +1433,46 @@ async function crawlRoutes(sourceUrl, options) {
     redirected: false,
     redirectChain: [],
   };
+
+  if (!homepageAccess.allowed) {
+    const reason = "Blocked by robots.txt";
+    const receipt = skippedRouteReceipt({
+      route: homepageRoute,
+      url: source.href,
+      discoveredVia: "source",
+      depth: 0,
+      reason,
+      rule: homepageAccess.rule,
+    });
+
+    skipped.push({
+      path: homepageRoute,
+      url: source.href,
+      reason,
+      robotsRule: receipt.robotsRule,
+    });
+    receipts.push(receipt);
+    diagnostics.push(robotsDisallowedDiagnostic({
+      path: homepageRoute,
+      url: source.href,
+      message: "Homepage fetch skipped because robots.txt disallows it.",
+    }));
+
+    return {
+      diagnostics,
+      failures,
+      skipped,
+      receipts,
+      maxPages,
+      pages,
+      robots,
+      sitemap,
+      timeoutMs,
+      delayMs,
+      retries,
+      userAgent,
+    };
+  }
 
   if (!homepageHtml) {
     try {
@@ -1241,6 +1498,8 @@ async function crawlRoutes(sourceUrl, options) {
       return {
         diagnostics,
         failures,
+        skipped,
+        receipts,
         maxPages,
         pages,
         robots,
@@ -1260,6 +1519,7 @@ async function crawlRoutes(sourceUrl, options) {
     receipt: homepageReceipt,
   };
   pages.push(homepage);
+  receipts.push(routeReceipt(homepage));
   sitemap = await fetchSitemap(source, homepageHtml, robots, {
     ...options,
     timeoutMs,
@@ -1267,12 +1527,51 @@ async function crawlRoutes(sourceUrl, options) {
     delayMs,
     retries,
   });
+  for (const candidate of sitemap.skippedCandidates ?? []) {
+    diagnostics.push(robotsDisallowedDiagnostic({
+      path: new URL(candidate.url).pathname,
+      url: candidate.url,
+      message: "Sitemap fetch skipped because robots.txt disallows it.",
+    }));
+  }
   const discoveredRoutes = extractInternalRoutes(homepageHtml, source.href)
     .filter((route) => route !== homepage.path);
   const queue = [homepage.path, ...discoveredRoutes].slice(0, maxPages);
 
   for (const route of queue.slice(1)) {
     const url = new URL(route, source);
+    const access = robotsAllowed(robots, url.href);
+
+    if (!access.allowed) {
+      const reason = "Blocked by robots.txt";
+      const receipt = skippedRouteReceipt({
+        route,
+        url: url.href,
+        discoveredVia: "homepage-anchor",
+        depth: 1,
+        reason,
+        rule: access.rule,
+      });
+
+      skipped.push({
+        path: route,
+        url: url.href,
+        reason,
+        robotsRule: receipt.robotsRule,
+      });
+      receipts.push(receipt);
+      diagnostics.push(robotsDisallowedDiagnostic({
+        path: route,
+        url: url.href,
+        message: `Route ${route} skipped because robots.txt disallows it.`,
+      }));
+
+      if (verbose) {
+        console.log(`[agentify] skipped ${url.href} robots.txt`);
+      }
+
+      continue;
+    }
 
     try {
       if (verbose) {
@@ -1280,12 +1579,15 @@ async function crawlRoutes(sourceUrl, options) {
       }
 
       const fetched = await fetchRouteHtml(fetcher, url.href);
-      pages.push({
+      const page = {
         ...pageMetadata(route, fetched.html, source),
         depth: 1,
         discoveredVia: "homepage-anchor",
         receipt: fetched.receipt,
-      });
+      };
+
+      pages.push(page);
+      receipts.push(routeReceipt(page));
     } catch (error) {
       const failure = failureFromError(url.href, error);
 
@@ -1309,6 +1611,8 @@ async function crawlRoutes(sourceUrl, options) {
   return {
     diagnostics,
     failures,
+    skipped,
+    receipts,
     maxPages,
     pages,
     robots,
@@ -1341,6 +1645,8 @@ export async function agentify(url, options = {}) {
     maxPages: crawled.maxPages,
     pages: crawled.pages,
     failures: crawled.failures,
+    skipped: crawled.skipped,
+    receipts: crawled.receipts,
     robots: crawled.robots,
     sitemap: crawled.sitemap,
     timeoutMs: crawled.timeoutMs,
@@ -1458,6 +1764,13 @@ export function validateAgentify(outputDir = path.join(process.cwd(), "agent")) 
     );
   }
 
+  if ((runtime.skippedRouteCount ?? 0) !== (context.skippedRouteCount ?? 0) ||
+    (runtime.skippedRouteCount ?? 0) !== (system.skippedRouteCount ?? 0)) {
+    errors.push(
+      "skippedRouteCount must match across runtime, context, and system"
+    );
+  }
+
   const artifactEntriesByPath = new Map(
     (runtime.artifacts ?? []).map((artifact) => [artifact.path, artifact])
   );
@@ -1489,8 +1802,11 @@ export function validateAgentify(outputDir = path.join(process.cwd(), "agent")) 
     }
   }
 
-  if ((runtime.crawl?.receipts ?? []).length !== runtime.routeCount) {
-    errors.push("runtime.json crawl.receipts length must match routeCount");
+  const expectedReceiptCount = runtime.routeCount +
+    (runtime.skippedRouteCount ?? runtime.crawl?.skipped ?? 0);
+
+  if ((runtime.crawl?.receipts ?? []).length !== expectedReceiptCount) {
+    errors.push("runtime.json crawl.receipts length must match fetched plus skipped routes");
   }
 
   for (const receipt of runtime.crawl?.receipts ?? []) {
@@ -1498,7 +1814,11 @@ export function validateAgentify(outputDir = path.join(process.cwd(), "agent")) 
       errors.push("crawl receipt url is required");
     }
 
-    if (typeof receipt.status !== "number") {
+    if (receipt.skipped === true) {
+      if (typeof receipt.reason !== "string" || !receipt.reason) {
+        errors.push(`skipped crawl receipt for ${receipt.path ?? "unknown"} needs reason`);
+      }
+    } else if (typeof receipt.status !== "number") {
       errors.push(`crawl receipt for ${receipt.path ?? "unknown"} needs status`);
     }
 

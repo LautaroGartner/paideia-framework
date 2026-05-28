@@ -1,6 +1,6 @@
 # Agentify Protocol
 
-Status: alpha. This document describes the `0.1` artifact schema emitted by `@lautarogartner/agentify@0.7.2-alpha.2`.
+Status: alpha. This document describes the `0.1` artifact schema emitted by `@lautarogartner/agentify@0.7.3-alpha.1`.
 
 ## 1. Purpose
 
@@ -20,7 +20,7 @@ Renderer modes describe the environment that produced the observation. The curre
 
 Warnings are non-fatal diagnostics. They explain incomplete or degraded observations while preserving generated artifacts. Warnings do not make validation fail by themselves.
 
-Limitations are explicit boundaries of the observation model. For example, JavaScript is not executed, private behavior is not inferred, and robots rules are recorded for awareness rather than enforced.
+Limitations are explicit boundaries of the observation model. For example, JavaScript is not executed, private behavior is not inferred, and robots rules are enforced only when a matching `robots.txt` response or caller-provided robots text is available.
 
 Validation checks whether the artifact bundle is internally consistent: required files exist, schema versions match, renderer metadata is valid, route counts agree, receipts are present, and artifact byte counts and hashes match.
 
@@ -83,13 +83,15 @@ Current crawl behavior:
 * Route metadata is extracted from static HTML.
 * Redirect metadata is recorded when provided by the fetch layer.
 * Canonical URLs are detected from `<link rel="canonical">` when present.
-* `robots.txt` is fetched or recorded for awareness. Directives are not enforced in the current alpha.
+* `robots.txt` is fetched or recorded before page fetches when available.
+* Matching `Allow` and `Disallow` directives are enforced for the configured user agent.
+* The homepage, same-origin homepage links, and sitemap candidates are skipped before fetch when robots rules disallow them.
 * `sitemap.xml` discovery checks `/sitemap.xml`, `Sitemap:` hints in `robots.txt`, and homepage `<link rel="sitemap">` hints.
 * A failed route does not prevent artifact generation.
 * A crawl with failed routes is `partial`.
 * A crawl with no failed routes is `complete`.
 
-Failures are preserved in `crawl.failures`. Successful page fetches are preserved in `crawl.receipts`. Sitemap discovery is preserved in `crawl.sitemap`.
+Failures are preserved in `crawl.failures`. Successful page fetches and robots skips are preserved in `crawl.receipts`. Skipped route receipts include `skipped: true`, a reason, and the matched robots rule. Sitemap discovery and skipped sitemap candidates are preserved in `crawl.sitemap`.
 
 Transport success is not the same as machine readability.
 
@@ -117,9 +119,17 @@ Display labels: when a failed route includes an HTTP status, CLI output may disp
 
 ### `crawl.partial`
 
-Meaning: one or more discovered routes failed to fetch.
+Meaning: one or more discovered routes failed to fetch or were skipped by robots policy.
 
 Expected behavior: `crawl.status` is `partial`; generated artifacts remain valid if internally consistent.
+
+Validation: does not fail validation.
+
+### `robots.disallowed`
+
+Meaning: a homepage, discovered route, or sitemap candidate matched a disallowing `robots.txt` rule for the configured user agent.
+
+Expected behavior: Agentify does not fetch the disallowed URL, records a skipped receipt or skipped sitemap candidate, emits a warning, and continues generating artifacts from allowed observations.
 
 Validation: does not fail validation.
 

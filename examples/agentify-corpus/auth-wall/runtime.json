@@ -2,7 +2,7 @@
   "artifactSchemaVersion": "0.1",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "generatedAt": "2026-05-26T18:37:24.792Z",
   "sourceUrl": "https://github.com/settings/profile",
@@ -14,35 +14,35 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 3,
   "failedRouteCount": 0,
-  "buildId": "48aac1c",
+  "buildId": "48beae9",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 7594,
-      "sha256": "8a8405bc774594064a859741d3657834a09cb26afb361154806059ebc9c3afaf"
+      "bytes": 7660,
+      "sha256": "49c6b79d705af6ad85541c494724f6a9b5f58ad15b6eafd9d2bad8bd8cd13510"
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 1084,
-      "sha256": "b5c745b52b017c2e924d847ea82df4dd5b543a9ba248988e37bba554424e2f0e"
+      "bytes": 1111,
+      "sha256": "02058754ad0d6fd0e1bea33cf4f9162a71639ea5b44553fc4b1bd3394512b15e"
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 4960,
-      "sha256": "d4d8cb386eb4942f30020c96e9922ff1e51640453e0614233fbae3c42dc113b5"
+      "bytes": 5026,
+      "sha256": "d85d43f2a80c1f0d3a882653c198df209ea639aba1fd1d8b984f2c73087d2f66"
     },
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 6984,
-      "sha256": "491a6f5f3657f8c6c890c188a1a526fad71e381745bf5052cf9bdbb65bb9b112"
+      "bytes": 7050,
+      "sha256": "ee912b1750e8ee1a62cbb625aa2d1f48ccebc60df900cdf93ebbbae86f039656"
     }
   ],
   "capabilities": [
@@ -140,8 +140,11 @@
         "redirectChain": []
       },
       "sitemaps": [],
-      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
-    }
+      "note": "robots.txt was fetched and matching directives are enforced.",
+      "enforced": true,
+      "rules": []
+    },
+    "skipped": 0
   },
   "diagnostics": {
     "status": "complete",
@@ -162,5 +165,6 @@
       "path": "/signup?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Fprofile&amp;source=login",
       "message": "Route /signup?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Fprofile&amp;source=login appears to require JavaScript for meaningful static content."
     }
-  ]
+  ],
+  "skippedRouteCount": 0
 }

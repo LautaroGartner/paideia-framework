@@ -1,10 +1,11 @@
 # Changelog
 
-## 0.7.2-alpha.2
+## 0.7.3-alpha.1
 
 - Updated package docs and smoke assertions for the next alpha cut.
 - Documented `--delay-ms` and `--retries` in package examples.
 - Refreshed current-version fixtures and package smoke expectations.
+- Enforced matching robots.txt directives for route and sitemap fetches, with skipped-access receipts.
 
 ## 0.7.2-alpha.1
 

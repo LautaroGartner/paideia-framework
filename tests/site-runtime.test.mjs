@@ -42,6 +42,27 @@ assert.ok(context.site.title.length > 0);
 assert.equal(Array.isArray(context.pages), true);
 assert.equal(Array.isArray(context.posts), true);
 
+for (const post of context.posts) {
+  const imagePath = `dist/social/${post.slug}.png`;
+  const html = readText(`dist/${post.slug}/index.html`);
+  const absoluteImageUrl =
+    `https://www.lautarogartner.com/social/${post.slug}.png`;
+
+  assertFileExists(imagePath);
+  assert.ok(
+    html.includes(`<meta property="og:image" content="${absoluteImageUrl}">`),
+    `${post.slug} should include an Open Graph social image`
+  );
+  assert.ok(
+    html.includes(`<meta name="twitter:image" content="${absoluteImageUrl}">`),
+    `${post.slug} should include a Twitter social image`
+  );
+  assert.ok(
+    html.includes('<meta name="twitter:card" content="summary_large_image">'),
+    `${post.slug} should use a large Twitter card`
+  );
+}
+
 const postHtml = readText(
   "dist/building-paideia/index.html"
 );

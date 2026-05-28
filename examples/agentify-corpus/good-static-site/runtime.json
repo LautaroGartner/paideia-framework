@@ -2,7 +2,7 @@
   "artifactSchemaVersion": "0.1",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "generatedAt": "2026-05-26T18:36:48.527Z",
   "sourceUrl": "https://www.iana.org/domains/reserved",
@@ -14,35 +14,35 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 5,
   "failedRouteCount": 0,
-  "buildId": "eb4b82e",
+  "buildId": "7c27291",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 8560,
-      "sha256": "4a3ee2e3de7ed626fe15117e33072b58107a030e282446d5dfa964f8a70f7570"
+      "bytes": 8626,
+      "sha256": "88a68d2552b0185277019244d1712cdf541d8c1d4dc0f3792b40c52153d8d1a3"
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 960,
-      "sha256": "01eb6c378cb33f179111d344dda880de2ae21bce9bb9e707c3897a11404426ce"
+      "bytes": 987,
+      "sha256": "293198f45a63312cd01e33034a1afbeb120a0266c4f200b7745892ae762a6b89"
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 5635,
-      "sha256": "b73e303789dc02b97ba135d2a24ff6d06cb7474cf99b2ca8485420c690bcc3cf"
+      "bytes": 5701,
+      "sha256": "a7151fb0959aa0d052bd0ba3985e4b08f280d8cfac8458df673036d1b6a79ac8"
     },
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 8006,
-      "sha256": "4a8f8c22d24be3a74572bfc917cd4a23697486ba033c615b40461ebf81f84c2a"
+      "bytes": 8072,
+      "sha256": "d95752ec11887b7cf49c715b1d6691acfcd602d79563af3b14410bbdcd52d634"
     }
   ],
   "capabilities": [
@@ -165,8 +165,11 @@
         "redirectChain": []
       },
       "sitemaps": [],
-      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
-    }
+      "note": "robots.txt was fetched and matching directives are enforced.",
+      "enforced": true,
+      "rules": []
+    },
+    "skipped": 0
   },
   "diagnostics": {
     "status": "complete",
@@ -202,5 +205,6 @@
       "path": "/abuse",
       "message": "Route /abuse did not include a meta description."
     }
-  ]
+  ],
+  "skippedRouteCount": 0
 }

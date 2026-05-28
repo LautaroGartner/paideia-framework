@@ -4,7 +4,7 @@
   "sourceUrl": "https://x.com/",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "renderer": {
     "mode": "static-html",
@@ -14,7 +14,7 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 3,
   "failedRouteCount": 0,
@@ -145,8 +145,11 @@
         "https://x.com/sitemap.xml",
         "https://twitter.com/sitemap.xml"
       ],
-      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
-    }
+      "note": "robots.txt was fetched and matching directives are enforced.",
+      "enforced": true,
+      "rules": []
+    },
+    "skipped": 0
   },
   "site": {
     "title": "",
@@ -286,5 +289,6 @@
     "context.json",
     "system.json",
     "runtime.json"
-  ]
+  ],
+  "skippedRouteCount": 0
 }

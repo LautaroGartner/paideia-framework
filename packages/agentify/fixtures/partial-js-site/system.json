@@ -2,7 +2,7 @@
   "artifactSchemaVersion": "0.1",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "generatedAt": "2026-05-26T00:00:00.000Z",
   "sourceUrl": "https://js.fixture.agentify.test/",
@@ -14,7 +14,7 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 1,
   "failedRouteCount": 0,
@@ -87,8 +87,11 @@
       "sitemaps": [
         "https://js.fixture.agentify.test/sitemap.xml"
       ],
-      "note": "robots.txt was provided by the caller."
-    }
+      "note": "robots.txt was fetched and matching directives are enforced.",
+      "enforced": true,
+      "rules": []
+    },
+    "skipped": 0
   },
   "capabilities": [
     "site.crawled",
@@ -131,5 +134,6 @@
     "No recursive crawl beyond depth 1 was performed.",
     "JavaScript was not executed.",
     "No private backend behavior was inferred."
-  ]
+  ],
+  "skippedRouteCount": 0
 }

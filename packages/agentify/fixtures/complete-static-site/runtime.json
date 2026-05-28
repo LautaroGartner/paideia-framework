@@ -2,7 +2,7 @@
   "artifactSchemaVersion": "0.1",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "generatedAt": "2026-05-26T00:00:00.000Z",
   "sourceUrl": "https://fixtures.agentify.test/",
@@ -14,35 +14,35 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 2,
   "failedRouteCount": 0,
-  "buildId": "49e85d8",
+  "buildId": "a5b0ec1",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 3828,
-      "sha256": "24056aa4b34c7508bfbc694cef58408fbdc2d1eb12791ed6d5dc80c52ceccc2e"
+      "bytes": 3936,
+      "sha256": "57d1d1bbae83760786451eb3487361ab1881be9440b83874f8f4e9970a37d70d"
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 755,
-      "sha256": "6491d581b61a39daf40e7fbcfb1b8f40bc0b1ba3207bdf239bf575e8614e5a5b"
+      "bytes": 782,
+      "sha256": "da2b1e529af2b0823fcc609cdb8348b288d95d2c48778d83716734d23a5c7479"
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 3214,
-      "sha256": "3ada481c9b5a99d41f3bfb1e950f211c15bbf0fcf27fc424a08a9566d16663cb"
+      "bytes": 3322,
+      "sha256": "fe2c1f44fbd9d2b12a99918028f82371d72811ed040267499dd1f0c3b53a4566"
     },
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 3864,
-      "sha256": "90d6dd49ebe0878dd1b2d2d2110e094d4e6a1d4269c2e84d4c9b6712eeacf28a"
+      "bytes": 3972,
+      "sha256": "28f5ffe866fdc3ff4b192bb2dd4fac69cd7c849ae78f1e1704d15ea94753d2aa"
     }
   ],
   "capabilities": [
@@ -112,8 +112,11 @@
       "sitemaps": [
         "https://fixtures.agentify.test/sitemap.xml"
       ],
-      "note": "robots.txt was provided by the caller."
-    }
+      "note": "robots.txt was fetched and matching directives are enforced.",
+      "enforced": true,
+      "rules": []
+    },
+    "skipped": 0
   },
   "diagnostics": {
     "status": "complete",
@@ -121,5 +124,6 @@
     "errors": 0,
     "codes": []
   },
-  "warnings": []
+  "warnings": [],
+  "skippedRouteCount": 0
 }

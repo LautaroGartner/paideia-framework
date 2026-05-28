@@ -2,7 +2,7 @@
   "artifactSchemaVersion": "0.1",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "generatedAt": "2026-05-26T18:37:03.302Z",
   "sourceUrl": "http://info.cern.ch/",
@@ -14,35 +14,35 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 2,
   "failedRouteCount": 0,
-  "buildId": "4ffbb60",
+  "buildId": "6276dad",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 4255,
-      "sha256": "4c2646ae190e8afa253f70d7980486bf8fc51b2332c69a4a396f81b1afe3c867"
+      "bytes": 4332,
+      "sha256": "3a46aed43d7bca3756b5d2044a235a224351f600b616d443f02f80ee782fddca"
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 821,
-      "sha256": "1ca4e31f7cd3e8f4f30d9b6de6795bc6daf9df624266dea985be4c888a143608"
+      "bytes": 848,
+      "sha256": "01936d5eb16011fa02f9ce61092bf1af22eb33daa192b63c4f34650fe4d1b518"
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 3709,
-      "sha256": "0a010b4f019e91d66cb27fdcb55dcff53d9d691076cbf8b7099565da505c1935"
+      "bytes": 3786,
+      "sha256": "8924ccc691b03e8d93cfbf0cf9e9a862426391b6db6214b5841769b0195bf23d"
     },
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 4311,
-      "sha256": "7446485ed600ca6be2b3316901ab092c67d931191d020c763898f3f33bf2b7ff"
+      "bytes": 4388,
+      "sha256": "cb4400de2e12a1ec330ba891ea75a9cc42dae2865c355c5d347b17cd5c863acb"
     }
   ],
   "capabilities": [
@@ -116,8 +116,11 @@
         "status": 404,
         "message": "Not Found"
       },
-      "note": "robots.txt could not be fetched; v0.7 records this but does not enforce directives."
-    }
+      "note": "robots.txt could not be fetched; no directives were available to enforce.",
+      "enforced": false,
+      "rules": []
+    },
+    "skipped": 0
   },
   "diagnostics": {
     "status": "complete",
@@ -138,5 +141,6 @@
       "path": "/hypertext/WWW/TheProject.html",
       "message": "Route /hypertext/WWW/TheProject.html did not include a meta description."
     }
-  ]
+  ],
+  "skippedRouteCount": 0
 }

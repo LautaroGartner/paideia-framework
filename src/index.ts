@@ -91,6 +91,21 @@ const socialArtifacts = existsSync(socialAssetsRoot)
         sourcePath: path.join(socialAssetsRoot, entry),
       }))
   : [];
+const socialArtifactPaths = new Set(
+  socialArtifacts.map((artifact) => artifact.path)
+);
+const missingSocialImages = site.posts
+  .map((post) => `social/${post.slug}.png`)
+  .filter((imagePath) => !socialArtifactPaths.has(imagePath));
+
+if (
+  missingSocialImages.length > 0 &&
+  process.env.PAIDEIA_ALLOW_MISSING_SOCIAL !== "1"
+) {
+  throw new Error(
+    `Missing article social image assets: ${missingSocialImages.join(", ")}`
+  );
+}
 
 const artifacts = [
   ...site.pages.map((page) => ({
@@ -189,7 +204,7 @@ function artifactInventory() {
 function postSocialImagePath(slug: string): string | undefined {
   const imagePath = `social/${slug}.png`;
 
-  return outputs.has(imagePath)
+  return socialArtifactPaths.has(imagePath)
     ? imagePath
     : undefined;
 }

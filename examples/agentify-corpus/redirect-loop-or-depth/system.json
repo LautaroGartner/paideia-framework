@@ -2,7 +2,7 @@
   "artifactSchemaVersion": "0.1",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "generatedAt": "2026-05-26T18:37:24.792Z",
   "sourceUrl": "https://httpbin.org/redirect/50",
@@ -14,7 +14,7 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 0,
   "failedRouteCount": 1,
@@ -69,8 +69,11 @@
         "redirectChain": []
       },
       "sitemaps": [],
-      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
-    }
+      "note": "robots.txt was fetched and matching directives are enforced.",
+      "enforced": true,
+      "rules": []
+    },
+    "skipped": 0
   },
   "capabilities": [
     "site.crawled",
@@ -108,5 +111,6 @@
     "No recursive crawl beyond depth 1 was performed.",
     "JavaScript was not executed.",
     "No private backend behavior was inferred."
-  ]
+  ],
+  "skippedRouteCount": 0
 }

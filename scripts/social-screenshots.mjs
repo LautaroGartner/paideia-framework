@@ -9,15 +9,40 @@ import { pathToFileURL } from "node:url";
 const repoRoot = path.dirname(
   path.dirname(new URL(import.meta.url).pathname)
 );
-const distRoot = path.join(repoRoot, "dist");
+const appRoot = process.env.PAIDEIA_APP_ROOT
+  ? path.resolve(process.env.PAIDEIA_APP_ROOT)
+  : repoRoot;
+const distRoot = path.join(appRoot, "dist");
 const contextPath = path.join(distRoot, "context.json");
-const socialRoot = path.join(repoRoot, "assets", "social");
+const socialRoot = path.join(appRoot, "assets", "social");
 const chromePath =
   process.env.CHROME_BIN ??
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+const force = process.argv.includes("--force");
 
 if (!fs.existsSync(contextPath)) {
   throw new Error("dist/context.json not found. Run npm run build first.");
+}
+
+fs.mkdirSync(socialRoot, {
+  recursive: true,
+});
+
+const context = JSON.parse(fs.readFileSync(contextPath, "utf8"));
+const posts = Array.isArray(context.posts) ? context.posts : [];
+const captures = posts
+  .filter((post) => typeof post.slug === "string")
+  .map((post) => ({
+    htmlPath: path.join(distRoot, post.slug, "index.html"),
+    outputPath: path.join(socialRoot, `${post.slug}.png`),
+    slug: post.slug,
+  }))
+  .filter((post) => fs.existsSync(post.htmlPath))
+  .filter((post) => force || !fs.existsSync(post.outputPath));
+
+if (captures.length === 0) {
+  console.log("[paideia] social screenshots: all article images present");
+  process.exit(0);
 }
 
 if (!fs.existsSync(chromePath)) {
@@ -26,29 +51,11 @@ if (!fs.existsSync(chromePath)) {
   );
 }
 
-fs.mkdirSync(socialRoot, {
-  recursive: true,
-});
-
 const chromeProfileRoot = fs.mkdtempSync(
   path.join(os.tmpdir(), "paideia-social-chrome-")
 );
 
-const context = JSON.parse(fs.readFileSync(contextPath, "utf8"));
-const posts = Array.isArray(context.posts) ? context.posts : [];
-
-for (const post of posts) {
-  if (typeof post.slug !== "string") {
-    continue;
-  }
-
-  const htmlPath = path.join(distRoot, post.slug, "index.html");
-
-  if (!fs.existsSync(htmlPath)) {
-    continue;
-  }
-
-  const outputPath = path.join(socialRoot, `${post.slug}.png`);
+for (const post of captures) {
   const result = spawnSync(
     chromePath,
     [
@@ -61,8 +68,8 @@ for (const post of posts) {
       `--user-data-dir=${chromeProfileRoot}`,
       "--virtual-time-budget=1000",
       "--window-size=1200,630",
-      `--screenshot=${outputPath}`,
-      pathToFileURL(htmlPath).href,
+      `--screenshot=${post.outputPath}`,
+      pathToFileURL(post.htmlPath).href,
     ],
     {
       encoding: "utf8",
@@ -76,5 +83,11 @@ for (const post of posts) {
     );
   }
 
-  console.log(`[paideia] social screenshot: ${outputPath}`);
+  const stats = fs.statSync(post.outputPath);
+
+  if (stats.size === 0) {
+    throw new Error(`Failed to capture ${post.slug}: empty screenshot`);
+  }
+
+  console.log(`[paideia] social screenshot: ${post.outputPath}`);
 }

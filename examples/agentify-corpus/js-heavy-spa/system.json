@@ -2,7 +2,7 @@
   "artifactSchemaVersion": "0.1",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "generatedAt": "2026-05-26T18:38:01.169Z",
   "sourceUrl": "https://app.slack.com/",
@@ -14,7 +14,7 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 1,
   "failedRouteCount": 0,
@@ -149,8 +149,11 @@
         "https://slack.com/sitemap_marketplace.xml",
         "https://slack.com/sitemaps/blog/news/sitemap.xml"
       ],
-      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
-    }
+      "note": "robots.txt was fetched and matching directives are enforced.",
+      "enforced": true,
+      "rules": []
+    },
+    "skipped": 0
   },
   "capabilities": [
     "site.crawled",
@@ -181,5 +184,6 @@
     "No recursive crawl beyond depth 1 was performed.",
     "JavaScript was not executed.",
     "No private backend behavior was inferred."
-  ]
+  ],
+  "skippedRouteCount": 0
 }

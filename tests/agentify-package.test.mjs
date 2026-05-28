@@ -106,7 +106,7 @@ try {
 
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
   assert.equal(packageJson.name, "@lautarogartner/agentify");
-  assert.equal(packageJson.version, "0.7.2-alpha.2");
+  assert.equal(packageJson.version, "0.7.3-alpha.1");
   assert.equal(packageJson.bin?.agentify, "bin/agentify.mjs");
   assert.ok(
     packageJson.files.includes("AGENTIFY_PROTOCOL.md"),
@@ -122,6 +122,14 @@ try {
   assert.ok(readme.includes("static HTML crawl"), "README should mention static crawl");
   assert.ok(readme.includes("honest receipts"), "README should mention honest receipts");
   assert.ok(readme.includes("limitations"), "README should mention limitations");
+  assert.ok(
+    readme.includes("npx @lautarogartner/agentify@alpha https://www.lautarogartner.com"),
+    "README should keep the public npx crawl example current"
+  );
+  assert.ok(
+    readme.includes("robots.txt directives are enforced"),
+    "README should describe robots enforcement"
+  );
 
   const pack = runSync(
     "npm",
@@ -137,6 +145,24 @@ try {
     .readdirSync(packRoot)
     .find((entry) => entry.endsWith(".tgz"));
   assert.ok(tarball, "npm pack should create a tarball");
+
+  const packedFiles = runSync("tar", ["-tzf", path.join(packRoot, tarball)], {
+    cwd: packRoot,
+  });
+  assert.equal(packedFiles.status, 0, packedFiles.output);
+
+  for (const packedPath of [
+    "package/bin/agentify.mjs",
+    "package/README.md",
+    "package/AGENTIFY_PROTOCOL.md",
+    "package/fixtures/complete-static-site/runtime.json",
+    "package/fixtures/protected-spa/context.json",
+  ]) {
+    assert.ok(
+      packedFiles.output.includes(packedPath),
+      `pack should include ${packedPath}`
+    );
+  }
 
   const install = runSync(
     "npm",
@@ -162,7 +188,7 @@ try {
     cwd: appRoot,
   });
   assert.equal(version.status, 0, version.output);
-  assert.equal(version.output.trim(), "0.7.2-alpha.2");
+  assert.equal(version.output.trim(), "0.7.3-alpha.1");
 
   const server = http.createServer((request, response) => {
     if (request.url === "/robots.txt") {
@@ -262,7 +288,7 @@ try {
       fs.readFileSync(path.join(outputDir, "runtime.json"), "utf8")
     );
     assert.equal(runtime.generator.name, "agentify");
-    assert.equal(runtime.generator.version, "0.7.2-alpha.2");
+    assert.equal(runtime.generator.version, "0.7.3-alpha.1");
     assert.deepEqual(runtime.renderer, {
       mode: "static-html",
       javascriptExecuted: false,
@@ -274,6 +300,9 @@ try {
     assert.equal(runtime.crawl.sitemap.status, "fetched");
     assert.equal(runtime.crawl.sitemap.discoveredVia, "default");
     assert.equal(runtime.crawl.sitemap.receipt.status, 200);
+    assert.equal(runtime.limitations.robotsEnforced, true);
+    assert.equal(runtime.crawl.robots.enforced, true);
+    assert.equal(runtime.crawl.skipped, 0);
     assert.equal(runtime.crawl.receipts[0].status, 200);
     assert.match(runtime.artifacts[0].sha256, /^[a-f0-9]{64}$/);
 

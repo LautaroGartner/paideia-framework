@@ -2,7 +2,7 @@
   "artifactSchemaVersion": "0.1",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "generatedAt": "2026-05-26T18:37:24.792Z",
   "sourceUrl": "https://httpbin.org/redirect/50",
@@ -14,35 +14,35 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 0,
   "failedRouteCount": 1,
-  "buildId": "5f30942",
+  "buildId": "2141966",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 2356,
-      "sha256": "0511f875665ffd6834c8f563661ffc7e4fe943700bfd3d24d7796443737d2b57"
+      "bytes": 2422,
+      "sha256": "bd5cac91d34ccb145b6fb3f6a0d79cfba3f0808ce6e621321c6c8ee2cd4d53ba"
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 849,
-      "sha256": "92dbfae597d18268b67eb9c2ad9b039817634257adfc67e84d3cdd1471948174"
+      "bytes": 876,
+      "sha256": "6fd517e6649735591d1e142d3437b46ea1845beeabcb9fb2afcaa076781ed4b4"
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 3045,
-      "sha256": "7ce6a61a1805e1b412a6868fff92b3d97f39ba83e31ebbcc1ca15220f8d9bf4f"
+      "bytes": 3111,
+      "sha256": "26bae69edc2308677b1caa21144c6bd755ffe975623a75ed294eb45f70f3d2e4"
     },
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 2766,
-      "sha256": "0f22025244935a007a56509e61f3f2b6f964b51f6419d62b05800c95efb9c03a"
+      "bytes": 2832,
+      "sha256": "1a53f290fce3843686254f2f5cec3b8dbf2c481c4f8f9d51ad909a191c954aed"
     }
   ],
   "capabilities": [
@@ -95,8 +95,11 @@
         "redirectChain": []
       },
       "sitemaps": [],
-      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
-    }
+      "note": "robots.txt was fetched and matching directives are enforced.",
+      "enforced": true,
+      "rules": []
+    },
+    "skipped": 0
   },
   "diagnostics": {
     "status": "partial",
@@ -119,5 +122,6 @@
       "path": "*",
       "message": "One or more discovered routes failed to fetch."
     }
-  ]
+  ],
+  "skippedRouteCount": 0
 }

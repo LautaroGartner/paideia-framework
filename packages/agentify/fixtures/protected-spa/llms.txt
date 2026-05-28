@@ -16,6 +16,7 @@ Status: complete
 Generated at: 2026-05-26T18:41:43.146Z
 Routes fetched: 3
 Routes failed: 0
+Routes skipped: 0
 Renderer: static-html
 
 ## Routes
@@ -34,7 +35,7 @@ Renderer: static-html
 ## Limits
 
 This prototype uses the static-html renderer: it fetches HTML, does not execute JavaScript, and crawls up to 10 same-origin pages linked from the homepage.
-Robots.txt is fetched for awareness only and is not enforced yet.
+Robots.txt directives are enforced for matching route and sitemap fetches.
 
 ## Warning Codes
 

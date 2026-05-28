@@ -4,7 +4,7 @@
   "sourceUrl": "https://fixtures.agentify.test/",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "renderer": {
     "mode": "static-html",
@@ -14,7 +14,7 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 2,
   "failedRouteCount": 0,
@@ -83,8 +83,11 @@
       "sitemaps": [
         "https://fixtures.agentify.test/sitemap.xml"
       ],
-      "note": "robots.txt was provided by the caller."
-    }
+      "note": "robots.txt was fetched and matching directives are enforced.",
+      "enforced": true,
+      "rules": []
+    },
+    "skipped": 0
   },
   "site": {
     "title": "Complete Fixture",
@@ -147,5 +150,6 @@
     "context.json",
     "system.json",
     "runtime.json"
-  ]
+  ],
+  "skippedRouteCount": 0
 }

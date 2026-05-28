@@ -2,7 +2,7 @@
   "artifactSchemaVersion": "0.1",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "generatedAt": "2026-05-26T18:38:01.169Z",
   "sourceUrl": "https://app.slack.com/",
@@ -14,35 +14,35 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 1,
   "failedRouteCount": 0,
-  "buildId": "020e8ed",
+  "buildId": "0f6d279",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 6276,
-      "sha256": "400ceacf16d19df90ba074957ec5cc37802617ae96229e54e0d97974ec999510"
+      "bytes": 6342,
+      "sha256": "fddcc90018a49e1b8594851ce220695a114addf32872b9f4d2c9623c1a87ca2b"
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 964,
-      "sha256": "3d3c38da0a9e31883bd979931ddc7c36a3bf259617ed00f2a3e8bb8b6b3aa6a2"
+      "bytes": 991,
+      "sha256": "de9e6fcfb6bf8335c961ffe3e78f045b184868c18bb841777deabb498456ac39"
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 3863,
-      "sha256": "e3b1717c0a5a2aa78bf3dda4a5cbe6224f049c1823585637cfd6189366b80eae"
+      "bytes": 3929,
+      "sha256": "ce0b1506bf994013b458cc837b00955c8637da18ba1c6cb91ca2f10f1d2fe75c"
     },
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 6293,
-      "sha256": "7835d5572f42564205a928fec95fbf0e0cbccbf0f8ffff12d34b4928c1d7f271"
+      "bytes": 6359,
+      "sha256": "0ac66e12951356f0abb0597e81fe3cd9965e7167e87aa2781c43a5357d10195c"
     }
   ],
   "capabilities": [
@@ -123,8 +123,11 @@
         "https://slack.com/sitemap_marketplace.xml",
         "https://slack.com/sitemaps/blog/news/sitemap.xml"
       ],
-      "note": "robots.txt was fetched for awareness only; v0.7 does not enforce directives yet."
-    }
+      "note": "robots.txt was fetched and matching directives are enforced.",
+      "enforced": true,
+      "rules": []
+    },
+    "skipped": 0
   },
   "diagnostics": {
     "status": "complete",
@@ -140,5 +143,6 @@
       "path": "/",
       "message": "Homepage appears to require JavaScript for meaningful static content."
     }
-  ]
+  ],
+  "skippedRouteCount": 0
 }

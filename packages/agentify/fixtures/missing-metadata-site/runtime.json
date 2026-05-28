@@ -2,7 +2,7 @@
   "artifactSchemaVersion": "0.1",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "generatedAt": "2026-05-26T00:00:00.000Z",
   "sourceUrl": "https://metadata.fixture.agentify.test/",
@@ -14,35 +14,35 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 1,
   "failedRouteCount": 0,
-  "buildId": "424b702",
+  "buildId": "b578b36",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 2990,
-      "sha256": "b28168f1d6409dda0ce28da0898613d168a3648d41c951bf158aaedcce305584"
+      "bytes": 3098,
+      "sha256": "9e314ffce2e37732f3bc93955f4a9829d6f177332fcfebd5233951436f6ee512"
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 795,
-      "sha256": "9a393a36c0a39f28d04d2768b44c9aff6ab5c06fbe8fadc97e8e0c24b7f40fbe"
+      "bytes": 822,
+      "sha256": "16406338229be461270b2966aed719c62a185bef9d93506195cce03cf15b18d7"
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 3131,
-      "sha256": "a7da45ab7a520971044b3e7b5b0d23c50876eef17ee4c0173a2cb14c5223f89a"
+      "bytes": 3239,
+      "sha256": "d3f1836c19d83af25e0e2217c1b3d8758d286427aafedca6946b883a354c6479"
     },
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 3265,
-      "sha256": "ef2dac914bd5e819c9858519f3138f20ec1556cf7d81ca6cd3dbe0ffa92c6a12"
+      "bytes": 3373,
+      "sha256": "052eba5e1ca557f7b02fdc4f5abeaca8296081503c78a71e6ddf7a2ebd841726"
     }
   ],
   "capabilities": [
@@ -98,8 +98,11 @@
       "sitemaps": [
         "https://metadata.fixture.agentify.test/sitemap.xml"
       ],
-      "note": "robots.txt was provided by the caller."
-    }
+      "note": "robots.txt was fetched and matching directives are enforced.",
+      "enforced": true,
+      "rules": []
+    },
+    "skipped": 0
   },
   "diagnostics": {
     "status": "complete",
@@ -121,5 +124,6 @@
       "path": "/",
       "message": "Homepage did not include a meta description."
     }
-  ]
+  ],
+  "skippedRouteCount": 0
 }

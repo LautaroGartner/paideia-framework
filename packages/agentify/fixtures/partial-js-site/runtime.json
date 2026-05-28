@@ -2,7 +2,7 @@
   "artifactSchemaVersion": "0.1",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "generatedAt": "2026-05-26T00:00:00.000Z",
   "sourceUrl": "https://js.fixture.agentify.test/",
@@ -14,35 +14,35 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 1,
   "failedRouteCount": 0,
-  "buildId": "581a5bd",
+  "buildId": "fc21092",
   "artifacts": [
     {
       "path": "context.json",
       "kind": "agent-metadata",
-      "bytes": 3069,
-      "sha256": "9da1f0e83b2d4b5371242fd9825f2c2c51f861e1a9786cd3338ccae0582bb437"
+      "bytes": 3177,
+      "sha256": "f548fb937a42ef24e97e63ba035e0d89af0c5166e89d82612df5b95c960b3a6a"
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 797,
-      "sha256": "06622ffa2ab86743de1f51662df2af8980555767d0d98594c311ccc00d5b02f8"
+      "bytes": 824,
+      "sha256": "9521ca7a6a090a30c342fc06f87f8eb0fa3a2a62f1e6ac89934844f5fdf1862f"
     },
     {
       "path": "runtime.json",
       "kind": "agent-metadata",
-      "bytes": 3260,
-      "sha256": "6357eb4d606beb13029e71976d241a4eaa7601c1aca6ab29dee5775060a84ca1"
+      "bytes": 3368,
+      "sha256": "2c2f0ba3222d1d18d3167690cd8d10ce1049516f0e212316f7b676675ff3b926"
     },
     {
       "path": "system.json",
       "kind": "agent-metadata",
-      "bytes": 3341,
-      "sha256": "bd6dcc14e6beaf04e8d207046627ef646e304f006bd766991499839111cf2077"
+      "bytes": 3449,
+      "sha256": "7923c638c93661a20758ac0241df352a9b919412e5c299e57ceb9555185d1b4b"
     }
   ],
   "capabilities": [
@@ -98,8 +98,11 @@
       "sitemaps": [
         "https://js.fixture.agentify.test/sitemap.xml"
       ],
-      "note": "robots.txt was provided by the caller."
-    }
+      "note": "robots.txt was fetched and matching directives are enforced.",
+      "enforced": true,
+      "rules": []
+    },
+    "skipped": 0
   },
   "diagnostics": {
     "status": "complete",
@@ -127,5 +130,6 @@
       "path": "/",
       "message": "Homepage appears to require JavaScript for meaningful static content."
     }
-  ]
+  ],
+  "skippedRouteCount": 0
 }

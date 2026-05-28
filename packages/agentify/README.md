@@ -69,6 +69,13 @@ Reason: JavaScript-required shell plus missing static title and description meta
 
 Agentify keeps that distinction explicit. A crawl can fetch routes successfully and still warn that the static result is not a complete semantic representation of the site.
 
+Robots handling:
+
+```txt
+robots.txt directives are enforced for the configured Agentify user agent.
+Disallowed homepage routes, discovered routes, and sitemap candidates are skipped before fetch and preserved as crawl receipts with `robots.disallowed` warnings.
+```
+
 Successful live example:
 
 ```bash
@@ -79,7 +86,7 @@ npx @lautarogartner/agentify@alpha validate ./agent
 ```
 
 ```txt
-0.7.2-alpha.2
+0.7.3-alpha.1
 [agentify] fetched 6 pages
 [agentify] warnings: 0
 [agentify] errors: 0

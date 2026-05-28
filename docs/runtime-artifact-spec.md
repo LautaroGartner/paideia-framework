@@ -98,10 +98,12 @@ Fields:
 * `timeoutMs`: fetch timeout
 * `fetched`: number of pages fetched
 * `failed`: number of failed routes
+* `skipped`: number of routes skipped before fetch
 * `failures`: array of failed route records
+* `receipts`: fetched route receipts plus explicit skip receipts
 * `sameOriginOnly`: whether crawl was limited to one origin
 * `userAgent`: user agent used for fetching
-* `robots`: robots.txt awareness receipt
+* `robots`: robots.txt fetch and enforcement receipt
 
 Failure fields:
 
@@ -112,6 +114,8 @@ Failure fields:
 Semantics:
 
 A partial crawl is still useful if the failure is explicit.
+
+When robots rules disallow a route, the URL should not be fetched. The skip remains useful protocol data and should be preserved with `skipped: true`, a reason, and the matched robots rule.
 
 ## Warnings
 
@@ -211,7 +215,7 @@ Current agentify fields:
 * `javascriptNotExecuted`: JavaScript was not run while reading the site
 * `recursiveCrawl`: recursive crawling beyond depth 1 was not performed
 * `privateBehaviorInferred`: private backend behavior was not inferred
-* `robotsEnforced`: robots.txt directives were not enforced
+* `robotsEnforced`: robots.txt directives were enforced when available
 
 Semantics:
 
@@ -227,6 +231,7 @@ missing.description
 js.required
 crawl.partial
 route.fetch_failed
+robots.disallowed
 ```
 
 Warning codes should stay compact and stable enough for humans and agents to filter, compare, and explain.

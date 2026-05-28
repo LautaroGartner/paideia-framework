@@ -4,7 +4,7 @@
   "sourceUrl": "https://example.com/",
   "generator": {
     "name": "agentify",
-    "version": "0.7.2-alpha.2"
+    "version": "0.7.3-alpha.1"
   },
   "renderer": {
     "mode": "static-html",
@@ -14,7 +14,7 @@
     "javascriptNotExecuted": true,
     "recursiveCrawl": false,
     "privateBehaviorInferred": false,
-    "robotsEnforced": false
+    "robotsEnforced": true
   },
   "routeCount": 1,
   "failedRouteCount": 0,
@@ -81,8 +81,11 @@
         "status": 404,
         "message": "Not Found"
       },
-      "note": "robots.txt could not be fetched; v0.7 records this but does not enforce directives."
-    }
+      "note": "robots.txt could not be fetched; no directives were available to enforce.",
+      "enforced": false,
+      "rules": []
+    },
+    "skipped": 0
   },
   "site": {
     "title": "Example Domain",
@@ -121,5 +124,6 @@
     "context.json",
     "system.json",
     "runtime.json"
-  ]
+  ],
+  "skippedRouteCount": 0
 }
