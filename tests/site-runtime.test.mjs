@@ -73,8 +73,17 @@ assert.ok(postHtml.includes("Building Paideia"));
 assert.ok(postHtml.includes("@lautyxgr"));
 assert.ok(postHtml.includes("May 20, 2026"));
 assert.ok(
+  postHtml.includes('data-relative-date-label data-published-at="2026-05-20" hidden'),
+  "post page should include a runtime relative-date label"
+);
+assert.ok(
+  postHtml.includes("function updateRelativeDates()"),
+  "post page should include the relative-date updater"
+);
+assert.equal(
   /\|\s+\d+d ago<\/div>/.test(postHtml),
-  "post page should include a build-date relative label"
+  false,
+  "post page should not bake stale relative dates into static HTML"
 );
 assert.ok(
   postHtml.includes('/_vercel/insights/script.js'),

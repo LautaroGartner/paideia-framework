@@ -131,6 +131,57 @@ function renderHead(options: {
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">${author}${canonicalLink}${structuredData}
     <script>
       (() => {
+        function formatRelativeDate(publishedAt, now = new Date()) {
+          const published = new Date(publishedAt + "T00:00:00Z");
+
+          if (Number.isNaN(published.getTime())) {
+            return "";
+          }
+
+          const today = new Date(Date.UTC(
+            now.getUTCFullYear(),
+            now.getUTCMonth(),
+            now.getUTCDate()
+          ));
+          const diffDays = Math.floor(
+            (today.getTime() - published.getTime()) / 86400000
+          );
+
+          if (diffDays <= 0) return "today";
+          if (diffDays === 1) return "1d ago";
+          if (diffDays < 30) return diffDays + "d ago";
+
+          const diffMonths = Math.floor(diffDays / 30);
+
+          if (diffMonths === 1) return "1 month ago";
+          if (diffMonths < 12) return diffMonths + " months ago";
+
+          const diffYears = Math.floor(diffMonths / 12);
+
+          if (diffYears === 1) return "1 year ago";
+          return diffYears + " years ago";
+        }
+
+        function updateRelativeDates() {
+          for (const label of document.querySelectorAll("[data-relative-date-label]")) {
+            const relativeDate = label.querySelector("[data-relative-date]");
+            const value = formatRelativeDate(label.dataset.publishedAt);
+
+            if (!relativeDate || !value) {
+              continue;
+            }
+
+            relativeDate.textContent = value;
+            label.hidden = false;
+          }
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", updateRelativeDates, { once: true });
+        } else {
+          updateRelativeDates();
+        }
+
         const localHosts = new Set(["", "localhost", "127.0.0.1", "::1"]);
 
         if (localHosts.has(window.location.hostname)) {
@@ -175,32 +226,6 @@ function formatDate(value: string): string {
     year: "numeric",
     timeZone: "UTC",
   }).format(new Date(`${value}T00:00:00Z`));
-}
-
-function formatRelativeDate(publishedAt: string, now = new Date()): string {
-  const published = new Date(`${publishedAt}T00:00:00Z`);
-  const today = new Date(Date.UTC(
-    now.getUTCFullYear(),
-    now.getUTCMonth(),
-    now.getUTCDate()
-  ));
-  const diffDays = Math.floor(
-    (today.getTime() - published.getTime()) / 86400000
-  );
-
-  if (diffDays <= 0) return "today";
-  if (diffDays === 1) return "1d ago";
-  if (diffDays < 30) return `${diffDays}d ago`;
-
-  const diffMonths = Math.floor(diffDays / 30);
-
-  if (diffMonths === 1) return "1 month ago";
-  if (diffMonths < 12) return `${diffMonths} months ago`;
-
-  const diffYears = Math.floor(diffMonths / 12);
-
-  if (diffYears === 1) return "1 year ago";
-  return `${diffYears} years ago`;
 }
 
 function renderPostTopics(post: WritingPost): string {
@@ -903,7 +928,7 @@ export function generatePostPage(
       },
     },
     body: `        <h1 class="post-title">${escapeHtml(post.title)}</h1>
-        <div class="meta"><a href="${escapeHtml(X_PROFILE_URL)}" rel="me">${escapeHtml(AUTHOR_USERNAME)}</a> | <time datetime="${escapeHtml(post.publishedAt)}">${escapeHtml(formatDate(post.publishedAt))}</time> | ${escapeHtml(formatRelativeDate(post.publishedAt))}</div>
+        <div class="meta"><a href="${escapeHtml(X_PROFILE_URL)}" rel="me">${escapeHtml(AUTHOR_USERNAME)}</a> | <time datetime="${escapeHtml(post.publishedAt)}">${escapeHtml(formatDate(post.publishedAt))}</time><span data-relative-date-label data-published-at="${escapeHtml(post.publishedAt)}" hidden> | <span data-relative-date></span></span></div>
         <p class="description">${escapeHtml(post.description)}</p>
         <div class="post-body">
           ${renderBody(post.body)}

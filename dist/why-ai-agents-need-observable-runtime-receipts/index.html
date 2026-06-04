@@ -28,6 +28,57 @@
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Why AI Agents Need Observable Runtime Receipts","description":"The modern web is increasingly difficult for legitimate machines to observe. Agents need explicit runtime receipts, not confident guesses.","datePublished":"2026-05-26","url":"https://www.lautarogartner.com/why-ai-agents-need-observable-runtime-receipts","mainEntityOfPage":"https://www.lautarogartner.com/why-ai-agents-need-observable-runtime-receipts","keywords":["agent-readable web","runtime receipts","crawler diagnostics"],"author":{"@type":"Person","name":"Lautaro Gärtner","url":"https://x.com/lautyxgr"},"publisher":{"@type":"Person","name":"Lautaro Gärtner"}}</script>
     <script>
       (() => {
+        function formatRelativeDate(publishedAt, now = new Date()) {
+          const published = new Date(publishedAt + "T00:00:00Z");
+
+          if (Number.isNaN(published.getTime())) {
+            return "";
+          }
+
+          const today = new Date(Date.UTC(
+            now.getUTCFullYear(),
+            now.getUTCMonth(),
+            now.getUTCDate()
+          ));
+          const diffDays = Math.floor(
+            (today.getTime() - published.getTime()) / 86400000
+          );
+
+          if (diffDays <= 0) return "today";
+          if (diffDays === 1) return "1d ago";
+          if (diffDays < 30) return diffDays + "d ago";
+
+          const diffMonths = Math.floor(diffDays / 30);
+
+          if (diffMonths === 1) return "1 month ago";
+          if (diffMonths < 12) return diffMonths + " months ago";
+
+          const diffYears = Math.floor(diffMonths / 12);
+
+          if (diffYears === 1) return "1 year ago";
+          return diffYears + " years ago";
+        }
+
+        function updateRelativeDates() {
+          for (const label of document.querySelectorAll("[data-relative-date-label]")) {
+            const relativeDate = label.querySelector("[data-relative-date]");
+            const value = formatRelativeDate(label.dataset.publishedAt);
+
+            if (!relativeDate || !value) {
+              continue;
+            }
+
+            relativeDate.textContent = value;
+            label.hidden = false;
+          }
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", updateRelativeDates, { once: true });
+        } else {
+          updateRelativeDates();
+        }
+
         const localHosts = new Set(["", "localhost", "127.0.0.1", "::1"]);
 
         if (localHosts.has(window.location.hostname)) {
@@ -459,7 +510,7 @@
       </header>
       <main>
         <h1 class="post-title">Why AI Agents Need Observable Runtime Receipts</h1>
-        <div class="meta"><a href="https://x.com/lautyxgr" rel="me">@lautyxgr</a> | <time datetime="2026-05-26">May 26, 2026</time> | today</div>
+        <div class="meta"><a href="https://x.com/lautyxgr" rel="me">@lautyxgr</a> | <time datetime="2026-05-26">May 26, 2026</time><span data-relative-date-label data-published-at="2026-05-26" hidden> | <span data-relative-date></span></span></div>
         <p class="description">The modern web is increasingly difficult for legitimate machines to observe. Agents need explicit runtime receipts, not confident guesses.</p>
         <div class="post-body">
           <p>The web was built for browsers, then optimized for humans, advertisers, analytics, platforms, search engines, and security systems. Machines were always there, but mostly in tolerated roles: search crawlers, uptime monitors, link unfurlers, feed readers, validators, scrapers, bots. Some were welcomed. Some were blocked. Most were ambiguously classified by infrastructure that had no reason to care about their intent.</p>
