@@ -8,8 +8,8 @@ import { escapeHtml } from "./utils.js";
 import { FRAMEWORK_VERSION } from "./version.js";
 
 const AUTHOR_NAME = "Lautaro Gärtner";
-const AUTHOR_USERNAME = "@lautyxgr";
-const X_PROFILE_URL = "https://x.com/lautyxgr";
+const AUTHOR_USERNAME = "@lautarogartner_";
+const X_PROFILE_URL = "https://x.com/lautarogartner_";
 const SOURCE_URL = "https://github.com/LautaroGartner/paideia-framework";
 const SOCIAL_IMAGE_WIDTH = 1200;
 const SOCIAL_IMAGE_HEIGHT = 630;

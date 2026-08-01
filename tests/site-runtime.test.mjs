@@ -70,7 +70,7 @@ const homeHtml = readText("dist/index.html");
 const aboutHtml = readText("dist/about/index.html");
 
 assert.ok(postHtml.includes("Building Paideia"));
-assert.ok(postHtml.includes("@lautyxgr"));
+assert.ok(postHtml.includes("@lautarogartner_"));
 assert.ok(postHtml.includes("May 20, 2026"));
 assert.ok(
   postHtml.includes('data-relative-date-label data-published-at="2026-05-20" hidden'),

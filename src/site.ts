@@ -40,7 +40,7 @@ export const site = defineSite({
   description: "Building Paideia Framework: self-describing software systems.",
   url: "https://www.lautarogartner.com",
   author: "Lautaro Gärtner",
-  authorUrl: "https://x.com/lautyxgr",
+  authorUrl: "https://x.com/lautarogartner_",
   language: "en",
   posts,
   pages: [

@@ -4,8 +4,8 @@
     "version": "1.8.1"
   },
   "build": {
-    "id": "561f6d8",
-    "generatedAt": "2026-06-04T21:13:44.972Z",
+    "id": "541c6c6",
+    "generatedAt": "2026-08-01T19:06:02.265Z",
     "mode": "production",
     "artifactCount": 20
   },
@@ -26,42 +26,42 @@
     {
       "path": "index.html",
       "kind": "page",
-      "bytes": 14477
+      "bytes": 14505
     },
     {
       "path": "about/index.html",
       "kind": "page",
-      "bytes": 19431
+      "bytes": 19459
     },
     {
       "path": "why-ai-agents-need-observable-runtime-receipts/index.html",
       "kind": "post",
-      "bytes": 21948
+      "bytes": 21990
     },
     {
       "path": "agent-readable-web/index.html",
       "kind": "post",
-      "bytes": 27366
+      "bytes": 27408
     },
     {
       "path": "framework-becomes-a-tool/index.html",
       "kind": "post",
-      "bytes": 20702
+      "bytes": 20744
     },
     {
       "path": "generated-systems-should-explain-themselves/index.html",
       "kind": "post",
-      "bytes": 18341
+      "bytes": 18383
     },
     {
       "path": "building-paideia/index.html",
       "kind": "post",
-      "bytes": 21462
+      "bytes": 21504
     },
     {
       "path": "404.html",
       "kind": "fallback",
-      "bytes": 12257
+      "bytes": 12278
     },
     {
       "path": "favicon.svg",
