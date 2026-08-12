@@ -19,6 +19,8 @@
     "tsconfig.json"
   ],
   "scripts": {
+    "compile": "tsc",
+    "prepare": "npm run compile",
     "prepack": "npm run build",
     "dev": "node cli.mjs dev",
     "build": "node cli.mjs build",
