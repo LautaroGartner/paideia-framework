@@ -256,7 +256,7 @@ for (const post of site.posts) {
 }
 
 addArtifact("404.html", generateNotFoundPage(site));
-addArtifact("favicon.svg", generateFaviconSvg());
+addArtifact("favicon.svg", generateFaviconSvg(site));
 
 addArtifact(
   "system.json",

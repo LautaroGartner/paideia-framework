@@ -24,9 +24,6 @@ function readJson(path) {
 assertFileExists("dist/index.html");
 assertFileExists("dist/about/index.html");
 assertFileExists("dist/building-paideia/index.html");
-assertFileExists(
-  "dist/generated-systems-should-explain-themselves/index.html"
-);
 assertFileExists("dist/404.html");
 assertFileExists("dist/favicon.svg");
 assertFileExists("dist/social/building-paideia.png");
@@ -46,7 +43,7 @@ for (const post of context.posts) {
   const imagePath = `dist/social/${post.slug}.png`;
   const html = readText(`dist/${post.slug}/index.html`);
   const absoluteImageUrl =
-    `https://www.lautarogartner.com/social/${post.slug}.png`;
+    `https://example.com/social/${post.slug}.png`;
 
   assertFileExists(imagePath);
   assert.ok(
@@ -70,7 +67,7 @@ const homeHtml = readText("dist/index.html");
 const aboutHtml = readText("dist/about/index.html");
 
 assert.ok(postHtml.includes("Building Paideia"));
-assert.ok(postHtml.includes("@lautarogartner_"));
+assert.ok(postHtml.includes("Paideia Framework"));
 assert.ok(postHtml.includes("May 20, 2026"));
 assert.ok(
   postHtml.includes('data-relative-date-label data-published-at="2026-05-20" hidden'),
@@ -110,7 +107,7 @@ assert.ok(
   "post page should include Open Graph article metadata"
 );
 assert.ok(
-  postHtml.includes('<meta property="og:image" content="https://www.lautarogartner.com/social/building-paideia.png">'),
+  postHtml.includes('<meta property="og:image" content="https://example.com/social/building-paideia.png">'),
   "post page should include a social preview image"
 );
 assert.ok(

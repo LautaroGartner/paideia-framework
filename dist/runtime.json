@@ -4,10 +4,10 @@
     "version": "1.8.1"
   },
   "build": {
-    "id": "541c6c6",
-    "generatedAt": "2026-08-01T19:06:02.265Z",
+    "id": "5c3b20b",
+    "generatedAt": "2026-08-12T18:40:25.638Z",
     "mode": "production",
-    "artifactCount": 20
+    "artifactCount": 12
   },
   "capabilities": [
     "site.static",
@@ -26,42 +26,22 @@
     {
       "path": "index.html",
       "kind": "page",
-      "bytes": 14505
+      "bytes": 12731
     },
     {
       "path": "about/index.html",
       "kind": "page",
-      "bytes": 19459
-    },
-    {
-      "path": "why-ai-agents-need-observable-runtime-receipts/index.html",
-      "kind": "post",
-      "bytes": 21990
-    },
-    {
-      "path": "agent-readable-web/index.html",
-      "kind": "post",
-      "bytes": 27408
-    },
-    {
-      "path": "framework-becomes-a-tool/index.html",
-      "kind": "post",
-      "bytes": 20744
-    },
-    {
-      "path": "generated-systems-should-explain-themselves/index.html",
-      "kind": "post",
-      "bytes": 18383
+      "bytes": 12745
     },
     {
       "path": "building-paideia/index.html",
       "kind": "post",
-      "bytes": 21504
+      "bytes": 21183
     },
     {
       "path": "404.html",
       "kind": "fallback",
-      "bytes": 12278
+      "bytes": 12069
     },
     {
       "path": "favicon.svg",
@@ -69,64 +49,44 @@
       "bytes": 264
     },
     {
-      "path": "social/agent-readable-web.png",
-      "kind": "social-image",
-      "bytes": 102502
-    },
-    {
       "path": "social/building-paideia.png",
       "kind": "social-image",
       "bytes": 106106
     },
     {
-      "path": "social/framework-becomes-a-tool.png",
-      "kind": "social-image",
-      "bytes": 88031
-    },
-    {
-      "path": "social/generated-systems-should-explain-themselves.png",
-      "kind": "social-image",
-      "bytes": 94310
-    },
-    {
-      "path": "social/why-ai-agents-need-observable-runtime-receipts.png",
-      "kind": "social-image",
-      "bytes": 95365
-    },
-    {
       "path": "robots.txt",
       "kind": "seo",
-      "bytes": 75
+      "bytes": 64
     },
     {
       "path": "sitemap.xml",
       "kind": "seo",
-      "bytes": 879
+      "bytes": 323
     },
     {
       "path": "system.json",
       "kind": "contract",
-      "bytes": 6233
+      "bytes": 2636
     },
     {
       "path": "context.json",
       "kind": "agent-context",
-      "bytes": 4243
+      "bytes": 1551
     },
     {
       "path": "runtime.json",
       "kind": "runtime-identity",
-      "bytes": 2737
+      "bytes": 1761
     },
     {
       "path": "llms.txt",
       "kind": "agent-guide",
-      "bytes": 2170
+      "bytes": 952
     }
   ],
   "site": {
     "pages": 2,
-    "posts": 5
+    "posts": 1
   },
   "runtime": {
     "inspectable": true,
